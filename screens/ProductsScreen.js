@@ -48,9 +48,8 @@ export default function ProductsScreen({ navigation }) {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Products</Text>
         <Text style={styles.subtitle}>Browse our collection</Text>
-        <Text style={styles.productCount}>{products.length} products available</Text>
+        <Text style={styles.productCount}>{products.length} {products.length === 1 ? 'product' : 'products'} available</Text>
       </View>
       
       <View style={styles.productList}>
@@ -106,7 +105,6 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 20,
-    paddingTop: 60,
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
