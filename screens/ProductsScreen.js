@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import {
+  Image,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+  ImageBackground
+} from 'react-native';
 import { fetchProducts } from '../data/products';
 
 export default function ProductsScreen({ navigation }) {
@@ -47,37 +56,69 @@ export default function ProductsScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.subtitle}>Browse our collection</Text>
-        <Text style={styles.productCount}>{products.length} {products.length === 1 ? 'product' : 'products'} available</Text>
-      </View>
-      
+
+      <ImageBackground
+          source={require('../assets/background-img.jpg')}
+          style={styles.backgroundImage}
+          resizeMode="cover"
+      >
+        <View style={styles.header}>
+         <Text style={styles.subtitle}>Browse our collection</Text>
+         <Text style={styles.productCount}>{products.length} {products.length === 1 ? 'product' : 'products'} available</Text>
+        </View>
       <View style={styles.productList}>
         {products.map((product) => (
           <View key={product._id || product.id} style={styles.productItem}>
-            <Text style={styles.productName}>{product.name}</Text>
-            <Text style={styles.productPrice}>{product.price}</Text>
-            <Text style={styles.productCategory}>{product.category}</Text>
+            <Image
+                source={{ uri: product.image }}
+                style={styles.productImage}
+                resizeMode="cover"
+            />
+              <View style={styles.productPriceWrapper}>
+                <View>
+                  <Text style={styles.productName}>{product.name}</Text>
+                  <Text style={styles.productPrice}>{product.price}</Text>
+                </View>
+                <View style={{ display: 'flex', flexDirection: 'row', gap: 20, alignItems: 'center' }}>
+                  {/*<Image source={require('../assets/icons/Cart2.png')} style={styles.iconStyleCart} />*/}
+                  <Image source={require('../assets/icons/Buy.png')} style={styles.iconStyleBuy} />
+                </View>
+
+
+              {/*<Text style={styles.productCategory}>{product.category}</Text>*/}
+            </View>
           </View>
         ))}
       </View>
       
-      <View style={styles.footer}>
-        <TouchableOpacity 
-          style={styles.button}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.buttonText}>Go Back</Text>
-        </TouchableOpacity>
-      </View>
+      {/*<View style={styles.footer}>*/}
+      {/*  <TouchableOpacity */}
+      {/*    style={styles.button}*/}
+      {/*    onPress={() => navigation.goBack()}*/}
+      {/*  >*/}
+      {/*    <Text style={styles.buttonText}>Go Back</Text>*/}
+      {/*  </TouchableOpacity>*/}
+      {/*</View>*/}
+      </ImageBackground>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'black',
+  },
+  productImage: {
+    width: '100%',
+    height: 400,
+    borderRadius: 20,
+    boxShadow: "0px 0px 17px 0px rgba(255, 255, 255, 0.1)",
   },
   loadingContainer: {
     flex: 1,
@@ -105,9 +146,7 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 20,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   title: {
     fontSize: 28,
@@ -116,7 +155,8 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+    fontWeight: 'bold',
+    color: 'rgba(255, 255, 255, 0.7)',
     marginTop: 5,
   },
   productCount: {
@@ -129,9 +169,10 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   productItem: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
+    boxShadow: "0px 0px 17px 0px rgba(0, 0, 0, 0.7)",
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    padding: 10,
+    borderRadius: 20,
     marginBottom: 15,
     shadowColor: '#000',
     shadowOffset: {
@@ -145,8 +186,20 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: "white",
     marginBottom: 5,
+  },
+  productPriceWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    width: 'auto',
+    borderRadius: 20,
+    boxShadow: '0 2px 3px rgba(0,0,0,0.1)',
+    padding: 15
   },
   productPrice: {
     fontSize: 16,
@@ -156,7 +209,7 @@ const styles = StyleSheet.create({
   },
   productCategory: {
     fontSize: 14,
-    color: '#666',
+    color: 'white',
   },
   footer: {
     padding: 20,
@@ -173,5 +226,15 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
+  },
+  iconStyleBuy: {
+    width: 30,
+    height: 30,
+    tintColor: 'white',
+  },
+  iconStyleCart: {
+    width: 35,
+    height: 35,
+    tintColor: 'white',
   },
 }); 
