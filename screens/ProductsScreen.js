@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import {
   Image,
   View,
@@ -9,9 +9,12 @@ import {
   ActivityIndicator,
   ImageBackground
 } from 'react-native';
-import { fetchProducts } from '../data/products';
+import {fetchProducts, fetchProductsByStoreId} from '../data/products';
+import { useRoute } from '@react-navigation/native';
 
 export default function ProductsScreen({ navigation }) {
+  const route = useRoute();
+  const { storeId } = route.params;
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,11 +23,21 @@ export default function ProductsScreen({ navigation }) {
     loadProducts();
   }, []);
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: 'Cake by Dee!',
+      headerTitleStyle: {
+        fontFamily: storeId,
+        fontSize: 16,
+      },
+    });
+  }, [navigation]);
+
   const loadProducts = async () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await fetchProducts();
+      const data = await fetchProductsByStoreId(storeId);
       setProducts(data);
     } catch (err) {
       setError('Failed to load products');
@@ -57,11 +70,6 @@ export default function ProductsScreen({ navigation }) {
   return (
     <ScrollView style={styles.container}>
 
-      <ImageBackground
-          source={require('../assets/background-img.jpg')}
-          style={styles.backgroundImage}
-          resizeMode="cover"
-      >
         <View style={styles.header}>
          <Text style={styles.subtitle}>Browse our collection</Text>
          <Text style={styles.productCount}>{products.length} {products.length === 1 ? 'product' : 'products'} available</Text>
@@ -76,7 +84,7 @@ export default function ProductsScreen({ navigation }) {
             />
               <View style={styles.productPriceWrapper}>
                 <View>
-                  <Text style={styles.productName}>{product.name}</Text>
+                  <Text style={[styles.productName, { fontFamily: storeId }]}>{product.name}</Text>
                   <Text style={styles.productPrice}>{product.price}</Text>
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row', gap: 20, alignItems: 'center' }}>
@@ -99,7 +107,6 @@ export default function ProductsScreen({ navigation }) {
       {/*    <Text style={styles.buttonText}>Go Back</Text>*/}
       {/*  </TouchableOpacity>*/}
       {/*</View>*/}
-      </ImageBackground>
     </ScrollView>
   );
 }
@@ -112,13 +119,13 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: "rgb(136 109 85)",
   },
   productImage: {
     width: '100%',
     height: 400,
     borderRadius: 20,
-    boxShadow: "0px 0px 17px 0px rgba(255, 255, 255, 0.1)",
+    // boxShadow: "0px 0px 17px 0px rgba(255, 255, 255, 0.1)",
   },
   loadingContainer: {
     flex: 1,
@@ -146,7 +153,7 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
   title: {
     fontSize: 28,
@@ -161,7 +168,7 @@ const styles = StyleSheet.create({
   },
   productCount: {
     fontSize: 14,
-    color: '#007AFF',
+    color: 'rgb(255 255 255 / 69%)',
     marginTop: 5,
     fontWeight: '600',
   },
@@ -169,8 +176,8 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   productItem: {
-    boxShadow: "0px 0px 17px 0px rgba(0, 0, 0, 0.7)",
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    // boxShadow: "0px 0px 17px 0px rgba(0, 0, 0, 0.7)",
+    backgroundColor: 'rgb(62 48 36)',
     padding: 10,
     borderRadius: 20,
     marginBottom: 15,
@@ -185,7 +192,7 @@ const styles = StyleSheet.create({
   },
   productName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: 'medium',
     color: "white",
     marginBottom: 5,
   },
@@ -195,15 +202,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     width: 'auto',
     borderRadius: 20,
     boxShadow: '0 2px 3px rgba(0,0,0,0.1)',
-    padding: 15
+    padding: 20
   },
   productPrice: {
     fontSize: 16,
-    color: '#007AFF',
+    color: 'rgb(255 223 160)',
     fontWeight: '600',
     marginBottom: 5,
   },
