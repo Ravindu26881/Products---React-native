@@ -9,9 +9,11 @@ import {
   TouchableHighlight,
   ScrollView,
   ActivityIndicator,
-  ImageBackground
+  ImageBackground,
+  Platform
 } from 'react-native';
 import { fetchStores } from '../data/stores';
+import { getFontFamily } from '../utils/fontUtils';
 
 export default function StoresScreen({ navigation }) {
   const [stores, setStores] = useState([]);
@@ -67,7 +69,7 @@ export default function StoresScreen({ navigation }) {
           <View style={styles.storeList}>
             {stores.map((store) => (
                   <View key={store._id || store.id} style={styles.storeItem}>
-                    <TouchableOpacity onPress={() => navigation.navigate('Products', { storeId: store._id || store.id })}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Products', { storeId: store._id || store.id, storeName: store.name })}>
                     <Image
                         source={{ uri: store.image }}
                         style={styles.storeImage}
@@ -75,7 +77,7 @@ export default function StoresScreen({ navigation }) {
                     />
                     <View style={styles.storePriceWrapper}>
                       <View>
-                        <Text style={[styles.storeName, { fontFamily: `${store._id}` }]}>
+                        <Text style={[styles.storeName, { fontFamily: getFontFamily(store._id) }]}>
                           {store.name}
                         </Text>
                         <Text style={styles.storeOwner}>By, {store.owner}</Text>

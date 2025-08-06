@@ -5,29 +5,50 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
+  FlatList,
   ActivityIndicator,
-  ImageBackground
+  ImageBackground,
+  Platform,
+  Dimensions
 } from 'react-native';
 import {fetchProducts, fetchProductsByStoreId} from '../data/products';
 import { useRoute } from '@react-navigation/native';
+import { getFontFamily } from '../utils/fontUtils';
 
 export default function ProductsScreen({ navigation }) {
   const route = useRoute();
-  const { storeId } = route.params;
+  const { storeId, storeName } = route.params;
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [screenData, setScreenData] = useState(Dimensions.get('window'));
+  
+  // Calculate responsive grid columns
+  const getNumColumns = (width) => {
+    if (width > 768) return 3;  // Tablets/Desktop
+    if (width > 600) return 3;  // Large phones landscape
+    if (width > 480) return 2;  // Regular phones landscape
+    return 2;                   // Portrait mode
+  };
+  
+  const numColumns = getNumColumns(screenData.width);
 
   useEffect(() => {
     loadProducts();
+    
+    // Listen for screen dimension changes
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenData(window);
+    });
+    
+    return () => subscription?.remove();
   }, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Cake by Dee!',
+      title: 'Bazario',
       headerTitleStyle: {
-        fontFamily: storeId,
+        fontFamily: getFontFamily(storeId),
         fontSize: 16,
       },
     });
@@ -67,47 +88,68 @@ export default function ProductsScreen({ navigation }) {
     );
   }
 
-  return (
-    <ScrollView style={styles.container}>
+  // Calculate item width based on screen size and columns
+  const getItemWidth = () => {
+    const padding = 20; // Container horizontal padding
+    const spacing = 15; // Space between items
+    const totalSpacing = spacing * (numColumns - 1);
+    return (screenData.width - (padding * 2) - totalSpacing) / numColumns;
+  };
 
-        <View style={styles.header}>
-         <Text style={styles.subtitle}>Browse our collection</Text>
-         <Text style={styles.productCount}>{products.length} {products.length === 1 ? 'product' : 'products'} available</Text>
-        </View>
-      <View style={styles.productList}>
-        {products.map((product) => (
-          <View key={product._id || product.id} style={styles.productItem}>
-            <Image
-                source={{ uri: product.image }}
-                style={styles.productImage}
-                resizeMode="cover"
-            />
-              <View style={styles.productPriceWrapper}>
-                <View>
-                  <Text style={[styles.productName, { fontFamily: storeId }]}>{product.name}</Text>
-                  <Text style={styles.productPrice}>{product.price}</Text>
-                </View>
-                <View style={{ display: 'flex', flexDirection: 'row', gap: 20, alignItems: 'center' }}>
-                  {/*<Image source={require('../assets/icons/Cart2.png')} style={styles.iconStyleCart} />*/}
-                  <Image source={require('../assets/icons/Buy.png')} style={styles.iconStyleBuy} />
-                </View>
-
-
-              {/*<Text style={styles.productCategory}>{product.category}</Text>*/}
-            </View>
+  // Render individual product item
+  const renderProductItem = ({ item: product, index }) => (
+    <View style={[
+      styles.productItem, 
+      { 
+        width: getItemWidth(),
+        marginRight: (index + 1) % numColumns === 0 ? 0 : 15
+      }
+    ]}>
+      <TouchableOpacity activeOpacity={0.8}>
+        <Image
+          source={{ uri: product.image }}
+          style={styles.productImage}
+          resizeMode="cover"
+        />
+        <View style={styles.productPriceWrapper}>
+          <View style={styles.productInfo}>
+            <Text style={[styles.productName, { fontFamily: getFontFamily(storeId) }]} numberOfLines={2}>
+              {product.name}
+            </Text>
+            <Text style={styles.productPrice}>{product.price}</Text>
           </View>
-        ))}
-      </View>
-      
-      {/*<View style={styles.footer}>*/}
-      {/*  <TouchableOpacity */}
-      {/*    style={styles.button}*/}
-      {/*    onPress={() => navigation.goBack()}*/}
-      {/*  >*/}
-      {/*    <Text style={styles.buttonText}>Go Back</Text>*/}
-      {/*  </TouchableOpacity>*/}
-      {/*</View>*/}
-    </ScrollView>
+          <TouchableOpacity style={styles.buyButton}>
+            <Image source={require('../assets/icons/View.png')} style={styles.iconStyleBuy} />
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+
+  // Header component for FlatList
+  const ListHeaderComponent = () => (
+    <View style={styles.header}>
+      <Text style={[styles.subtitle, { fontFamily: getFontFamily(storeId) }]}>{storeName}</Text>
+      <Text style={styles.productCount}>
+        {products.length} {products.length === 1 ? 'product' : 'products'} available
+      </Text>
+    </View>
+  );
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={products}
+        renderItem={renderProductItem}
+        keyExtractor={(item) => item._id || item.id}
+        numColumns={numColumns}
+        key={numColumns} // Force re-render when columns change
+        ListHeaderComponent={ListHeaderComponent}
+        contentContainerStyle={styles.flatListContainer}
+        showsVerticalScrollIndicator={false}
+        ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
+      />
+    </View>
   );
 }
 
@@ -121,11 +163,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "rgb(136 109 85)",
   },
+  flatListContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  itemSeparator: {
+    height: 15,
+  },
   productImage: {
     width: '100%',
-    height: 400,
-    borderRadius: 20,
-    // boxShadow: "0px 0px 17px 0px rgba(255, 255, 255, 0.1)",
+    height: 200,
+    // borderTopLeftRadius: 15,
+    // borderTopRightRadius: 15,
+    boxShadow: "0px 0px 17px 0px rgba(0, 0, 0, 0.3)",
   },
   loadingContainer: {
     flex: 1,
@@ -154,6 +204,9 @@ const styles = StyleSheet.create({
   header: {
     padding: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    marginRight: -20,
+    marginLeft: -20,
+    marginBottom: 25
   },
   title: {
     fontSize: 28,
@@ -172,47 +225,45 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontWeight: '600',
   },
-  productList: {
-    padding: 20,
-  },
   productItem: {
-    // boxShadow: "0px 0px 17px 0px rgba(0, 0, 0, 0.7)",
-    backgroundColor: 'rgb(62 48 36)',
-    padding: 10,
-    borderRadius: 20,
-    marginBottom: 15,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    // backgroundColor: 'rgb(62 48 36)',
+    // borderRadius: 15,
+    overflow: 'hidden',
+
+    elevation: 8,
+    marginBottom: 0, // Handled by ItemSeparatorComponent
   },
   productName: {
-    fontSize: 18,
-    fontWeight: 'medium',
+    fontSize: 14,
+    fontWeight: '600',
     color: "white",
-    marginBottom: 5,
+    marginBottom: 4,
+    lineHeight: 20,
   },
   productPriceWrapper: {
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    width: 'auto',
-    borderRadius: 20,
-    boxShadow: '0 2px 3px rgba(0,0,0,0.1)',
-    padding: 20
+    alignItems: 'flex-end',
+
+    backgroundColor: 'rgba(0, 0, 0, 0.15)',
+    padding: 12,
+    paddingVertical: 10,
+
+  },
+  productInfo: {
+    flex: 1,
+    marginRight: 8,
+  },
+  buyButton: {
+    // padding: 8,
+    // borderRadius: 8,
+    // backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
   productPrice: {
-    fontSize: 16,
+    fontSize: 15,
     color: 'rgb(255 223 160)',
-    fontWeight: '600',
-    marginBottom: 5,
+    fontWeight: '700',
+    marginBottom: 0,
   },
   productCategory: {
     fontSize: 14,
@@ -235,8 +286,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   iconStyleBuy: {
-    width: 30,
-    height: 30,
+    width: 24,
+    height: 24,
     tintColor: 'white',
   },
   iconStyleCart: {

@@ -9,14 +9,20 @@ import {
     Platform
 } from 'react-native';
 import * as Font from 'expo-font';
+import { FONTS } from './utils/fontUtils';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
     const [fontsLoaded] = Font.useFonts({
-        '689234aecf16a62557e35719': require('./assets/fonts/CakeByDee.ttf'),
-        '68924f8674acc9f4b7cf8028': require('./assets/fonts/FashionHome.ttf'),
+        [FONTS.CAKE_BY_DEE]: require('./assets/fonts/CakeByDee.ttf'),
+        [FONTS.FASHION_HOME]: require('./assets/fonts/FashionHome.ttf'),
     });
+
+    if (!fontsLoaded) {
+        return null; // or a loading screen
+    }
+
   return (
     <NavigationContainer>
       <Stack.Navigator
