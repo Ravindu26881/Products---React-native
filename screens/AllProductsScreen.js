@@ -7,36 +7,38 @@ import {
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
-  ImageBackground,
   Platform,
   Dimensions
 } from 'react-native';
-import {fetchProducts, fetchProductsByStoreId} from '../data/products';
 import { useRoute } from '@react-navigation/native';
+import { fetchStores } from '../data/stores';
+import { fetchProductsByStoreId } from '../data/products';
 import { getFontFamily } from '../utils/fontUtils';
 import ProductFilter from '../components/ProductFilter';
 
-export default function ProductsScreen({ navigation }) {
+export default function AllProductsScreen({ navigation }) {
   const route = useRoute();
-  const { storeId, storeName } = route.params;
-  const [products, setProducts] = useState([]);
+  const { category = 'all' } = route.params || {};
+  
+  const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(category);
   const [screenData, setScreenData] = useState(Dimensions.get('window'));
   
   // Calculate responsive grid columns
   const getNumColumns = (width) => {
-    if (width > 768) return 3;  // Tablets/Desktop
-    if (width > 600) return 3;  // Large phones landscape
-    if (width > 480) return 2;  // Regular phones landscape
-    return 2;                   // Portrait mode
+    if (width > 768) return 3;
+    if (width > 600) return 3;
+    if (width > 480) return 2;
+    return 2;
   };
   
   const numColumns = getNumColumns(screenData.width);
 
   useEffect(() => {
-    loadProducts();
+    loadAllProducts();
     
     // Listen for screen dimension changes
     const subscription = Dimensions.addEventListener('change', ({ window }) => {
@@ -48,41 +50,93 @@ export default function ProductsScreen({ navigation }) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Bazario',
+      title: 'All Products',
       headerTitleStyle: {
-        fontFamily: getFontFamily(storeId),
         fontSize: 16,
       },
     });
   }, [navigation]);
 
-  const loadProducts = async () => {
+  const loadAllProducts = async () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await fetchProductsByStoreId(storeId);
-      setProducts(data);
+      
+      // First, get all stores
+      const stores = await fetchStores();
+      const productsWithStore = [];
+      
+      // Then, fetch products from each store
+      for (const store of stores) {
+        try {
+          const storeProducts = await fetchProductsByStoreId(store._id || store.id);
+          // Add store information to each product
+          const productsWithStoreInfo = storeProducts.map(product => ({
+            ...product,
+            storeId: store._id || store.id,
+            storeName: store.name,
+            storeOwner: store.owner,
+          }));
+          productsWithStore.push(...productsWithStoreInfo);
+        } catch (storeError) {
+          console.warn(`Failed to load products for store ${store.name}:`, storeError);
+        }
+      }
+      
+      setAllProducts(productsWithStore);
     } catch (err) {
       setError('Failed to load products');
-      console.error('Error loading products:', err);
+      console.error('Error loading all products:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  // Filtered products based on search query
+  // Function to determine product category
+  const getProductCategory = (product) => {
+    const productName = product.name.toLowerCase();
+    const storeName = product.storeName.toLowerCase();
+    const searchText = `${productName} ${storeName}`;
+
+    // Check for cake-related keywords
+    if (searchText.includes('cake') || searchText.includes('bakery') || searchText.includes('pastry') || 
+        searchText.includes('dessert') || searchText.includes('sweet') || searchText.includes('cupcake') ||
+        searchText.includes('birthday') || searchText.includes('wedding') || searchText.includes('bake')) {
+      return 'cakes';
+    }
+    
+    // Check for clothing-related keywords
+    if (searchText.includes('cloth') || searchText.includes('fashion') || searchText.includes('dress') || 
+        searchText.includes('shirt') || searchText.includes('pant') || searchText.includes('jean') ||
+        searchText.includes('wear') || searchText.includes('apparel') || searchText.includes('garment') ||
+        searchText.includes('style') || searchText.includes('boutique') || searchText.includes('tailor')) {
+      return 'clothing';
+    }
+    
+    return 'all';
+  };
+
+  // Filtered products based on search query and category
   const filteredProducts = useMemo(() => {
-    return products.filter(product => {
-      return searchQuery === '' || 
-        product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return allProducts.filter(product => {
+      // Search filter
+      const matchesSearch = searchQuery === '' || 
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.storeName.toLowerCase().includes(searchQuery.toLowerCase());
+
+      // Category filter
+      const productCategory = getProductCategory(product);
+      const matchesCategory = selectedCategory === 'all' || productCategory === selectedCategory;
+
+      return matchesSearch && matchesCategory;
     });
-  }, [products, searchQuery]);
+  }, [allProducts, searchQuery, selectedCategory]);
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>Loading products...</Text>
+        <Text style={styles.loadingText}>Loading all products...</Text>
       </View>
     );
   }
@@ -91,7 +145,7 @@ export default function ProductsScreen({ navigation }) {
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorText}>{error}</Text>
-        <TouchableOpacity style={styles.button} onPress={loadProducts}>
+        <TouchableOpacity style={styles.button} onPress={loadAllProducts}>
           <Text style={styles.buttonText}>Retry</Text>
         </TouchableOpacity>
       </View>
@@ -100,8 +154,8 @@ export default function ProductsScreen({ navigation }) {
 
   // Calculate item width based on screen size and columns
   const getItemWidth = () => {
-    const padding = 20; // Container horizontal padding
-    const spacing = 15; // Space between items
+    const padding = 20;
+    const spacing = 15;
     const totalSpacing = spacing * (numColumns - 1);
     return (screenData.width - (padding * 2) - totalSpacing) / numColumns;
   };
@@ -110,8 +164,8 @@ export default function ProductsScreen({ navigation }) {
   const handleProductPress = (product) => {
     navigation.navigate('ProductDetail', {
       productId: product._id || product.id,
-      storeId: storeId,
-      storeName: storeName,
+      storeId: product.storeId,
+      storeName: product.storeName,
     });
   };
 
@@ -135,10 +189,13 @@ export default function ProductsScreen({ navigation }) {
         />
         <View style={styles.productPriceWrapper}>
           <View style={styles.productInfo}>
-            <Text style={[styles.productName, { fontFamily: getFontFamily(storeId) }]} numberOfLines={1}>
+            <Text style={styles.productName} numberOfLines={1}>
               {product.name}
             </Text>
             <Text style={styles.productPrice}>{product.price}</Text>
+            <Text style={styles.storeName} numberOfLines={1}>
+              from {product.storeName}
+            </Text>
           </View>
           <TouchableOpacity 
             style={styles.buyButton}
@@ -154,16 +211,13 @@ export default function ProductsScreen({ navigation }) {
   // Header component for FlatList
   const ListHeaderComponent = () => (
     <View>
-      <View style={styles.header}>
-        <Text style={[styles.subtitle, { fontFamily: getFontFamily(storeId) }]}>{storeName}</Text>
-      </View>
       <ProductFilter
         onSearchChange={setSearchQuery}
-        onCategoryChange={() => {}} // Not used in store-specific view
+        onCategoryChange={setSelectedCategory}
         searchQuery={searchQuery}
-        selectedCategory="all"
+        selectedCategory={selectedCategory}
         productCount={filteredProducts.length}
-        showCategoryFilter={false} // Don't show category filter for store-specific products
+        showCategoryFilter={true}
       />
     </View>
   );
@@ -173,19 +227,19 @@ export default function ProductsScreen({ navigation }) {
       <FlatList
         data={filteredProducts}
         renderItem={renderProductItem}
-        keyExtractor={(item) => item._id || item.id}
+        keyExtractor={(item, index) => `${item.storeId}-${item._id || item.id}-${index}`}
         numColumns={numColumns}
-        key={numColumns} // Force re-render when columns change
+        key={numColumns}
         ListHeaderComponent={ListHeaderComponent}
         contentContainerStyle={styles.flatListContainer}
         showsVerticalScrollIndicator={false}
         ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
         ListEmptyComponent={() => (
           <View style={styles.noResultsContainer}>
-            <Text style={styles.noResultsIcon}>🔍</Text>
+            <Text style={styles.noResultsIcon}>📦</Text>
             <Text style={styles.noResultsTitle}>No products found</Text>
             <Text style={styles.noResultsText}>
-              Try adjusting your search term
+              Try adjusting your search or category filter
             </Text>
           </View>
         )}
@@ -195,11 +249,6 @@ export default function ProductsScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
   container: {
     flex: 1,
     backgroundColor: "rgb(136 109 85)",
@@ -214,26 +263,24 @@ const styles = StyleSheet.create({
   productImage: {
     width: '100%',
     height: 200,
-    // borderTopLeftRadius: 15,
-    // borderTopRightRadius: 15,
     boxShadow: "0px 0px 17px 0px rgba(0, 0, 0, 0.3)",
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "rgb(136 109 85)",
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-    color: '#666',
+    color: '#fff',
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "rgb(136 109 85)",
     padding: 20,
   },
   errorText: {
@@ -241,78 +288,6 @@ const styles = StyleSheet.create({
     color: '#ff3b30',
     textAlign: 'center',
     marginBottom: 20,
-  },
-  header: {
-    padding: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    marginRight: -20,
-    marginLeft: -20,
-    marginBottom: 25
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  subtitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'rgba(255, 255, 255, 0.7)',
-    marginTop: 5,
-  },
-  productCount: {
-    fontSize: 14,
-    color: 'rgb(255 255 255 / 69%)',
-    marginTop: 5,
-    fontWeight: '600',
-  },
-  productItem: {
-    // backgroundColor: 'rgb(62 48 36)',
-    // borderRadius: 15,
-    overflow: 'hidden',
-
-    elevation: 8,
-    marginBottom: 0, // Handled by ItemSeparatorComponent
-  },
-  productName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: "white",
-    marginBottom: 4,
-    lineHeight: 20,
-  },
-  productPriceWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-
-    backgroundColor: 'rgba(0, 0, 0, 0.15)',
-    padding: 12,
-    paddingVertical: 10,
-
-  },
-  productInfo: {
-    flex: 1,
-    marginRight: 8,
-  },
-  buyButton: {
-    // padding: 8,
-    // borderRadius: 8,
-    // backgroundColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  productPrice: {
-    fontSize: 15,
-    color: 'rgb(255 223 160)',
-    fontWeight: '700',
-    marginBottom: 0,
-  },
-  productCategory: {
-    fontSize: 14,
-    color: 'white',
-  },
-  footer: {
-    padding: 20,
-    alignItems: 'center',
   },
   button: {
     backgroundColor: '#007AFF',
@@ -326,14 +301,47 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  productItem: {
+    overflow: 'hidden',
+    elevation: 8,
+    marginBottom: 0,
+  },
+  productName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: "white",
+    marginBottom: 4,
+    lineHeight: 20,
+  },
+  productPriceWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.15)',
+    padding: 12,
+    paddingVertical: 10,
+  },
+  productInfo: {
+    flex: 1,
+    marginRight: 8,
+  },
+  buyButton: {
+    // Empty for now, matching the original design
+  },
+  productPrice: {
+    fontSize: 15,
+    color: 'rgb(255 223 160)',
+    fontWeight: '700',
+    marginBottom: 2,
+  },
+  storeName: {
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontStyle: 'italic',
+  },
   iconStyleBuy: {
     width: 24,
     height: 24,
-    tintColor: 'white',
-  },
-  iconStyleCart: {
-    width: 35,
-    height: 35,
     tintColor: 'white',
   },
   noResultsContainer: {
@@ -359,4 +367,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 22,
   },
-}); 
+});

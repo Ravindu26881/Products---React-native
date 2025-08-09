@@ -2,7 +2,12 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
+import StoresScreen from './screens/StoresScreen';
 import ProductsScreen from './screens/ProductsScreen';
+import ProductDetailScreen from './screens/ProductDetailScreen';
+import PaymentScreen from './screens/PaymentScreen';
+import ContactSellerScreen from './screens/ContactSellerScreen';
+import AllProductsScreen from './screens/AllProductsScreen';
 import {
     Image,
     View,
@@ -63,8 +68,40 @@ export default function App() {
               ), }}
         />
         <Stack.Screen 
+          name="Stores" 
+          component={StoresScreen}
+        />
+        <Stack.Screen 
           name="Products" 
           component={ProductsScreen}
+        />
+        <Stack.Screen 
+          name="ProductDetail" 
+          component={ProductDetailScreen}
+          options={{
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen 
+          name="Payment" 
+          component={PaymentScreen}
+          options={{
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen 
+          name="ContactSeller" 
+          component={ContactSellerScreen}
+          options={{
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen 
+          name="AllProducts" 
+          component={AllProductsScreen}
+          options={{
+            headerShown: true,
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

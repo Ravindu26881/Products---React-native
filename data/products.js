@@ -29,3 +29,24 @@ export const fetchProductsByStoreId = async (id) => {
     return error
   }
 };
+
+// Fetch single product by ID from a specific store
+export const fetchProductById = async (storeId, productId) => {
+  try {
+    const response = await fetch(API_URL + '/stores/' + storeId + '/products');
+    if (!response.ok) {
+      throw new Error('Failed to fetch products');
+    }
+    const products = await response.json();
+    const product = products.find(p => p._id === productId || p.id === productId);
+    
+    if (!product) {
+      throw new Error('Product not found');
+    }
+    
+    return product;
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    throw error;
+  }
+};
