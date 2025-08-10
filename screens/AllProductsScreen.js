@@ -21,6 +21,7 @@ import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
 import EmptyState from '../components/EmptyState';
 import ProductItem from '../components/ProductItem';
+import CartIcon from '../components/CartIcon';
 
 export default function AllProductsScreen({ navigation }) {
   const route = useRoute();
@@ -61,6 +62,13 @@ export default function AllProductsScreen({ navigation }) {
       headerTitleStyle: {
         fontSize: 16,
       },
+      headerRight: () => (
+        <CartIcon 
+          navigation={navigation} 
+          iconColor="white"
+          style={{ marginRight: 5 }}
+        />
+      ),
     });
   }, [navigation]);
 
@@ -172,6 +180,8 @@ export default function AllProductsScreen({ navigation }) {
             onPress={handleProductPress}
             width={getItemWidth()}
             showStoreName={true}
+            storeId={product.storeId}
+            storeName={product.storeName}
             containerStyle={{
               marginRight: (index + 1) % numColumns === 0 ? 0 : 15,
             }}

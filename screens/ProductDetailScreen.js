@@ -17,6 +17,7 @@ import { getFontFamily } from '../utils/fontUtils';
 import { COLORS } from '../utils/colors';
 import { fetchProductById } from '../data/products';
 import BuyNowModal from '../components/BuyNowModal';
+import { useCart } from '../contexts/CartContext';
 
 export default function ProductDetailScreen({ navigation }) {
   const route = useRoute();
@@ -25,9 +26,12 @@ export default function ProductDetailScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showBuyNowModal, setShowBuyNowModal] = useState(false);
+  const [addingToCart, setAddingToCart] = useState(false);
   
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
+  
+  const { addToCart, isItemInCart, getItemQuantityInCart } = useCart();
 
   useEffect(() => {
     loadProduct();
@@ -59,6 +63,22 @@ export default function ProductDetailScreen({ navigation }) {
       console.error('Error loading product:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    if (!product) return;
+    
+    setAddingToCart(true);
+    try {
+      await addToCart(product, 1, storeId, storeName);
+      // Optional: Show success feedback
+      console.log('Product added to cart successfully');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      // Optional: Show error feedback
+    } finally {
+      setAddingToCart(false);
     }
   };
 
@@ -192,12 +212,30 @@ export default function ProductDetailScreen({ navigation }) {
 
       {/* Bottom Action Bar */}
       <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.addToCartButton}>
+        <TouchableOpacity 
+          style={[
+            styles.addToCartButton,
+            addingToCart && styles.addToCartButtonDisabled
+          ]} 
+          onPress={handleAddToCart}
+          disabled={addingToCart}
+        >
           <Image 
-            source={require('../assets/icons/Cart.png')} 
+            source={
+              isItemInCart(product?._id, storeId) 
+                ? require('../assets/icons/CartAdded.png')
+                : require('../assets/icons/Cart.png')
+            } 
             style={styles.cartIcon} 
           />
-          <Text style={styles.addToCartText}>Add to Cart</Text>
+          <Text style={styles.addToCartText}>
+            {addingToCart 
+              ? 'Adding...' 
+              : isItemInCart(product?._id, storeId) 
+                ? `In Cart (${getItemQuantityInCart(product?._id, storeId)})` 
+                : 'Add to Cart'
+            }
+          </Text>
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.buyNowButton} onPress={handleBuyNow}>
@@ -405,6 +443,9 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 12,
     marginRight: 10,
+  },
+  addToCartButtonDisabled: {
+    opacity: 0.6,
   },
   buyNowButton: {
     flex: 1,

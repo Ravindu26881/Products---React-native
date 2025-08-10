@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { COLORS } from '../utils/colors';
 import { getFontFamily } from '../utils/fontUtils';
+import { useCart } from '../contexts/CartContext';
 
 export default function ProductItem({ 
   product, 
@@ -15,8 +16,25 @@ export default function ProductItem({
   width,
   showStoreName = false,
   storeId = null,
+  storeName = null,
   containerStyle = {} 
 }) {
+  const [addingToCart, setAddingToCart] = useState(false);
+  const { addToCart, isItemInCart, getItemQuantityInCart } = useCart();
+
+  const handleAddToCart = async (e) => {
+    e.stopPropagation(); // Prevent triggering the main onPress
+    if (!product || !storeId || addingToCart) return;
+    
+    setAddingToCart(true);
+    try {
+      await addToCart(product, 1, storeId, storeName || product.storeName);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    } finally {
+      setAddingToCart(false);
+    }
+  };
   return (
     <View style={[styles.productItem, { width }, containerStyle]}>
       <TouchableOpacity 
@@ -46,12 +64,36 @@ export default function ProductItem({
               </Text>
             )}
           </View>
-          <TouchableOpacity 
-            style={styles.buyButton}
-            onPress={() => onPress(product)}
-          >
-            <Image source={require('../assets/icons/View.png')} style={styles.iconStyleBuy} />
-          </TouchableOpacity>
+          <View style={styles.actionButtons}>
+            {storeId && (
+              <TouchableOpacity 
+                style={[
+                  styles.cartButton,
+                  addingToCart && styles.cartButtonDisabled
+                ]}
+                onPress={handleAddToCart}
+                disabled={addingToCart}
+              >
+                <Image 
+                  source={
+                    isItemInCart(product._id, storeId) 
+                      ? require('../assets/icons/CartAdded.png')
+                      : require('../assets/icons/Cart.png')
+                  } 
+                  style={[
+                    styles.iconStyleCart,
+                    isItemInCart(product._id, storeId) && styles.iconStyleCartAdded
+                  ]} 
+                />
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity 
+              style={styles.buyButton}
+              onPress={() => onPress(product)}
+            >
+              <Image source={require('../assets/icons/View.png')} style={styles.iconStyleBuy} />
+            </TouchableOpacity>
+          </View>
         </View>
       </TouchableOpacity>
     </View>
@@ -108,8 +150,27 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     marginTop: 4,
   },
+  actionButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  cartButton: {
+    padding: 2,
+  },
+  cartButtonDisabled: {
+    opacity: 0.6,
+  },
   buyButton: {
     // Empty for now, matching the original design
+  },
+  iconStyleCart: {
+    width: 20,
+    height: 20,
+    tintColor: 'white',
+  },
+  iconStyleCartAdded: {
+    tintColor: '#4CAF50', // Green color for added state
   },
   iconStyleBuy: {
     width: 24,

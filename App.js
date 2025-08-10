@@ -8,6 +8,7 @@ import ProductDetailScreen from './screens/ProductDetailScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import ContactSellerScreen from './screens/ContactSellerScreen';
 import AllProductsScreen from './screens/AllProductsScreen';
+import CartScreen from './screens/CartScreen';
 import {
     Image,
     View,
@@ -16,6 +17,7 @@ import {
 import * as Font from 'expo-font';
 import { FONTS } from './utils/fontUtils';
 import { COLORS } from './utils/colors';
+import { CartProvider } from './contexts/CartContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,22 +32,23 @@ export default function App() {
     }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-          screenOptions={{
-              headerStyle: {
-                  backgroundColor: COLORS.primary, // header background
-                  height: 100, // header height,
-                  elevation: 0,               // Android: remove shadow/border
-                  borderBottomWidth: 0,
-              },
-              headerTintColor: COLORS.textInverse,       // back button and title color
-              headerTitleStyle: {
-                  fontWeight: '400',
-              },
-              headerTitleAlign: 'center'
-          }}
-      >
+    <CartProvider>
+      <NavigationContainer>
+        <Stack.Navigator
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: COLORS.primary, // header background
+                    height: 100, // header height,
+                    elevation: 0,               // Android: remove shadow/border
+                    borderBottomWidth: 0,
+                },
+                headerTintColor: COLORS.textInverse,       // back button and title color
+                headerTitleStyle: {
+                    fontWeight: '400',
+                },
+                headerTitleAlign: 'center'
+            }}
+        >
         <Stack.Screen 
           name="Home" 
           component={HomeScreen}
@@ -87,7 +90,15 @@ export default function App() {
             headerShown: true,
           }}
         />
-      </Stack.Navigator>
-    </NavigationContainer>
+        <Stack.Screen 
+          name="Cart" 
+          component={CartScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </CartProvider>
   );
 }

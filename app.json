@@ -20,7 +20,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.ravindu26881.Bazario"
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -31,6 +32,11 @@
     ],
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "473a31f3-e495-4d5e-8bb8-05e8114c0f67"
+      }
+    }
   }
 }
