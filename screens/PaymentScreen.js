@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { getFontFamily } from '../utils/fontUtils';
+import { COLORS } from '../utils/colors';
 
 export default function PaymentScreen({ navigation }) {
   const route = useRoute();
@@ -45,7 +46,7 @@ export default function PaymentScreen({ navigation }) {
         fontSize: 16,
       },
       headerStyle: {
-        backgroundColor: 'rgb(62 48 36)',
+        backgroundColor: COLORS.primary,
       },
       headerTintColor: '#fff',
     });
@@ -380,14 +381,14 @@ export default function PaymentScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: COLORS.background,
   },
   scrollView: {
     flex: 1,
   },
   productSummary: {
     flexDirection: 'row',
-    backgroundColor: 'white',
+    backgroundColor: COLORS.surface,
     padding: 20,
     marginBottom: 10,
   },
@@ -395,7 +396,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 10,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: COLORS.border,
   },
   productInfo: {
     flex: 1,
@@ -405,28 +406,28 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: COLORS.textPrimary,
     marginBottom: 5,
   },
   productPrice: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#007AFF',
+    color: COLORS.primary,
     marginBottom: 3,
   },
   storeName: {
     fontSize: 14,
-    color: '#666',
+    color: COLORS.textSecondary,
   },
   section: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.surface,
     padding: 20,
     marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: COLORS.textPrimary,
     marginBottom: 15,
   },
   paymentMethods: {
@@ -436,26 +437,26 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#e9ecef',
-    backgroundColor: '#f8f9fa',
+    borderColor: COLORS.border,
+    backgroundColor: COLORS.background,
   },
   selectedPaymentMethod: {
-    borderColor: '#007AFF',
-    backgroundColor: '#e3f2fd',
+    borderColor: '#2563eb',
+    backgroundColor: 'rgba(37, 99, 235, 0.1)',
   },
   paymentMethodText: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#333',
+    color: COLORS.textPrimary,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#e9ecef',
+    borderColor: COLORS.border,
     borderRadius: 10,
     padding: 15,
     fontSize: 16,
     marginBottom: 15,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.surface,
   },
   row: {
     flexDirection: 'row',
@@ -472,41 +473,41 @@ const styles = StyleSheet.create({
   },
   summaryLabel: {
     fontSize: 16,
-    color: '#666',
+    color: COLORS.textSecondary,
   },
   summaryValue: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#333',
+    color: COLORS.textPrimary,
   },
   totalRow: {
     borderTopWidth: 1,
-    borderTopColor: '#e9ecef',
+    borderTopColor: '#e2e8f0',
     marginTop: 10,
     paddingTop: 15,
   },
   totalLabel: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: COLORS.textPrimary,
   },
   totalValue: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#007AFF',
+    color: COLORS.primary,
   },
   bottomSpacing: {
     height: 100,
   },
   bottomBar: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.surface,
     padding: 20,
     paddingBottom: Platform.OS === 'ios' ? 35 : 20,
     borderTopWidth: 1,
-    borderTopColor: '#e9ecef',
+    borderTopColor: '#e2e8f0',
   },
   payButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: COLORS.primary,
     padding: 18,
     borderRadius: 12,
     alignItems: 'center',
@@ -516,7 +517,7 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   payButtonText: {
-    color: 'white',
+    color: COLORS.textInverse,
     fontSize: 18,
     fontWeight: 'bold',
   },

@@ -14,6 +14,7 @@ import { useRoute } from '@react-navigation/native';
 import { fetchStores } from '../data/stores';
 import { fetchProductsByStoreId } from '../data/products';
 import { getFontFamily } from '../utils/fontUtils';
+import { COLORS } from '../utils/colors';
 import ProductFilter from '../components/ProductFilter';
 
 export default function AllProductsScreen({ navigation }) {
@@ -251,7 +252,7 @@ export default function AllProductsScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgb(136 109 85)",
+    backgroundColor: COLORS.background,
   },
   flatListContainer: {
     paddingHorizontal: 20,
@@ -264,52 +265,65 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     boxShadow: "0px 0px 17px 0px rgba(0, 0, 0, 0.3)",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: "rgb(136 109 85)",
+    backgroundColor: COLORS.background,
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-    color: '#fff',
+    color: COLORS.textSecondary,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: "rgb(136 109 85)",
+    backgroundColor: COLORS.background,
     padding: 20,
   },
   errorText: {
     fontSize: 16,
-    color: '#ff3b30',
+    color: COLORS.error,
     textAlign: 'center',
     marginBottom: 20,
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: COLORS.primary,
     padding: 15,
     borderRadius: 10,
     width: 200,
     alignItems: 'center',
   },
   buttonText: {
-    color: 'white',
+    color: COLORS.textInverse,
     fontSize: 16,
     fontWeight: '600',
   },
   productItem: {
     overflow: 'hidden',
-    elevation: 8,
     marginBottom: 0,
+    borderRadius: 10,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+
+    // Android shadow
+    elevation: 5,
+
+    borderWidth: 2,
+    borderColor: COLORS.primaryWithOpacity,
+    backgroundColor: COLORS.primaryWithOpacity,
   },
   productName: {
     fontSize: 14,
     fontWeight: '600',
-    color: "white",
+    color: COLORS.textInverse,
     marginBottom: 4,
     lineHeight: 20,
   },
@@ -317,9 +331,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.15)',
+    backgroundColor: COLORS.primaryWithOpacity,
     padding: 12,
     paddingVertical: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   productInfo: {
     flex: 1,
@@ -330,13 +346,13 @@ const styles = StyleSheet.create({
   },
   productPrice: {
     fontSize: 15,
-    color: 'rgb(255 223 160)',
+    color: COLORS.accent,
     fontWeight: '700',
-    marginBottom: 2,
+    marginBottom: 8,
   },
   storeName: {
     fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: COLORS.white70,
     fontStyle: 'italic',
   },
   iconStyleBuy: {
@@ -357,13 +373,13 @@ const styles = StyleSheet.create({
   noResultsTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'white',
+    color: COLORS.textInverse,
     marginBottom: 10,
     textAlign: 'center',
   },
   noResultsText: {
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: COLORS.white70,
     textAlign: 'center',
     lineHeight: 22,
   },

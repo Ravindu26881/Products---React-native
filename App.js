@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import * as Font from 'expo-font';
 import { FONTS } from './utils/fontUtils';
+import { COLORS } from './utils/colors';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,10 +34,12 @@ export default function App() {
       <Stack.Navigator
           screenOptions={{
               headerStyle: {
-                  backgroundColor: 'rgb(62 48 36)', // header background
-                  height: 100, // header height
+                  backgroundColor: COLORS.primary, // header background
+                  height: 100, // header height,
+                  elevation: 0,               // Android: remove shadow/border
+                  borderBottomWidth: 0,
               },
-              headerTintColor: '#fff',       // back button and title color
+              headerTintColor: COLORS.textInverse,       // back button and title color
               headerTitleStyle: {
                   fontWeight: '400',
               },

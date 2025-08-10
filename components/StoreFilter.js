@@ -8,6 +8,7 @@ import {
   ScrollView,
   Animated,
 } from 'react-native';
+import { COLORS } from '../utils/colors';
 
 const STORE_CATEGORIES = [
   { id: 'all', name: 'All Stores', icon: '🏪' },
@@ -152,7 +153,7 @@ export default function StoreFilter({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: COLORS.primary,
     paddingHorizontal: 20,
     paddingVertical: 15,
   },
@@ -174,13 +175,13 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: 'white',
+    color: COLORS.textInverse,
   },
   clearButton: {
     padding: 5,
   },
   clearButtonText: {
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: COLORS.white60,
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -206,12 +207,12 @@ const styles = StyleSheet.create({
   },
   categoryHeaderText: {
     fontSize: 16,
-    color: 'white',
+    color: COLORS.textInverse,
     fontWeight: '600',
   },
   expandIcon: {
     fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: COLORS.white80,
     transform: [{ rotate: '0deg' }],
   },
   expandIconRotated: {
@@ -244,15 +245,15 @@ const styles = StyleSheet.create({
   categoryItemText: {
     flex: 1,
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: COLORS.white80,
   },
   selectedCategoryItemText: {
-    color: 'white',
+    color: COLORS.textInverse,
     fontWeight: '600',
   },
   checkmark: {
     fontSize: 16,
-    color: 'rgb(255 223 160)',
+    color: COLORS.accent,
     fontWeight: 'bold',
   },
   resultsContainer: {
@@ -261,7 +262,7 @@ const styles = StyleSheet.create({
   },
   resultsText: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: COLORS.white70,
     fontWeight: '500',
   },
 });

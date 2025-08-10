@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { fetchStores } from '../data/stores';
 import { getFontFamily } from '../utils/fontUtils';
+import { COLORS } from '../utils/colors';
 import StoreFilter from '../components/StoreFilter';
 
 export default function StoresScreen({ navigation }) {
@@ -169,7 +170,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "rgb(136 109 85)",
+    backgroundColor: COLORS.background,
   },
   storeImage: {
     width: '100%',
@@ -181,44 +182,44 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f8fafc',
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-    color: '#666',
+    color: COLORS.textSecondary,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f8fafc',
     padding: 20,
   },
   errorText: {
     fontSize: 16,
-    color: '#ff3b30',
+    color: COLORS.error,
     textAlign: 'center',
     marginBottom: 20,
   },
   header: {
     padding: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: COLORS.primary,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
+    color: COLORS.textInverse,
   },
   subtitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: COLORS.white70,
     marginTop: 5,
   },
   storeCount: {
     fontSize: 14,
-    color: 'rgb(255 255 255 / 69%)',
+    color: COLORS.white70,
     marginTop: 5,
     fontWeight: '600',
   },
@@ -227,7 +228,7 @@ const styles = StyleSheet.create({
   },
   storeItem: {
     // boxShadow: "0px 0px 17px 0px rgba(0, 0, 0, 0.7)",
-    backgroundColor: 'rgb(62 48 36)',
+    backgroundColor: COLORS.surface,
     padding: 10,
     borderRadius: 20,
     marginBottom: 15,
@@ -243,7 +244,7 @@ const styles = StyleSheet.create({
   storeName: {
     fontSize: 20,
     fontWeight: 'medium',
-    color: "white",
+    color: COLORS.textPrimary,
     marginBottom: 5,
   },
   storePriceWrapper: {
@@ -252,7 +253,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: '#2563eb',
     width: 'auto',
     borderRadius: 20,
     boxShadow: '0 2px 3px rgba(0,0,0,0.1)',
@@ -260,31 +261,31 @@ const styles = StyleSheet.create({
   },
   storeDescription: {
     fontSize: 16,
-    color: 'darkgray',
+    color: COLORS.textSecondary,
     fontWeight: '600',
   },
   storeOwner: {
     fontWeight: '200',
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: COLORS.white70,
   },
   storeCategory: {
     fontSize: 14,
-    color: 'white',
+    color: COLORS.textInverse,
   },
   footer: {
     padding: 20,
     alignItems: 'center',
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#2563eb',
     padding: 15,
     borderRadius: 10,
     width: 200,
     alignItems: 'center',
   },
   buttonText: {
-    color: 'white',
+    color: COLORS.textInverse,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -311,13 +312,13 @@ const styles = StyleSheet.create({
   noResultsTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'white',
+    color: COLORS.textInverse,
     marginBottom: 10,
     textAlign: 'center',
   },
   noResultsText: {
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: COLORS.white70,
     textAlign: 'center',
     lineHeight: 22,
   },

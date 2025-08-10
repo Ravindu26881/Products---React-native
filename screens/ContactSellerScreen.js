@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { getFontFamily } from '../utils/fontUtils';
+import { COLORS } from '../utils/colors';
 
 export default function ContactSellerScreen({ navigation }) {
   const route = useRoute();
@@ -30,7 +31,7 @@ export default function ContactSellerScreen({ navigation }) {
         fontSize: 16,
       },
       headerStyle: {
-        backgroundColor: 'rgb(62 48 36)',
+        backgroundColor: COLORS.primary,
       },
       headerTintColor: '#fff',
     });
@@ -271,14 +272,14 @@ export default function ContactSellerScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: COLORS.background,
   },
   scrollView: {
     flex: 1,
   },
   productSummary: {
     flexDirection: 'row',
-    backgroundColor: 'white',
+    backgroundColor: COLORS.surface,
     padding: 20,
     marginBottom: 10,
   },
@@ -286,7 +287,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 10,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: COLORS.border,
   },
   productInfo: {
     flex: 1,
@@ -296,33 +297,33 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: COLORS.textPrimary,
     marginBottom: 5,
   },
   productPrice: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#007AFF',
+    color: COLORS.primary,
     marginBottom: 3,
   },
   storeName: {
     fontSize: 14,
-    color: '#666',
+    color: COLORS.textSecondary,
   },
   section: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.surface,
     padding: 20,
     marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: COLORS.textPrimary,
     marginBottom: 5,
   },
   sectionDescription: {
     fontSize: 14,
-    color: '#666',
+    color: COLORS.textSecondary,
     marginBottom: 15,
   },
   contactOption: {
@@ -330,14 +331,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 15,
     borderRadius: 12,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: COLORS.background,
     marginBottom: 10,
   },
   contactOptionIcon: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.surface,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15,
@@ -351,16 +352,16 @@ const styles = StyleSheet.create({
   contactOptionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: COLORS.textPrimary,
     marginBottom: 3,
   },
   contactOptionDescription: {
     fontSize: 14,
-    color: '#666',
+    color: COLORS.textSecondary,
   },
   contactOptionArrow: {
     fontSize: 18,
-    color: '#007AFF',
+    color: COLORS.primary,
     fontWeight: 'bold',
   },
   quickMessagesContainer: {
@@ -369,36 +370,36 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   quickMessageButton: {
-    backgroundColor: '#e3f2fd',
+    backgroundColor: 'rgba(37, 99, 235, 0.1)',
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#007AFF',
+    borderColor: '#2563eb',
   },
   quickMessageText: {
-    color: '#007AFF',
+    color: COLORS.primary,
     fontSize: 14,
     fontWeight: '500',
   },
   messageInput: {
     borderWidth: 1,
-    borderColor: '#e9ecef',
+    borderColor: '#e2e8f0',
     borderRadius: 12,
     padding: 15,
     fontSize: 16,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.surface,
     minHeight: 120,
     marginBottom: 15,
   },
   sendButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: COLORS.primary,
     padding: 15,
     borderRadius: 12,
     alignItems: 'center',
   },
   sendButtonText: {
-    color: 'white',
+    color: COLORS.textInverse,
     fontSize: 16,
     fontWeight: '600',
   },

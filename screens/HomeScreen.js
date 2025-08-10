@@ -8,6 +8,7 @@ import {
   Dimensions,
   Platform, Image,
 } from 'react-native';
+import { COLORS } from '../utils/colors';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -86,7 +87,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgb(136 109 85)',
+    backgroundColor: COLORS.primary,
   },
   content: {
     flex: 1,
@@ -99,20 +100,20 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     fontSize: 18,
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: COLORS.white80,
     fontWeight: '300',
     marginBottom: 5,
   },
   appName: {
     fontSize: 42,
     fontWeight: 'bold',
-    color: 'white',
+    color: COLORS.textInverse,
     marginBottom: 10,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: COLORS.white70,
     textAlign: 'center',
     fontWeight: '200',
     marginTop: 10,
@@ -124,28 +125,21 @@ const styles = StyleSheet.create({
     maxHeight: screenHeight * 0.6,
   },
   optionCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: COLORS.whiteWithOpacity,
     borderRadius: 20,
     padding: 25,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 4,
-    // },
-    // shadowOpacity: 0.3,
-    // shadowRadius: 8,
     elevation: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: COLORS.whiteWithOpacity,
   },
   productsCard: {
-    backgroundColor: 'rgb(160 139 120)',
+    backgroundColor: COLORS.secondary,
   },
   storesCard: {
-    backgroundColor: 'rgb(160 139 120)',
+    backgroundColor: COLORS.secondary,
   },
   optionContent: {
     flex: 1,
@@ -158,12 +152,12 @@ const styles = StyleSheet.create({
   optionTitle: {
     fontSize: 24,
     fontWeight: '800',
-    color: 'white',
+    color: COLORS.textInverse,
     marginBottom: 10,
   },
   optionDescription: {
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: COLORS.white80,
     lineHeight: 22,
     marginBottom: 15,
   },
@@ -172,7 +166,7 @@ const styles = StyleSheet.create({
   },
   featureText: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: COLORS.white70,
     lineHeight: 18,
   },
   optionArrow: {
@@ -185,7 +179,7 @@ const styles = StyleSheet.create({
   },
   arrowText: {
     fontSize: 24,
-    color: 'white',
+    color: COLORS.textInverse,
     fontWeight: 'bold',
   },
   footer: {
@@ -194,7 +188,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: COLORS.white60,
     textAlign: 'center',
     fontStyle: 'italic',
   },

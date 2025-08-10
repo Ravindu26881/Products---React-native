@@ -14,6 +14,7 @@ import {
 import {fetchProducts, fetchProductsByStoreId} from '../data/products';
 import { useRoute } from '@react-navigation/native';
 import { getFontFamily } from '../utils/fontUtils';
+import { COLORS } from '../utils/colors';
 import ProductFilter from '../components/ProductFilter';
 
 export default function ProductsScreen({ navigation }) {
@@ -203,7 +204,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "rgb(136 109 85)",
+    backgroundColor: COLORS.background,
   },
   flatListContainer: {
     paddingHorizontal: 20,
@@ -223,61 +224,69 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f8fafc',
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-    color: '#666',
+    color: COLORS.textSecondary,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f8fafc',
     padding: 20,
   },
   errorText: {
     fontSize: 16,
-    color: '#ff3b30',
+    color: COLORS.error,
     textAlign: 'center',
     marginBottom: 20,
   },
   header: {
     padding: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: COLORS.primary,
     marginRight: -20,
     marginLeft: -20,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
+    color: COLORS.textInverse,
   },
   subtitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: COLORS.white70,
     marginTop: 5,
   },
   productCount: {
     fontSize: 14,
-    color: 'rgb(255 255 255 / 69%)',
+    color: COLORS.white70,
     marginTop: 5,
     fontWeight: '600',
   },
   productItem: {
-    // backgroundColor: 'rgb(62 48 36)',
-    // borderRadius: 15,
     overflow: 'hidden',
+    marginBottom: 0,
+    borderRadius: 10,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
 
-    elevation: 8,
-    marginBottom: 0, // Handled by ItemSeparatorComponent
+    // Android shadow
+    elevation: 5,
+
+    borderWidth: 2,
+    borderColor: COLORS.primaryWithOpacity,
+    backgroundColor: COLORS.primaryWithOpacity,
   },
   productName: {
     fontSize: 14,
     fontWeight: '600',
-    color: "white",
+    color: COLORS.textInverse,
     marginBottom: 4,
     lineHeight: 20,
   },
@@ -286,7 +295,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-end',
 
-    backgroundColor: 'rgba(0, 0, 0, 0.15)',
+    backgroundColor: COLORS.primaryWithOpacity,
     padding: 12,
     paddingVertical: 10,
 
@@ -306,27 +315,27 @@ const styles = StyleSheet.create({
   },
   productPrice: {
     fontSize: 15,
-    color: 'rgb(255 223 160)',
+    color: COLORS.accent,
     fontWeight: '700',
     marginBottom: 0,
   },
   productCategory: {
     fontSize: 14,
-    color: 'white',
+    color: COLORS.textInverse,
   },
   footer: {
     padding: 20,
     alignItems: 'center',
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#2563eb',
     padding: 15,
     borderRadius: 10,
     width: 200,
     alignItems: 'center',
   },
   buttonText: {
-    color: 'white',
+    color: COLORS.textInverse,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -353,13 +362,13 @@ const styles = StyleSheet.create({
   noResultsTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'white',
+    color: COLORS.textInverse,
     marginBottom: 10,
     textAlign: 'center',
   },
   noResultsText: {
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: COLORS.white70,
     textAlign: 'center',
     lineHeight: 22,
   },

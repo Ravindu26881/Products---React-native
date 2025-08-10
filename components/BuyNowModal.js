@@ -8,6 +8,7 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
+import { COLORS } from '../utils/colors';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContainer: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.surface,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     paddingTop: 20,
@@ -131,24 +132,24 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: COLORS.textPrimary,
   },
   closeButton: {
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: COLORS.surface,
     justifyContent: 'center',
     alignItems: 'center',
   },
   closeButtonText: {
     fontSize: 16,
-    color: '#666',
+    color: COLORS.textSecondary,
     fontWeight: 'bold',
   },
   productSummary: {
     flexDirection: 'row',
-    backgroundColor: '#f8f9fa',
+    backgroundColor: COLORS.background,
     borderRadius: 15,
     padding: 15,
     marginBottom: 25,
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 10,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: COLORS.border,
   },
   productInfo: {
     flex: 1,
@@ -167,18 +168,18 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: COLORS.textPrimary,
     marginBottom: 5,
   },
   productPrice: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#007AFF',
+    color: COLORS.primary,
     marginBottom: 3,
   },
   storeName: {
     fontSize: 14,
-    color: '#666',
+    color: COLORS.textSecondary,
   },
   optionsContainer: {
     marginBottom: 20,
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
   optionsTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: COLORS.textPrimary,
     marginBottom: 15,
   },
   optionButton: {
@@ -203,12 +204,12 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   contactButton: {
-    backgroundColor: '#f8f9fa',
+    backgroundColor: COLORS.background,
     borderWidth: 2,
-    borderColor: '#e9ecef',
+    borderColor: COLORS.border,
   },
   payButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: COLORS.primary,
   },
   optionContent: {
     flexDirection: 'row',
@@ -248,11 +249,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 15,
     borderTopWidth: 1,
-    borderTopColor: '#e9ecef',
+    borderTopColor: COLORS.border,
   },
   securityText: {
     fontSize: 14,
-    color: '#28a745',
+    color: COLORS.success,
     fontWeight: '500',
   },
 });

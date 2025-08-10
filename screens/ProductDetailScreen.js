@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { getFontFamily } from '../utils/fontUtils';
+import { COLORS } from '../utils/colors';
 import { fetchProductById } from '../data/products';
 import BuyNowModal from '../components/BuyNowModal';
 
@@ -40,7 +41,7 @@ export default function ProductDetailScreen({ navigation }) {
         fontSize: 16,
       },
       headerStyle: {
-        backgroundColor: 'rgb(62 48 36)',
+        backgroundColor: COLORS.primary,
       },
       headerTintColor: '#fff',
     });
@@ -105,7 +106,7 @@ export default function ProductDetailScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="rgb(62 48 36)" />
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
       <ScrollView 
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -224,7 +225,7 @@ export default function ProductDetailScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgb(136 109 85)',
+    backgroundColor: COLORS.background,
   },
   scrollView: {
     flex: 1,
@@ -233,35 +234,35 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgb(136 109 85)',
+    backgroundColor: COLORS.background,
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-    color: '#fff',
+    color: COLORS.textInverse,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgb(136 109 85)',
+    backgroundColor: COLORS.background,
     padding: 20,
   },
   errorText: {
     fontSize: 16,
-    color: '#ff3b30',
+    color: COLORS.error,
     textAlign: 'center',
     marginBottom: 20,
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: COLORS.primary,
     padding: 15,
     borderRadius: 10,
     width: 200,
     alignItems: 'center',
   },
   buttonText: {
-    color: 'white',
+    color: COLORS.textInverse,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -281,7 +282,7 @@ const styles = StyleSheet.create({
     background: 'linear-gradient(transparent, rgba(136, 109, 85, 0.8))',
   },
   contentContainer: {
-    backgroundColor: 'rgb(136 109 85)',
+    backgroundColor: COLORS.background,
     paddingHorizontal: 20,
     paddingBottom: 100, // Space for bottom bar
   },
@@ -295,14 +296,14 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   storeBadgeText: {
-    color: 'white',
+    color: COLORS.textInverse,
     fontSize: 12,
     fontWeight: '600',
   },
   productName: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: 'white',
+    color: COLORS.textInverse,
     marginBottom: 15,
     lineHeight: 34,
   },
@@ -314,17 +315,17 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: 'rgb(255 223 160)',
+    color: COLORS.accent,
     marginRight: 15,
   },
   priceBadge: {
-    backgroundColor: 'rgba(255, 223, 160, 0.2)',
+    backgroundColor: COLORS.accentWithOpacity,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
   },
   priceBadgeText: {
-    color: 'rgb(255 223 160)',
+    color: COLORS.accent,
     fontSize: 12,
     fontWeight: '600',
   },
@@ -334,12 +335,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'white',
+    color: COLORS.textInverse,
     marginBottom: 12,
   },
   description: {
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: COLORS.white80,
     lineHeight: 24,
   },
   featuresList: {
@@ -354,12 +355,12 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: 'rgb(255 223 160)',
+    backgroundColor: '#f59e0b',
     marginRight: 12,
   },
   featureText: {
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: COLORS.white80,
   },
   storeInfo: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -369,19 +370,19 @@ const styles = StyleSheet.create({
   storeInfoText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'white',
+    color: COLORS.textInverse,
     marginBottom: 5,
   },
   storeInfoSubtext: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: COLORS.white70,
   },
   bottomBar: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgb(62 48 36)',
+    backgroundColor: COLORS.primary,
     flexDirection: 'row',
     paddingHorizontal: 20,
     paddingVertical: 15,
@@ -410,7 +411,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgb(255 223 160)',
+    backgroundColor: '#f59e0b',
     paddingVertical: 15,
     borderRadius: 12,
     marginLeft: 10,
@@ -424,16 +425,16 @@ const styles = StyleSheet.create({
   buyIcon: {
     width: 20,
     height: 20,
-    tintColor: 'rgb(62 48 36)',
+    tintColor: '#2563eb',
     marginRight: 8,
   },
   addToCartText: {
-    color: 'white',
+    color: COLORS.textInverse,
     fontSize: 16,
     fontWeight: '600',
   },
   buyNowText: {
-    color: 'rgb(62 48 36)',
+    color: COLORS.primary,
     fontSize: 16,
     fontWeight: '600',
   },
