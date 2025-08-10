@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.textPrimary,
+    color: COLORS.textSecondary,
     marginBottom: 5,
   },
   productPrice: {
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.textPrimary,
+    color: COLORS.textSecondary,
     marginBottom: 5,
   },
   sectionDescription: {
@@ -332,6 +332,8 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 12,
     backgroundColor: COLORS.background,
+    borderColor: COLORS.primary,
+    borderWidth: 1,
     marginBottom: 10,
   },
   contactOptionIcon: {
@@ -352,7 +354,7 @@ const styles = StyleSheet.create({
   contactOptionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.textPrimary,
+    color: COLORS.textSecondary,
     marginBottom: 3,
   },
   contactOptionDescription: {

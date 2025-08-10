@@ -425,7 +425,7 @@ const styles = StyleSheet.create({
   buyIcon: {
     width: 20,
     height: 20,
-    tintColor: '#2563eb',
+    tintColor: 'white',
     marginRight: 8,
   },
   addToCartText: {
@@ -434,7 +434,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   buyNowText: {
-    color: COLORS.primary,
+    color: COLORS.textInverse,
     fontSize: 16,
     fontWeight: '600',
   },

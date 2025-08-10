@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     paddingHorizontal: 20,
     paddingVertical: 15,
+    marginTop: -20
   },
   searchContainer: {
     marginBottom: 15,

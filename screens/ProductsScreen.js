@@ -32,12 +32,12 @@ export default function ProductsScreen({ navigation }) {
   const [screenData, setScreenData] = useState(Dimensions.get('window'));
   const [showFilter, setShowFilter] = useState(false);
   
-  // Calculate responsive grid columns
+
   const getNumColumns = (width) => {
-    if (width > 768) return 3;  // Tablets/Desktop
-    if (width > 600) return 3;  // Large phones landscape
-    if (width > 480) return 2;  // Regular phones landscape
-    return 2;                   // Portrait mode
+    if (width > 768) return 3;
+    if (width > 600) return 3;
+    if (width > 480) return 2;
+    return 2;
   };
   
   const numColumns = getNumColumns(screenData.width);
@@ -45,7 +45,7 @@ export default function ProductsScreen({ navigation }) {
   useEffect(() => {
     loadProducts();
     
-    // Listen for screen dimension changes
+
     const subscription = Dimensions.addEventListener('change', ({ window }) => {
       setScreenData(window);
     });
@@ -77,7 +77,7 @@ export default function ProductsScreen({ navigation }) {
     }
   };
 
-  // Filtered products based on search query
+
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
       return searchQuery === '' || 
@@ -93,15 +93,15 @@ export default function ProductsScreen({ navigation }) {
     return <ErrorState message={error} onRetry={loadProducts} />;
   }
 
-  // Calculate item width based on screen size and columns
+
   const getItemWidth = () => {
-    const padding = 20; // Container horizontal padding
-    const spacing = 15; // Space between items
+    const padding = 20;
+    const spacing = 15;
     const totalSpacing = spacing * (numColumns - 1);
     return (screenData.width - (padding * 2) - totalSpacing) / numColumns;
   };
 
-  // Navigate to product detail
+
   const handleProductPress = (product) => {
     navigation.navigate('ProductDetail', {
       productId: product._id || product.id,
@@ -110,7 +110,7 @@ export default function ProductsScreen({ navigation }) {
     });
   };
 
-  // Render individual product item
+
   const renderProductItem = ({ item: product, index }) => (
       <View style={styles.Item}>
         <ProductItem
@@ -125,7 +125,7 @@ export default function ProductsScreen({ navigation }) {
       </View>
   );
 
-  // Header component for FlatList
+
   const ListHeaderComponent = () => (
     <View>
       <HeaderWithFilter 
@@ -134,17 +134,17 @@ export default function ProductsScreen({ navigation }) {
         onFilterToggle={() => setShowFilter(!showFilter)}
         titleStyle={{ fontFamily: getFontFamily(storeId) }}
       />
-      {showFilter && (
-        <ProductFilter
-            style={styles.filterWrapper}
-          onSearchChange={setSearchQuery}
-          onCategoryChange={() => {}} // Not used in store-specific view
-          searchQuery={searchQuery}
-          selectedCategory="all"
-          productCount={filteredProducts.length}
-          showCategoryFilter={false} // Don't show category filter for store-specific products
-        />
-      )}
+             {showFilter && (
+         <ProductFilter
+             style={styles.filterWrapper}
+           onSearchChange={setSearchQuery}
+           onCategoryChange={() => {}}
+           searchQuery={searchQuery}
+           selectedCategory="all"
+           productCount={filteredProducts.length}
+           showCategoryFilter={false}
+         />
+       )}
     </View>
   );
 
@@ -155,7 +155,7 @@ export default function ProductsScreen({ navigation }) {
         renderItem={renderProductItem}
         keyExtractor={(item) => item._id || item.id}
         numColumns={numColumns}
-        key={numColumns} // Force re-render when columns change
+        key={numColumns}
         ListHeaderComponent={ListHeaderComponent}
         contentContainerStyle={styles.flatListContainer}
         showsVerticalScrollIndicator={false}

@@ -34,7 +34,7 @@ export default function AllProductsScreen({ navigation }) {
   const [screenData, setScreenData] = useState(Dimensions.get('window'));
   const [showFilter, setShowFilter] = useState(false);
   
-  // Calculate responsive grid columns
+
   const getNumColumns = (width) => {
     if (width > 768) return 3;
     if (width > 600) return 3;
@@ -47,7 +47,7 @@ export default function AllProductsScreen({ navigation }) {
   useEffect(() => {
     loadAllProducts();
     
-    // Listen for screen dimension changes
+
     const subscription = Dimensions.addEventListener('change', ({ window }) => {
       setScreenData(window);
     });
@@ -69,15 +69,15 @@ export default function AllProductsScreen({ navigation }) {
       setLoading(true);
       setError(null);
       
-      // First, get all stores
+
       const stores = await fetchStores();
       const productsWithStore = [];
       
-      // Then, fetch products from each store
+
       for (const store of stores) {
         try {
           const storeProducts = await fetchProductsByStoreId(store._id || store.id);
-          // Add store information to each product
+
           const productsWithStoreInfo = storeProducts.map(product => ({
             ...product,
             storeId: store._id || store.id,
@@ -99,20 +99,20 @@ export default function AllProductsScreen({ navigation }) {
     }
   };
 
-  // Function to determine product category
+
   const getProductCategory = (product) => {
     const productName = product.name.toLowerCase();
     const storeName = product.storeName.toLowerCase();
     const searchText = `${productName} ${storeName}`;
 
-    // Check for cake-related keywords
+
     if (searchText.includes('cake') || searchText.includes('bakery') || searchText.includes('pastry') || 
         searchText.includes('dessert') || searchText.includes('sweet') || searchText.includes('cupcake') ||
         searchText.includes('birthday') || searchText.includes('wedding') || searchText.includes('bake')) {
       return 'cakes';
     }
     
-    // Check for clothing-related keywords
+
     if (searchText.includes('cloth') || searchText.includes('fashion') || searchText.includes('dress') || 
         searchText.includes('shirt') || searchText.includes('pant') || searchText.includes('jean') ||
         searchText.includes('wear') || searchText.includes('apparel') || searchText.includes('garment') ||
@@ -123,15 +123,15 @@ export default function AllProductsScreen({ navigation }) {
     return 'all';
   };
 
-  // Filtered products based on search query and category
+
   const filteredProducts = useMemo(() => {
     return allProducts.filter(product => {
-      // Search filter
+
       const matchesSearch = searchQuery === '' || 
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.storeName.toLowerCase().includes(searchQuery.toLowerCase());
 
-      // Category filter
+
       const productCategory = getProductCategory(product);
       const matchesCategory = selectedCategory === 'all' || productCategory === selectedCategory;
 
@@ -147,7 +147,7 @@ export default function AllProductsScreen({ navigation }) {
     return <ErrorState message={error} onRetry={loadAllProducts} />;
   }
 
-  // Calculate item width based on screen size and columns
+
   const getItemWidth = () => {
     const padding = 20;
     const spacing = 15;
@@ -155,7 +155,7 @@ export default function AllProductsScreen({ navigation }) {
     return (screenData.width - (padding * 2) - totalSpacing) / numColumns;
   };
 
-  // Navigate to product detail
+
   const handleProductPress = (product) => {
     navigation.navigate('ProductDetail', {
       productId: product._id || product.id,
@@ -164,7 +164,7 @@ export default function AllProductsScreen({ navigation }) {
     });
   };
 
-  // Render individual product item
+
   const renderProductItem = ({ item: product, index }) => (
       <View style={styles.Item}>
         <ProductItem
@@ -179,7 +179,7 @@ export default function AllProductsScreen({ navigation }) {
       </View>
   );
 
-  // Header component for FlatList
+
   const ListHeaderComponent = () => (
     <View>
       <HeaderWithFilter 

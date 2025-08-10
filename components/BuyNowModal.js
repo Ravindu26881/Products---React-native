@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: COLORS.textPrimary,
+    color: COLORS.textSecondary,
   },
   closeButton: {
     width: 30,
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   },
   productSummary: {
     flexDirection: 'row',
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.white80,
     borderRadius: 15,
     padding: 15,
     marginBottom: 25,
@@ -168,13 +168,13 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.textPrimary,
+    color: COLORS.textSecondary,
     marginBottom: 5,
   },
   productPrice: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.primary,
+    color: COLORS.textSecondary,
     marginBottom: 3,
   },
   storeName: {
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   optionsTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: COLORS.textPrimary,
+    color: COLORS.textSecondary,
     marginBottom: 15,
   },
   optionButton: {
@@ -205,11 +205,13 @@ const styles = StyleSheet.create({
   },
   contactButton: {
     backgroundColor: COLORS.background,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: COLORS.border,
   },
   payButton: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.white80,
+    borderColor: COLORS.primary,
+    borderWidth: 1,
   },
   optionContent: {
     flexDirection: 'row',

@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
     elevation: 5,
-    borderWidth: 2,
+    borderWidth: 0,
     borderColor: COLORS.primary,
   },
   storeImage: {

@@ -46,20 +46,20 @@ export default function StoresScreen({ navigation }) {
     }
   };
 
-  // Function to determine store category based on name/owner
+
   const getStoreCategory = (store) => {
     const storeName = store.name.toLowerCase();
     const storeOwner = store.owner.toLowerCase();
     const searchText = `${storeName} ${storeOwner}`;
 
-    // Check for cake-related keywords
+
     if (searchText.includes('cake') || searchText.includes('bakery') || searchText.includes('pastry') || 
         searchText.includes('dessert') || searchText.includes('sweet') || searchText.includes('cupcake') ||
         searchText.includes('birthday') || searchText.includes('wedding cake') || searchText.includes('bake')) {
       return 'cakes';
     }
     
-    // Check for clothing-related keywords
+
     if (searchText.includes('cloth') || searchText.includes('fashion') || searchText.includes('dress') || 
         searchText.includes('shirt') || searchText.includes('pant') || searchText.includes('jean') ||
         searchText.includes('wear') || searchText.includes('apparel') || searchText.includes('garment') ||
@@ -67,18 +67,18 @@ export default function StoresScreen({ navigation }) {
       return 'clothing';
     }
     
-    return 'all'; // Default category
+    return 'all';
   };
 
-  // Filtered stores based on search query and category
+
   const filteredStores = useMemo(() => {
     return stores.filter(store => {
-      // Search filter
+
       const matchesSearch = searchQuery === '' || 
         store.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         store.owner.toLowerCase().includes(searchQuery.toLowerCase());
 
-      // Category filter
+
       const storeCategory = getStoreCategory(store);
       const matchesCategory = selectedCategory === 'all' || storeCategory === selectedCategory;
 
@@ -94,7 +94,7 @@ export default function StoresScreen({ navigation }) {
     return <ErrorState message={error} onRetry={loadStores} />;
   }
 
-  // Navigate to store products
+
   const handleStorePress = (store) => {
     navigation.navigate('Products', { 
       storeId: store._id || store.id, 
@@ -102,7 +102,7 @@ export default function StoresScreen({ navigation }) {
     });
   };
 
-  // Render individual store item
+
   const renderStoreItem = ({ item: store }) => (
     <View style={styles.Item}>
       <StoreItem 
@@ -112,7 +112,7 @@ export default function StoresScreen({ navigation }) {
     </View>
   );
 
-  // Header component for FlatList
+
   const ListHeaderComponent = () => (
     <View>
       <HeaderWithFilter
@@ -120,7 +120,6 @@ export default function StoresScreen({ navigation }) {
         showFilter={showFilter}
         onFilterToggle={() => setShowFilter(!showFilter)}
       />
-      {/* Filter Component */}
       {showFilter && (
           <View style={{ marginLeft: -20, marginRight: -20 }}>
             <StoreFilter

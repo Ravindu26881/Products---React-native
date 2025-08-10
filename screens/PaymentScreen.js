@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.textPrimary,
+    color: COLORS.textSecondary,
     marginBottom: 5,
   },
   productPrice: {
@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.textPrimary,
+    color: COLORS.textSecondary,
     marginBottom: 15,
   },
   paymentMethods: {
@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
   paymentMethodText: {
     fontSize: 16,
     fontWeight: '500',
-    color: COLORS.textPrimary,
+    color: COLORS.textSecondary,
   },
   input: {
     borderWidth: 1,
@@ -478,7 +478,7 @@ const styles = StyleSheet.create({
   summaryValue: {
     fontSize: 16,
     fontWeight: '500',
-    color: COLORS.textPrimary,
+    color: COLORS.textSecondary,
   },
   totalRow: {
     borderTopWidth: 1,
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
   totalLabel: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.textPrimary,
+    color: COLORS.textSecondary,
   },
   totalValue: {
     fontSize: 20,
