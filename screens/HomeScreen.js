@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Dimensions,
-  Platform,
+  Platform, Image,
 } from 'react-native';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
@@ -17,9 +17,16 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.welcomeText}>Welcome to</Text>
-          <Text style={styles.appName}>SaleSale</Text>
-          <Text style={styles.subtitle}>Your marketplace for everything</Text>
+          <Image
+              source={require('../assets/adaptive-icon.png')}
+              style={{
+                width: 200,
+                height: 110,
+                resizeMode: 'cover',
+                tintColor: '#fff',
+              }}
+          />
+          <Text style={styles.subtitle}>🎉 Discover amazing products from local businesses</Text>
         </View>
 
         {/* Main Options */}
@@ -31,7 +38,7 @@ export default function HomeScreen({ navigation }) {
             activeOpacity={0.8}
           >
             <View style={styles.optionContent}>
-              <Text style={styles.optionIcon}>📦</Text>
+
               <Text style={styles.optionTitle}>Browse All Products</Text>
               <Text style={styles.optionDescription}>
                 Discover products from all our partner stores in one place
@@ -43,7 +50,7 @@ export default function HomeScreen({ navigation }) {
               </View>
             </View>
             <View style={styles.optionArrow}>
-              <Text style={styles.arrowText}>→</Text>
+              <Text style={styles.optionIcon}>📦</Text>
             </View>
           </TouchableOpacity>
 
@@ -54,7 +61,7 @@ export default function HomeScreen({ navigation }) {
             activeOpacity={0.8}
           >
             <View style={styles.optionContent}>
-              <Text style={styles.optionIcon}>🏪</Text>
+
               <Text style={styles.optionTitle}>Browse All Stores</Text>
               <Text style={styles.optionDescription}>
                 Explore our partner stores and discover their unique offerings
@@ -66,17 +73,11 @@ export default function HomeScreen({ navigation }) {
               </View>
             </View>
             <View style={styles.optionArrow}>
-              <Text style={styles.arrowText}>→</Text>
+              <Text style={styles.optionIcon}>🏪</Text>
             </View>
           </TouchableOpacity>
         </View>
 
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            🎉 Discover amazing products from local businesses
-          </Text>
-        </View>
       </View>
     </SafeAreaView>
   );
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginBottom: 50,
+    // marginBottom: 50,
   },
   welcomeText: {
     fontSize: 18,
@@ -110,10 +111,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: 'rgba(255, 255, 255, 0.7)',
     textAlign: 'center',
-    fontWeight: '400',
+    fontWeight: '200',
+    marginTop: 10,
   },
   optionsContainer: {
     flex: 1,
@@ -128,22 +130,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 4,
+    // },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 8,
     elevation: 8,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   productsCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    backgroundColor: 'rgb(160 139 120)',
   },
   storesCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    backgroundColor: 'rgb(160 139 120)',
   },
   optionContent: {
     flex: 1,
@@ -151,11 +153,11 @@ const styles = StyleSheet.create({
   },
   optionIcon: {
     fontSize: 40,
-    marginBottom: 15,
+    // marginBottom: 15,
   },
   optionTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: '800',
     color: 'white',
     marginBottom: 10,
   },

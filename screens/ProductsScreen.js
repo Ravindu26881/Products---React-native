@@ -158,6 +158,7 @@ export default function ProductsScreen({ navigation }) {
         <Text style={[styles.subtitle, { fontFamily: getFontFamily(storeId) }]}>{storeName}</Text>
       </View>
       <ProductFilter
+          style={styles.filterWrapper}
         onSearchChange={setSearchQuery}
         onCategoryChange={() => {}} // Not used in store-specific view
         searchQuery={searchQuery}
@@ -247,7 +248,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     marginRight: -20,
     marginLeft: -20,
-    marginBottom: 25
   },
   title: {
     fontSize: 28,
@@ -294,6 +294,10 @@ const styles = StyleSheet.create({
   productInfo: {
     flex: 1,
     marginRight: 8,
+  },
+  filterWrapper: {
+    marginLeft: -20,
+    marginRight: -20,
   },
   buyButton: {
     // padding: 8,

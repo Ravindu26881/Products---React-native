@@ -46,26 +46,7 @@ export default function App() {
         <Stack.Screen 
           name="Home" 
           component={HomeScreen}
-          options={{
-              headerTitleAlign: 'center', // Optional: center align
-              headerTitle: () => (
-                  <View
-                      style={{
-                          paddingTop: Platform.select({ ios: 12, web: 12, default: 0 }),
-                          paddingBottom: Platform.select({ ios: 12, web: 12, default: 0 }),
-                      }}
-                  >
-                      <Image
-                          source={require('./assets/logo-one-line.png')}
-                          style={{
-                              width: 120,
-                              height: 60,
-                              resizeMode: 'cover',
-                              tintColor: '#fff',
-                          }}
-                      />
-                  </View>
-              ), }}
+          options={{ headerShown: false }}
         />
         <Stack.Screen 
           name="Stores" 
