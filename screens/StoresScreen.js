@@ -174,7 +174,8 @@ const styles = StyleSheet.create({
   },
   storeImage: {
     width: '100%',
-    borderRadius: 20,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
     // boxShadow: "0px 0px 17px 0px rgba(255, 255, 255, 0.1)",
     height: 180
   },
@@ -228,8 +229,8 @@ const styles = StyleSheet.create({
   },
   storeItem: {
     // boxShadow: "0px 0px 17px 0px rgba(0, 0, 0, 0.7)",
-    backgroundColor: COLORS.surface,
-    padding: 10,
+    backgroundColor: COLORS.primary,
+    // padding: 10,
     borderRadius: 20,
     marginBottom: 15,
     shadowColor: '#000',
@@ -240,6 +241,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
     elevation: 5,
+    borderWidth: 2,
+    borderColor: COLORS.primary,
   },
   storeName: {
     fontSize: 20,
@@ -253,11 +256,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 10,
-    backgroundColor: '#2563eb',
+    backgroundColor: COLORS.primary,
     width: 'auto',
     borderRadius: 20,
     boxShadow: '0 2px 3px rgba(0,0,0,0.1)',
-    padding: 20
+    padding: 20,
+    paddingTop: 8
   },
   storeDescription: {
     fontSize: 16,

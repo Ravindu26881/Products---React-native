@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: COLORS.textInverse,
+    color: COLORS.textSecondary,
     marginBottom: 15,
     lineHeight: 34,
   },
@@ -315,17 +315,17 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: COLORS.accent,
+    color: COLORS.textSecondary,
     marginRight: 15,
   },
   priceBadge: {
-    backgroundColor: COLORS.accentWithOpacity,
+    backgroundColor: COLORS.primary,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
   },
   priceBadgeText: {
-    color: COLORS.accent,
+    color: COLORS.white80,
     fontSize: 12,
     fontWeight: '600',
   },
@@ -335,12 +335,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.textInverse,
+    color: COLORS.textSecondary,
     marginBottom: 12,
   },
   description: {
     fontSize: 16,
-    color: COLORS.white80,
+    color: COLORS.textSecondary,
     lineHeight: 24,
   },
   featuresList: {
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
   },
   featureText: {
     fontSize: 16,
-    color: COLORS.white80,
+    color: COLORS.textSecondary,
   },
   storeInfo: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -370,12 +370,12 @@ const styles = StyleSheet.create({
   storeInfoText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.textInverse,
+    color: COLORS.textSecondary,
     marginBottom: 5,
   },
   storeInfoSubtext: {
     fontSize: 14,
-    color: COLORS.white70,
+    color: COLORS.textSecondary,
   },
   bottomBar: {
     position: 'absolute',
