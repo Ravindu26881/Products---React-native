@@ -16,6 +16,11 @@ import { fetchProductsByStoreId } from '../data/products';
 import { getFontFamily } from '../utils/fontUtils';
 import { COLORS } from '../utils/colors';
 import ProductFilter from '../components/ProductFilter';
+import HeaderWithFilter from '../components/HeaderWithFilter';
+import LoadingState from '../components/LoadingState';
+import ErrorState from '../components/ErrorState';
+import EmptyState from '../components/EmptyState';
+import ProductItem from '../components/ProductItem';
 
 export default function AllProductsScreen({ navigation }) {
   const route = useRoute();
@@ -135,23 +140,11 @@ export default function AllProductsScreen({ navigation }) {
   }, [allProducts, searchQuery, selectedCategory]);
 
   if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>Loading all products...</Text>
-      </View>
-    );
+    return <LoadingState message="Loading all products..." />;
   }
 
   if (error) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>{error}</Text>
-        <TouchableOpacity style={styles.button} onPress={loadAllProducts}>
-          <Text style={styles.buttonText}>Retry</Text>
-        </TouchableOpacity>
-      </View>
-    );
+    return <ErrorState message={error} onRetry={loadAllProducts} />;
   }
 
   // Calculate item width based on screen size and columns
@@ -173,57 +166,27 @@ export default function AllProductsScreen({ navigation }) {
 
   // Render individual product item
   const renderProductItem = ({ item: product, index }) => (
-    <View style={[
-      styles.productItem, 
-      { 
-        width: getItemWidth(),
-        marginRight: (index + 1) % numColumns === 0 ? 0 : 15
-      }
-    ]}>
-      <TouchableOpacity 
-        activeOpacity={0.8}
-        onPress={() => handleProductPress(product)}
-      >
-        <Image
-          source={{ uri: product.image }}
-          style={styles.productImage}
-          resizeMode="cover"
+      <View style={styles.Item}>
+        <ProductItem
+            product={product}
+            onPress={handleProductPress}
+            width={getItemWidth()}
+            showStoreName={true}
+            containerStyle={{
+              marginRight: (index + 1) % numColumns === 0 ? 0 : 15,
+            }}
         />
-        <View style={styles.productPriceWrapper}>
-          <View style={styles.productInfo}>
-            <Text style={styles.productName} numberOfLines={1}>
-              {product.name}
-            </Text>
-            <Text style={styles.productPrice}>{product.price}</Text>
-            <Text style={styles.storeName} numberOfLines={1}>
-              from {product.storeName}
-            </Text>
-          </View>
-          <TouchableOpacity 
-            style={styles.buyButton}
-            onPress={() => handleProductPress(product)}
-          >
-            <Image source={require('../assets/icons/View.png')} style={styles.iconStyleBuy} />
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
-    </View>
+      </View>
   );
 
   // Header component for FlatList
   const ListHeaderComponent = () => (
     <View>
-      <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <Text style={styles.subtitle}>All Products</Text>
-          <TouchableOpacity 
-            style={styles.filterToggle} 
-            onPress={() => setShowFilter(!showFilter)}
-          >
-            <Text style={styles.filterIcon}>⚙️</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <HeaderWithFilter 
+        title="All Products"
+        showFilter={showFilter}
+        onFilterToggle={() => setShowFilter(!showFilter)}
+      />
       {showFilter && (
         <ProductFilter
           onSearchChange={setSearchQuery}
@@ -248,15 +211,12 @@ export default function AllProductsScreen({ navigation }) {
         ListHeaderComponent={ListHeaderComponent}
         contentContainerStyle={styles.flatListContainer}
         showsVerticalScrollIndicator={false}
-        ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
         ListEmptyComponent={() => (
-          <View style={styles.noResultsContainer}>
-            <Text style={styles.noResultsIcon}>📦</Text>
-            <Text style={styles.noResultsTitle}>No products found</Text>
-            <Text style={styles.noResultsText}>
-              Try adjusting your search or category filter
-            </Text>
-          </View>
+          <EmptyState 
+            icon="📦"
+            title="No products found"
+            message="Try adjusting your search or category filter"
+          />
         )}
       />
     </View>
@@ -268,29 +228,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  header: {
-    padding: 20,
-    backgroundColor: COLORS.primary,
-    marginRight: -20,
-    marginLeft: -20,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  filterToggle: {
-    padding: 5,
-  },
-  filterIcon: {
-    fontSize: 20,
-    color: COLORS.white70,
-  },
-  subtitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: COLORS.white70,
-  },
+
   flatListContainer: {
     paddingHorizontal: 20,
     paddingBottom: 20,
@@ -298,37 +236,7 @@ const styles = StyleSheet.create({
   itemSeparator: {
     height: 15,
   },
-  productImage: {
-    width: '100%',
-    height: 200,
-    boxShadow: "0px 0px 17px 0px rgba(0, 0, 0, 0.3)",
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: COLORS.background,
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: COLORS.textSecondary,
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: COLORS.background,
-    padding: 20,
-  },
-  errorText: {
-    fontSize: 16,
-    color: COLORS.error,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
+
   button: {
     backgroundColor: COLORS.primary,
     padding: 15,
@@ -341,83 +249,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  productItem: {
-    overflow: 'hidden',
-    marginBottom: 0,
-    borderRadius: 10,
-    shadowColor: 'black',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.25,
-    shadowRadius: 10,
-
-    // Android shadow
-    elevation: 5,
-
-    borderWidth: 2,
-    borderColor: COLORS.primaryWithOpacity,
-    backgroundColor: COLORS.primaryWithOpacity,
-  },
-  productName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: COLORS.textInverse,
-    marginBottom: 4,
-    lineHeight: 20,
-  },
-  productPriceWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    backgroundColor: COLORS.primaryWithOpacity,
-    padding: 12,
-    paddingVertical: 10,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-  },
-  productInfo: {
-    flex: 1,
-    marginRight: 8,
-  },
-  buyButton: {
-    // Empty for now, matching the original design
-  },
-  productPrice: {
-    fontSize: 15,
-    color: COLORS.accent,
-    fontWeight: '700',
-    marginBottom: 8,
-  },
-  storeName: {
-    fontSize: 12,
-    color: COLORS.white70,
-    fontStyle: 'italic',
-  },
-  iconStyleBuy: {
-    width: 24,
-    height: 24,
-    tintColor: 'white',
-  },
-  noResultsContainer: {
-    alignItems: 'center',
-    paddingVertical: 40,
-    paddingHorizontal: 20,
-  },
-  noResultsIcon: {
-    fontSize: 48,
-    marginBottom: 15,
-    opacity: 0.6,
-  },
-  noResultsTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.textInverse,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  noResultsText: {
-    fontSize: 16,
-    color: COLORS.white70,
-    textAlign: 'center',
-    lineHeight: 22,
-  },
+  Item: {
+    marginTop: 20,
+  }
 });

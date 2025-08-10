@@ -5,9 +5,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Pressable,
-  TouchableHighlight,
-  ScrollView,
+  FlatList,
   ActivityIndicator,
   ImageBackground,
   Platform
@@ -16,6 +14,11 @@ import { fetchStores } from '../data/stores';
 import { getFontFamily } from '../utils/fontUtils';
 import { COLORS } from '../utils/colors';
 import StoreFilter from '../components/StoreFilter';
+import HeaderWithFilter from '../components/HeaderWithFilter';
+import LoadingState from '../components/LoadingState';
+import ErrorState from '../components/ErrorState';
+import EmptyState from '../components/EmptyState';
+import StoreItem from '../components/StoreItem';
 
 export default function StoresScreen({ navigation }) {
   const [stores, setStores] = useState([]);
@@ -84,42 +87,42 @@ export default function StoresScreen({ navigation }) {
   }, [stores, searchQuery, selectedCategory]);
 
   if (loading) {
-    return (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#007AFF" />
-          <Text style={styles.loadingText}>Loading Stores...</Text>
-        </View>
-    );
+    return <LoadingState message="Loading Stores..." />;
   }
 
   if (error) {
-    return (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
-          <TouchableOpacity style={styles.button} onPress={loadStores}>
-            <Text style={styles.buttonText}>Retry</Text>
-          </TouchableOpacity>
-        </View>
-    );
+    return <ErrorState message={error} onRetry={loadStores} />;
   }
 
-  return (
-      <ScrollView style={styles.container}>
-        <View>
-          <View style={styles.header}>
-            <View style={styles.headerContent}>
-              <Text style={styles.subtitle}>Browse our partners</Text>
-              <TouchableOpacity 
-                style={styles.filterToggle} 
-                onPress={() => setShowFilter(!showFilter)}
-              >
-                <Text style={styles.filterIcon}>⚙️</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+  // Navigate to store products
+  const handleStorePress = (store) => {
+    navigation.navigate('Products', { 
+      storeId: store._id || store.id, 
+      storeName: store.name 
+    });
+  };
 
-          {/* Filter Component */}
-          {showFilter && (
+  // Render individual store item
+  const renderStoreItem = ({ item: store }) => (
+    <View style={styles.Item}>
+      <StoreItem 
+        store={store}
+        onPress={handleStorePress}
+      />
+    </View>
+  );
+
+  // Header component for FlatList
+  const ListHeaderComponent = () => (
+    <View>
+      <HeaderWithFilter
+        title="Browse our partners"
+        showFilter={showFilter}
+        onFilterToggle={() => setShowFilter(!showFilter)}
+      />
+      {/* Filter Component */}
+      {showFilter && (
+          <View style={{ marginLeft: -20, marginRight: -20 }}>
             <StoreFilter
               onSearchChange={setSearchQuery}
               onCategoryChange={setSelectedCategory}
@@ -127,49 +130,29 @@ export default function StoresScreen({ navigation }) {
               selectedCategory={selectedCategory}
               storeCount={filteredStores.length}
             />
-          )}
-
-          <View style={styles.storeList}>
-            {filteredStores.length === 0 ? (
-              <View style={styles.noResultsContainer}>
-                <Text style={styles.noResultsIcon}>🔍</Text>
-                <Text style={styles.noResultsTitle}>No stores found</Text>
-                <Text style={styles.noResultsText}>
-                  Try adjusting your search or category filter
-                </Text>
-              </View>
-            ) : (
-              filteredStores.map((store) => (
-                  <View key={store._id || store.id} style={styles.storeItem}>
-                    <TouchableOpacity onPress={() => navigation.navigate('Products', { storeId: store._id || store.id, storeName: store.name })}>
-                    <Image
-                        source={{ uri: store.image }}
-                        style={styles.storeImage}
-                        resizeMode="cover"
-                    />
-                    <View style={styles.storePriceWrapper}>
-                      <View>
-                        <Text style={[styles.storeName, { fontFamily: getFontFamily(store._id) }]}>
-                          {store.name}
-                        </Text>
-                        <Text style={styles.storeOwner}>By, {store.owner}</Text>
-
-                      </View>
-                      <View style={{ display: 'flex', flexDirection: 'row', gap: 20, alignItems: 'center' }}>
-                        {/*<Image source={require('../assets/icons/Cart2.png')} style={styles.iconStyleCart} />*/}
-                        <Image source={require('../assets/icons/Bag.png')} style={styles.iconStyleBuy} />
-                      </View>
-
-
-                      {/*<Text style={styles.storeCategory}>{store.category}</Text>*/}
-                    </View>
-                    </TouchableOpacity>
-                  </View>
-              ))
-            )}
           </View>
-        </View>
-      </ScrollView>
+      )}
+    </View>
+  );
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={filteredStores}
+        renderItem={renderStoreItem}
+        keyExtractor={(item) => item._id || item.id}
+        ListHeaderComponent={ListHeaderComponent}
+        contentContainerStyle={styles.flatListContainer}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={() => (
+          <EmptyState 
+            icon="🔍"
+            title="No stores found"
+            message="Try adjusting your search or category filter"
+          />
+        )}
+      />
+    </View>
   );
 }
 
@@ -183,53 +166,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  storeImage: {
-    width: '100%',
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
-    // boxShadow: "0px 0px 17px 0px rgba(255, 255, 255, 0.1)",
-    height: 180
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f8fafc',
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: COLORS.textSecondary,
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f8fafc',
-    padding: 20,
-  },
-  errorText: {
-    fontSize: 16,
-    color: COLORS.error,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  header: {
-    padding: 20,
-    backgroundColor: COLORS.primary,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  filterToggle: {
-    padding: 5,
-  },
-  filterIcon: {
-    fontSize: 20,
-    color: COLORS.white70,
-  },
+
+
   title: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -247,59 +185,17 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontWeight: '600',
   },
-  storeList: {
-    padding: 20,
+  flatListContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
-  storeItem: {
-    // boxShadow: "0px 0px 17px 0px rgba(0, 0, 0, 0.7)",
-    backgroundColor: COLORS.primary,
-    // padding: 10,
-    borderRadius: 20,
-    marginBottom: 15,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-    borderWidth: 2,
-    borderColor: COLORS.primary,
+  itemSeparator: {
+    height: 15,
   },
-  storeName: {
-    fontSize: 20,
-    fontWeight: 'medium',
-    color: COLORS.textPrimary,
-    marginBottom: 5,
+  Item: {
+    marginTop: 20,
   },
-  storePriceWrapper: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-    backgroundColor: COLORS.primary,
-    width: 'auto',
-    borderRadius: 20,
-    boxShadow: '0 2px 3px rgba(0,0,0,0.1)',
-    padding: 20,
-    paddingTop: 8
-  },
-  storeDescription: {
-    fontSize: 16,
-    color: COLORS.textSecondary,
-    fontWeight: '600',
-  },
-  storeOwner: {
-    fontWeight: '200',
-    fontSize: 14,
-    color: COLORS.white70,
-  },
-  storeCategory: {
-    fontSize: 14,
-    color: COLORS.textInverse,
-  },
+
   footer: {
     padding: 20,
     alignItems: 'center',
@@ -316,37 +212,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  iconStyleBuy: {
-    width: 30,
-    height: 30,
-    tintColor: 'white',
-  },
-  iconStyleCart: {
-    width: 35,
-    height: 35,
-    tintColor: 'white',
-  },
-  noResultsContainer: {
-    alignItems: 'center',
-    paddingVertical: 40,
-    paddingHorizontal: 20,
-  },
-  noResultsIcon: {
-    fontSize: 48,
-    marginBottom: 15,
-    opacity: 0.6,
-  },
-  noResultsTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.textInverse,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  noResultsText: {
-    fontSize: 16,
-    color: COLORS.white70,
-    textAlign: 'center',
-    lineHeight: 22,
-  },
+
 });
