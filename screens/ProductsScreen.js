@@ -25,6 +25,7 @@ export default function ProductsScreen({ navigation }) {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [screenData, setScreenData] = useState(Dimensions.get('window'));
+  const [showFilter, setShowFilter] = useState(false);
   
   // Calculate responsive grid columns
   const getNumColumns = (width) => {
@@ -156,17 +157,27 @@ export default function ProductsScreen({ navigation }) {
   const ListHeaderComponent = () => (
     <View>
       <View style={styles.header}>
-        <Text style={[styles.subtitle, { fontFamily: getFontFamily(storeId) }]}>{storeName}</Text>
+        <View style={styles.headerContent}>
+          <Text style={[styles.subtitle, { fontFamily: getFontFamily(storeId) }]}>{storeName}</Text>
+          <TouchableOpacity 
+            style={styles.filterToggle} 
+            onPress={() => setShowFilter(!showFilter)}
+          >
+            <Text style={styles.filterIcon}>⚙️</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <ProductFilter
-          style={styles.filterWrapper}
-        onSearchChange={setSearchQuery}
-        onCategoryChange={() => {}} // Not used in store-specific view
-        searchQuery={searchQuery}
-        selectedCategory="all"
-        productCount={filteredProducts.length}
-        showCategoryFilter={false} // Don't show category filter for store-specific products
-      />
+      {showFilter && (
+        <ProductFilter
+            style={styles.filterWrapper}
+          onSearchChange={setSearchQuery}
+          onCategoryChange={() => {}} // Not used in store-specific view
+          searchQuery={searchQuery}
+          selectedCategory="all"
+          productCount={filteredProducts.length}
+          showCategoryFilter={false} // Don't show category filter for store-specific products
+        />
+      )}
     </View>
   );
 
@@ -249,6 +260,18 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     marginRight: -20,
     marginLeft: -20,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  filterToggle: {
+    padding: 5,
+  },
+  filterIcon: {
+    fontSize: 20,
+    color: COLORS.white70,
   },
   title: {
     fontSize: 28,

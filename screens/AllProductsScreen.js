@@ -27,6 +27,7 @@ export default function AllProductsScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(category);
   const [screenData, setScreenData] = useState(Dimensions.get('window'));
+  const [showFilter, setShowFilter] = useState(false);
   
   // Calculate responsive grid columns
   const getNumColumns = (width) => {
@@ -212,14 +213,27 @@ export default function AllProductsScreen({ navigation }) {
   // Header component for FlatList
   const ListHeaderComponent = () => (
     <View>
-      <ProductFilter
-        onSearchChange={setSearchQuery}
-        onCategoryChange={setSelectedCategory}
-        searchQuery={searchQuery}
-        selectedCategory={selectedCategory}
-        productCount={filteredProducts.length}
-        showCategoryFilter={true}
-      />
+      <View style={styles.header}>
+        <View style={styles.headerContent}>
+          <Text style={styles.subtitle}>All Products</Text>
+          <TouchableOpacity 
+            style={styles.filterToggle} 
+            onPress={() => setShowFilter(!showFilter)}
+          >
+            <Text style={styles.filterIcon}>⚙️</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      {showFilter && (
+        <ProductFilter
+          onSearchChange={setSearchQuery}
+          onCategoryChange={setSelectedCategory}
+          searchQuery={searchQuery}
+          selectedCategory={selectedCategory}
+          productCount={filteredProducts.length}
+          showCategoryFilter={true}
+        />
+      )}
     </View>
   );
 
@@ -253,6 +267,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+  },
+  header: {
+    padding: 20,
+    backgroundColor: COLORS.primary,
+    marginRight: -20,
+    marginLeft: -20,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  filterToggle: {
+    padding: 5,
+  },
+  filterIcon: {
+    fontSize: 20,
+    color: COLORS.white70,
+  },
+  subtitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: COLORS.white70,
   },
   flatListContainer: {
     paddingHorizontal: 20,

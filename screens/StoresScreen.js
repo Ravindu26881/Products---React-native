@@ -23,6 +23,7 @@ export default function StoresScreen({ navigation }) {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [showFilter, setShowFilter] = useState(false);
 
   useEffect(() => {
     loadStores();
@@ -106,17 +107,27 @@ export default function StoresScreen({ navigation }) {
       <ScrollView style={styles.container}>
         <View>
           <View style={styles.header}>
-            <Text style={styles.subtitle}>Browse our partners</Text>
+            <View style={styles.headerContent}>
+              <Text style={styles.subtitle}>Browse our partners</Text>
+              <TouchableOpacity 
+                style={styles.filterToggle} 
+                onPress={() => setShowFilter(!showFilter)}
+              >
+                <Text style={styles.filterIcon}>⚙️</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* Filter Component */}
-          <StoreFilter
-            onSearchChange={setSearchQuery}
-            onCategoryChange={setSelectedCategory}
-            searchQuery={searchQuery}
-            selectedCategory={selectedCategory}
-            storeCount={filteredStores.length}
-          />
+          {showFilter && (
+            <StoreFilter
+              onSearchChange={setSearchQuery}
+              onCategoryChange={setSelectedCategory}
+              searchQuery={searchQuery}
+              selectedCategory={selectedCategory}
+              storeCount={filteredStores.length}
+            />
+          )}
 
           <View style={styles.storeList}>
             {filteredStores.length === 0 ? (
@@ -206,6 +217,18 @@ const styles = StyleSheet.create({
   header: {
     padding: 20,
     backgroundColor: COLORS.primary,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  filterToggle: {
+    padding: 5,
+  },
+  filterIcon: {
+    fontSize: 20,
+    color: COLORS.white70,
   },
   title: {
     fontSize: 28,
