@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginBottom: 12,
     padding: 18,
-    shadowColor: '#000',
+    shadowColor: COLORS.white80,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -255,12 +255,12 @@ const styles = StyleSheet.create({
     borderColor: COLORS.primary + '30',
   },
   increaseButton: {
-    backgroundColor: COLORS.success + '15',
+    backgroundColor: COLORS.primary + '30',
     borderWidth: 1,
-    borderColor: COLORS.success + '30',
+    borderColor: COLORS.primary + '30',
   },
   removeButton: {
-    backgroundColor: '#ff444415',
+    backgroundColor: COLORS.error + '30',
     borderWidth: 1,
     borderColor: '#ff444430',
   },

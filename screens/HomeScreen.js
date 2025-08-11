@@ -17,10 +17,10 @@ export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       {/* Top Bar with Cart */}
-      <View style={styles.topBar}>
-        <View style={styles.topBarSpacer} />
-        <CartIcon navigation={navigation} />
-      </View>
+      {/*<View style={styles.topBar}>*/}
+      {/*  <View style={styles.topBarSpacer} />*/}
+      {/*  <CartIcon navigation={navigation} />*/}
+      {/*</View>*/}
       
       <View style={styles.content}>
         {/* Header */}
