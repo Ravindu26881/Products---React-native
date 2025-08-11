@@ -148,6 +148,7 @@ export default function StoresScreen({ navigation }) {
             icon="🔍"
             title="No stores found"
             message="Try adjusting your search or category filter"
+            fullScreen={false}
           />
         )}
       />

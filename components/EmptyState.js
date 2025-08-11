@@ -3,6 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 import { COLORS } from '../utils/colors';
 
@@ -10,39 +11,74 @@ export default function EmptyState({
   icon = '📦', 
   title = 'No items found', 
   message = 'Try adjusting your search or filters',
-  containerStyle = {} 
+  actionText,
+  onActionPress,
+  containerStyle = {},
+  fullScreen = true
 }) {
   return (
-    <View style={[styles.noResultsContainer, containerStyle]}>
-      <Text style={styles.noResultsIcon}>{icon}</Text>
-      <Text style={styles.noResultsTitle}>{title}</Text>
-      <Text style={styles.noResultsText}>{message}</Text>
+    <View style={[fullScreen ? styles.container : styles.inlineContainer, containerStyle]}>
+      <View style={styles.content}>
+        <Text style={styles.icon}>{icon}</Text>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.message}>{message}</Text>
+        {actionText && onActionPress && (
+          <TouchableOpacity style={styles.actionButton} onPress={onActionPress}>
+            <Text style={styles.actionButtonText}>{actionText}</Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  noResultsContainer: {
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.primary,
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 40,
     paddingHorizontal: 20,
   },
-  noResultsIcon: {
-    fontSize: 48,
-    marginBottom: 15,
-    opacity: 0.6,
+  inlineContainer: {
+    alignItems: 'center',
+    paddingVertical: 60,
+    paddingHorizontal: 20,
   },
-  noResultsTitle: {
-    fontSize: 20,
+  content: {
+    alignItems: 'center',
+    maxWidth: 300,
+  },
+  icon: {
+    fontSize: 64,
+    marginBottom: 20,
+    opacity: 0.8,
+  },
+  title: {
+    fontSize: 24,
     fontWeight: 'bold',
     color: COLORS.textInverse,
-    marginBottom: 10,
+    marginBottom: 12,
     textAlign: 'center',
   },
-  noResultsText: {
+  message: {
     fontSize: 16,
     color: COLORS.white70,
     textAlign: 'center',
-    lineHeight: 22,
+    lineHeight: 24,
+    marginBottom: 30,
+  },
+  actionButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  actionButtonText: {
+    color: COLORS.textInverse,
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

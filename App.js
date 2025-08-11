@@ -131,7 +131,7 @@ export default function App() {
           name="Cart" 
           component={CartScreen}
           options={{
-            headerShown: false,
+            headerShown: true,
           }}
         />
         </Stack.Navigator>

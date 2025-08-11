@@ -226,6 +226,7 @@ export default function AllProductsScreen({ navigation }) {
             icon="📦"
             title="No products found"
             message="Try adjusting your search or category filter"
+            fullScreen={false}
           />
         )}
       />

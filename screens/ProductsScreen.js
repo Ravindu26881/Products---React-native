@@ -173,6 +173,7 @@ export default function ProductsScreen({ navigation }) {
             icon="🔍"
             title="No products found"
             message="Try adjusting your search term"
+            fullScreen={false}
           />
         )}
       />
