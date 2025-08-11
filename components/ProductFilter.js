@@ -43,7 +43,6 @@ export default function ProductFilter({
 
   const handleCategorySelect = (categoryId) => {
     onCategoryChange(categoryId);
-    // Auto-collapse after selection
     setTimeout(() => {
       setIsExpanded(false);
       Animated.spring(animatedHeight, {
@@ -67,7 +66,6 @@ export default function ProductFilter({
 
   return (
     <View style={styles.container}>
-      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <View style={styles.searchInputContainer}>
           <Text style={styles.searchIcon}>🔍</Text>
@@ -86,7 +84,6 @@ export default function ProductFilter({
         </View>
       </View>
 
-      {/* Category Filter - Only show if enabled */}
       {showCategoryFilter && (
         <View style={styles.categoryContainer}>
           <TouchableOpacity style={styles.categoryHeader} onPress={toggleExpanded}>
@@ -144,7 +141,6 @@ export default function ProductFilter({
         </View>
       )}
 
-      {/* Results Count */}
       <View style={styles.resultsContainer}>
         <Text style={styles.resultsText}>
           {productCount} {productCount === 1 ? 'product' : 'products'} found

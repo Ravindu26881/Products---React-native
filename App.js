@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
@@ -21,28 +21,65 @@ import { CartProvider } from './contexts/CartContext';
 
 const Stack = createNativeStackNavigator();
 
+const linking = {
+  prefixes: [],
+  config: {
+    screens: {
+      Home: '',
+      Stores: 'stores',
+      Products: 'products/:storeId/:storeName',
+      ProductDetail: 'product/:storeId/:storeName/:productId',
+      Payment: 'payment',
+      ContactSeller: 'contact/:storeId/:storeName/:productId',
+      AllProducts: 'all-products',
+      Cart: 'cart',
+    },
+  },
+  enabled: true,
+};
+
 export default function App() {
     const [fontsLoaded] = Font.useFonts({
         [FONTS.CAKE_BY_DEE]: require('./assets/fonts/CakeByDee.ttf'),
         [FONTS.FASHION_HOME]: require('./assets/fonts/FashionHome.ttf'),
     });
 
+    const navigationRef = useRef(null);
+
+    useEffect(() => {
+        if (Platform.OS === 'web') {
+            const handleBeforeUnload = (event) => {
+                return;
+            };
+
+            window.addEventListener('beforeunload', handleBeforeUnload);
+
+            return () => {
+                window.removeEventListener('beforeunload', handleBeforeUnload);
+            };
+        }
+    }, []);
+
     if (!fontsLoaded) {
-        return null; // or a loading screen
+        return null;
     }
 
   return (
     <CartProvider>
-      <NavigationContainer>
+      <NavigationContainer 
+        ref={navigationRef}
+        linking={linking}
+        fallback={<View style={{ flex: 1, backgroundColor: COLORS.primary }} />}
+      >
         <Stack.Navigator
             screenOptions={{
                 headerStyle: {
-                    backgroundColor: COLORS.primary, // header background
-                    height: 100, // header height,
-                    elevation: 0,               // Android: remove shadow/border
+                    backgroundColor: COLORS.primary,
+                    height: 100,
+                    elevation: 0,
                     borderBottomWidth: 0,
                 },
-                headerTintColor: COLORS.textInverse,       // back button and title color
+                headerTintColor: COLORS.textInverse,
                 headerTitleStyle: {
                     fontWeight: '400',
                 },
