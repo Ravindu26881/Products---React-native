@@ -10,6 +10,7 @@ import {
   StatusBar,
   Alert,
   Dimensions,
+  Platform,
 } from 'react-native';
 import { useCart } from '../contexts/CartContext';
 import { COLORS } from '../utils/colors';
@@ -46,33 +47,47 @@ export default function CartScreen({ navigation }) {
   };
 
   const handleRemoveItem = (itemId, productName) => {
-    Alert.alert(
-      'Remove Item',
-      `Are you sure you want to remove "${productName}" from your cart?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Remove', 
-          style: 'destructive',
-          onPress: () => removeFromCart(itemId)
-        },
-      ]
-    );
+    if (Platform.OS === 'web') {
+      const confirmed = window.confirm(`Are you sure you want to remove "${productName}" from your cart?`);
+      if (confirmed) {
+        removeFromCart(itemId);
+      }
+    } else {
+      Alert.alert(
+        'Remove Item',
+        `Are you sure you want to remove "${productName}" from your cart?`,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { 
+            text: 'Remove', 
+            style: 'destructive',
+            onPress: () => removeFromCart(itemId)
+          },
+        ]
+      );
+    }
   };
 
   const handleClearCart = () => {
-    Alert.alert(
-      'Clear Cart',
-      'Are you sure you want to remove all items from your cart?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Clear All', 
-          style: 'destructive',
-          onPress: clearCart
-        },
-      ]
-    );
+    if (Platform.OS === 'web') {
+      const confirmed = window.confirm('Are you sure you want to remove all items from your cart?');
+      if (confirmed) {
+        clearCart();
+      }
+    } else {
+      Alert.alert(
+        'Clear Cart',
+        'Are you sure you want to remove all items from your cart?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { 
+            text: 'Clear All', 
+            style: 'destructive',
+            onPress: clearCart
+          },
+        ]
+      );
+    }
   };
 
   const handleCheckout = () => {
