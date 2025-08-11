@@ -18,6 +18,7 @@ import { COLORS } from '../utils/colors';
 import { fetchProductById } from '../data/products';
 import BuyNowModal from '../components/BuyNowModal';
 import { useCart } from '../contexts/CartContext';
+import CartActionModal from '../components/CartActionModal';
 
 export default function ProductDetailScreen({ navigation }) {
   const route = useRoute();
@@ -30,8 +31,9 @@ export default function ProductDetailScreen({ navigation }) {
   
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
-  
-  const { addToCart, isItemInCart, getItemQuantityInCart } = useCart();
+
+  const [showCartModal, setShowCartModal] = useState(false);
+  const { addToCart, isItemInCart, getItemQuantityInCart, removeFromCart, updateQuantity, getCartItemId } = useCart();
 
   useEffect(() => {
     loadProduct();
@@ -66,21 +68,49 @@ export default function ProductDetailScreen({ navigation }) {
     }
   };
 
-  const handleAddToCart = async () => {
-    if (!product) return;
-    
+  const handleAddToCart = async (e) => {
+    e.stopPropagation(); // Prevent triggering the main onPress
+    if (!product || !storeId || addingToCart) return;
+
+    // Check if item is already in cart
+    if (isItemInCart(product._id, storeId)) {
+      setShowCartModal(true);
+      return;
+    }
+
+    console.log(product)
     setAddingToCart(true);
     try {
-      await addToCart(product, 1, storeId, storeName);
-      // Optional: Show success feedback
-      console.log('Product added to cart successfully');
+      await addToCart(product, 1, storeId, storeName || product.storeName);
     } catch (error) {
       console.error('Error adding to cart:', error);
-      // Optional: Show error feedback
     } finally {
       setAddingToCart(false);
     }
   };
+
+  const handleIncreaseQuantity = async () => {
+    setShowCartModal(false);
+    setAddingToCart(true);
+    try {
+      await addToCart(product, 1, storeId, storeName || product.storeName);
+    } catch (error) {
+      console.error('Error increasing quantity:', error);
+    } finally {
+      setAddingToCart(false);
+    }
+  };
+
+  const handleRemoveFromCart = () => {
+    setShowCartModal(false);
+
+    // Find the cart item ID
+    const cartItemId = getCartItemId(product._id, storeId);
+    if (cartItemId) {
+      removeFromCart(cartItemId)
+    }
+  };
+
 
   const handleBuyNow = () => {
     setShowBuyNowModal(true);
@@ -255,6 +285,15 @@ export default function ProductDetailScreen({ navigation }) {
         onPayNow={handlePayNow}
         product={product}
         storeName={storeName}
+      />
+      <CartActionModal
+          visible={showCartModal}
+          onClose={() => setShowCartModal(false)}
+          onIncreaseQuantity={handleIncreaseQuantity}
+          onRemoveFromCart={handleRemoveFromCart}
+          product={product}
+          storeName={storeName || product?.storeName}
+          currentQuantity={getItemQuantityInCart(product?._id, storeId)}
       />
     </SafeAreaView>
   );

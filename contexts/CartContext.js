@@ -214,6 +214,13 @@ export const CartProvider = ({ children }) => {
     );
   };
 
+  const getCartItemId = (productId, storeId) => {
+    const item = state.items.find(
+      item => item.product._id === productId && item.storeId === storeId
+    );
+    return item ? item.id : null;
+  };
+
   // Future backend integration helper
   const migrateToBackend = async (userId, backendService) => {
     try {
@@ -243,6 +250,7 @@ export const CartProvider = ({ children }) => {
     clearCart,
     getItemQuantityInCart,
     isItemInCart,
+    getCartItemId,
     loadCartFromStorage,
     
     // Future backend integration

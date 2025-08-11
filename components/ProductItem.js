@@ -5,27 +5,38 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+    Alert
 } from 'react-native';
 import { COLORS } from '../utils/colors';
 import { getFontFamily } from '../utils/fontUtils';
 import { useCart } from '../contexts/CartContext';
+import CartActionModal from './CartActionModal';
 
 export default function ProductItem({ 
   product, 
   onPress, 
   width,
+    navigation,
   showStoreName = false,
   storeId = null,
   storeName = null,
   containerStyle = {} 
 }) {
   const [addingToCart, setAddingToCart] = useState(false);
-  const { addToCart, isItemInCart, getItemQuantityInCart } = useCart();
+  const [showCartModal, setShowCartModal] = useState(false);
+  const { addToCart, isItemInCart, getItemQuantityInCart, removeFromCart, updateQuantity, getCartItemId } = useCart();
 
   const handleAddToCart = async (e) => {
     e.stopPropagation(); // Prevent triggering the main onPress
     if (!product || !storeId || addingToCart) return;
-    
+
+    // Check if item is already in cart
+    if (isItemInCart(product._id, storeId)) {
+      setShowCartModal(true);
+      return;
+    }
+
+    console.log(product)
     setAddingToCart(true);
     try {
       await addToCart(product, 1, storeId, storeName || product.storeName);
@@ -33,6 +44,28 @@ export default function ProductItem({
       console.error('Error adding to cart:', error);
     } finally {
       setAddingToCart(false);
+    }
+  };
+
+  const handleIncreaseQuantity = async () => {
+    setShowCartModal(false);
+    setAddingToCart(true);
+    try {
+      await addToCart(product, 1, storeId, storeName || product.storeName);
+    } catch (error) {
+      console.error('Error increasing quantity:', error);
+    } finally {
+      setAddingToCart(false);
+    }
+  };
+
+  const handleRemoveFromCart = () => {
+    setShowCartModal(false);
+
+    // Find the cart item ID
+    const cartItemId = getCartItemId(product._id, storeId);
+    if (cartItemId) {
+      removeFromCart(cartItemId)
     }
   };
   return (
@@ -96,6 +129,15 @@ export default function ProductItem({
           </View>
         </View>
       </TouchableOpacity>
+      <CartActionModal
+          visible={showCartModal}
+          onClose={() => setShowCartModal(false)}
+          onIncreaseQuantity={handleIncreaseQuantity}
+          onRemoveFromCart={handleRemoveFromCart}
+          product={product}
+          storeName={storeName || product?.storeName}
+          currentQuantity={getItemQuantityInCart(product?._id, storeId)}
+      />
     </View>
   );
 }

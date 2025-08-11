@@ -454,9 +454,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   checkoutButton: {
-    backgroundColor: '#f59e0b',
+    backgroundColor: COLORS.primaryWithOpacity,
     paddingVertical: 16,
-    borderRadius: 12,
+    borderRadius: 20,
     alignItems: 'center',
   },
   checkoutButtonText: {

@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   actionButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: COLORS.primaryWithOpacity,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 25,
