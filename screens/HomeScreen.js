@@ -11,7 +11,9 @@ import {
   Dimensions,
   Animated,
   Easing,
-  SafeAreaView, ScrollView
+  SafeAreaView,
+  StatusBar,
+  ScrollView
 } from 'react-native';
 import { fetchStores } from '../data/stores';
 import { fetchProductsByStoreId } from '../data/products';
@@ -24,10 +26,12 @@ import ErrorState from '../components/ErrorState';
 import EmptyState from '../components/EmptyState';
 import ProductItem from '../components/ProductItem';
 import CartIcon from '../components/CartIcon';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 export default function HomeScreen({ navigation }) {
+  const insets = useSafeAreaInsets();
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -189,13 +193,21 @@ export default function HomeScreen({ navigation }) {
   );
 
   const ListHeaderComponent = () => (
-
     <View>
       <View style={styles.header}>
-        <Image
-          source={require('../assets/adaptive-icon.png')}
-          style={styles.logo}
-        />
+        <View style={styles.headerTop}>
+          <View style={styles.logoContainer}>
+            <Image
+              source={require('../assets/logo-one-line.png')}
+              style={styles.logo}
+            />
+          </View>
+          <CartIcon 
+            navigation={navigation} 
+            iconColor={COLORS.textPrimary}
+            style={styles.cartIcon}
+          />
+        </View>
         <Text style={styles.subtitle}>🎉 Discover amazing products from local businesses</Text>
       </View>
       
@@ -248,7 +260,12 @@ export default function HomeScreen({ navigation }) {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <StatusBar 
+        barStyle="dark-content" 
+        backgroundColor={COLORS.appBackground}
+        translucent={false}
+      />
       <FlatList
         data={filteredProducts}
         renderItem={renderProductItem}
@@ -256,7 +273,7 @@ export default function HomeScreen({ navigation }) {
         numColumns={numColumns}
         key={numColumns}
         ListHeaderComponent={ListHeaderComponent}
-        contentContainerStyle={styles.flatListContainer}
+        contentContainerStyle={[styles.flatListContainer, { paddingBottom: insets.bottom }]}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => (
           <EmptyState 
@@ -277,24 +294,37 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   header: {
-    alignItems: 'center',
     paddingVertical: 20,
     backgroundColor: COLORS.appBackground,
-    marginHorizontal: -20
+    marginHorizontal: -20,
+    paddingHorizontal: 20,
+  },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  logoContainer: {
+    flex: 1,
+    alignItems: 'left',
   },
   logo: {
-    width: 120,
+    width: 116,
     height: 60,
-    resizeMode: 'contain',
+    marginLeft: -14,
+    resizeMode: 'cover',
     tintColor: COLORS.textPrimary,
+  },
+  cartIcon: {
+    marginLeft: 10,
   },
   subtitle: {
     fontSize: 14,
     color: COLORS.textPrimary,
     textAlign: 'center',
     fontWeight: '200',
-    marginTop: 10,
-    paddingHorizontal: 20,
+    marginTop: 0,
   },
   actionBar: {
     flexDirection: 'row',
@@ -307,7 +337,7 @@ const styles = StyleSheet.create({
   },
   browseStoresButton: {
     // backgroundColor: COLORS.appBackground,
-    borderColor: COLORS.textPrimary,
+    borderColor: COLORS.bordersLight,
     borderWidth:1,
     paddingHorizontal: 20,
     paddingVertical: 12,
@@ -324,7 +354,7 @@ const styles = StyleSheet.create({
   filterButton: {
     backgroundColor: COLORS.appBackground,
     borderWidth: 1,
-    borderColor: COLORS.primary,
+    borderColor: COLORS.bordersLight,
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 25,

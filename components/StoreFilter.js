@@ -73,7 +73,7 @@ export default function StoreFilter({
           <TextInput
             style={styles.searchInput}
             placeholder="Search stores by name..."
-            placeholderTextColor="rgba(255, 255, 255, 0.6)"
+            placeholderTextColor="rgba(0, 0, 0, 0.6)"
             value={searchQuery}
             onChangeText={onSearchChange}
           />
@@ -169,9 +169,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     // backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderColor: COLORS.primary,
+    borderColor: COLORS.bordersLight,
     borderWidth: 1,
-    borderRadius: 15,
+    borderRadius: 25,
     paddingHorizontal: 15,
     paddingVertical: 12,
   },
@@ -201,8 +201,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // backgroundColor: 'rgba(0, 0, 0, 0.2)',
     borderWidth: 1,
-    borderColor: COLORS.primary,
-    borderRadius: 15,
+    borderColor: COLORS.bordersLight,
+    borderRadius: 25,
     paddingHorizontal: 15,
     paddingVertical: 12,
   },

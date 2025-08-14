@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   storeOwner: {
     fontWeight: '200',
     fontSize: 14,
-    color: COLORS.white70,
+    color: COLORS.textPrimary,
   },
   iconContainer: {
     display: 'flex',

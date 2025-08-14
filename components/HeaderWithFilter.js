@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: COLORS.primary,
+    borderColor: COLORS.bordersLight,
   },
   filterIconContainer: {
   },

@@ -35,7 +35,7 @@ export default function EmptyState({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.appBackground,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   actionButton: {
-    backgroundColor: COLORS.appBackground,
+    backgroundColor: COLORS.textPrimary,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 25,
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   actionButtonText: {
-    color: COLORS.primary,
+    color: COLORS.textOnBlack,
     fontSize: 16,
     fontWeight: '600',
   },

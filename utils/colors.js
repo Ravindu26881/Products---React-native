@@ -5,11 +5,13 @@ export const COLORS = {
 
   // Main Theme Color
   //appBackground: 'rgb(23 63 59)', // teal
-  appBackground: 'rgb(21 33 48)', // dark blue
+  // appBackground: 'rgb(21 33 48)', // dark blue
+appBackground: 'white',
+  primary: 'black',
+  textPrimary: 'black',
+  bordersLight: '#dedede',
 
 
-  // Main Colors
-  primary: 'white',           // Blue - headers, buttons
   secondary: 'orange',         // Teal - secondary elements
   accent: 'white',            // Amber - prices, highlights
 
@@ -18,11 +20,11 @@ export const COLORS = {
   surface: '#ffffff',           // White - cards, modals
 
   // Text
-  textPrimary: 'white',       // Dark gray - main text
   textSecondary: 'black',     // Medium gray - secondary text
   textInverse: 'black',       // White - text on dark backgrounds
   textImportant: 'orange',
   textOnWhite: 'black', // Text color for white backgrounds
+  textOnBlack: 'white', // Text color for black backgrounds
 
   // Borders & Overlays
   border: '#e2e8f0',            // Light border

@@ -74,7 +74,7 @@ export default function ProductsScreen({ navigation }) {
       headerRight: () => (
         <CartIcon 
           navigation={navigation} 
-          iconColor="white"
+          iconColor={COLORS.primary}
           style={{ marginRight: 5 }}
         />
       ),

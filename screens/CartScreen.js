@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 15,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.appBackground,
   },
   headerInfo: {
     flex: 1,
@@ -450,7 +450,7 @@ const styles = StyleSheet.create({
   },
   totalValue: {
     fontSize: 20,
-    color: COLORS.accent,
+    color: COLORS.textPrimary,
     fontWeight: 'bold',
   },
   checkoutButton: {
