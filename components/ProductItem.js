@@ -170,8 +170,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     filter: 'brightness(0.9)',
-    boxShadow: "0px 0px 17px 0px rgba(0, 0, 0, 0.3)",
-    borderRadius: 6
+    // boxShadow: "0px 0px 17px 0px rgba(0, 0, 0, 0.3)",
+    borderRadius: 20
   },
   productPriceWrapper: {
     flexDirection: 'row',
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   },
   productInfo: {
     flex: 1,
-    marginRight: 8,
+    paddingHorizontal: 10,
   },
   storeBadge: {
     alignSelf: 'flex-start',
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 16,
     // fontWeight: '600',
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
     lineHeight: 20,
     marginBottom: 4
   },
@@ -207,12 +207,6 @@ const styles = StyleSheet.create({
     color: COLORS.textImportant,
     fontWeight: '400',
     marginBottom: 0,
-  },
-  storeName: {
-    fontSize: 12,
-    color: COLORS.textSecondary,
-    // fontStyle: 'italic',
-    marginBottom: 4,
   },
   productBottomBarWrapper: {
     display: 'flex',
@@ -237,7 +231,7 @@ const styles = StyleSheet.create({
   iconStyleCart: {
     width: 20,
     height: 20,
-    tintColor: COLORS.textSecondary,
+    tintColor: COLORS.textOnWhite,
   },
   iconStyleCartAdded: {
     tintColor: '#4CAF50', // Green color for added state

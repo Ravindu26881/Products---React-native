@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
   },
   closeButton: {
     width: 30,
@@ -144,13 +144,15 @@ const styles = StyleSheet.create({
   },
   closeButtonText: {
     fontSize: 16,
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
     fontWeight: 'bold',
   },
   productSummary: {
     flexDirection: 'row',
-    backgroundColor: COLORS.white80,
+    // backgroundColor: COLORS.white80,
+    borderColor:COLORS.textOnWhite,
     borderRadius: 15,
+    borderWidth:1,
     padding: 15,
     marginBottom: 25,
   },
@@ -168,18 +170,18 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
     marginBottom: 5,
   },
   productPrice: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.textSecondary,
+    color: COLORS.textImportant,
     marginBottom: 3,
   },
   storeName: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
   },
   optionsContainer: {
     marginBottom: 20,
@@ -187,7 +189,7 @@ const styles = StyleSheet.create({
   optionsTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
     marginBottom: 15,
   },
   optionButton: {

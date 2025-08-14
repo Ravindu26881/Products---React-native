@@ -31,7 +31,7 @@ export default function HomeScreen({ navigation }) {
                 width: 200,
                 height: 110,
                 resizeMode: 'cover',
-                tintColor: '#fff',
+                tintColor: COLORS.textPrimary,
               }}
           />
           <Text style={styles.subtitle}>🎉 Discover amazing products from local businesses</Text>
@@ -94,7 +94,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.appBackground,
   },
   topBar: {
     flexDirection: 'row',
@@ -118,20 +118,20 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     fontSize: 18,
-    color: COLORS.white80,
+    color: COLORS.textPrimary,
     fontWeight: '300',
     marginBottom: 5,
   },
   appName: {
     fontSize: 42,
     fontWeight: 'bold',
-    color: COLORS.textInverse,
+    color: COLORS.textPrimary,
     marginBottom: 10,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
-    color: COLORS.white70,
+    color: COLORS.textPrimary,
     textAlign: 'center',
     fontWeight: '200',
     marginTop: 10,
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     maxHeight: screenHeight * 0.6,
   },
   optionCard: {
-    backgroundColor: COLORS.whiteWithOpacity,
+    // backgroundColor: COLORS.whiteWithOpacity,
     borderRadius: 20,
     padding: 25,
     flexDirection: 'row',
@@ -151,13 +151,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     elevation: 8,
     borderWidth: 1,
-    borderColor: COLORS.whiteWithOpacity,
+    borderColor: COLORS.primary,
   },
   productsCard: {
-    backgroundColor: COLORS.secondary,
+    backgroundColor: COLORS.appBackground,
   },
   storesCard: {
-    backgroundColor: COLORS.secondary,
+    backgroundColor: COLORS.appBackground,
   },
   optionContent: {
     flex: 1,
@@ -170,12 +170,12 @@ const styles = StyleSheet.create({
   optionTitle: {
     fontSize: 24,
     fontWeight: '800',
-    color: COLORS.textInverse,
+    color: COLORS.textPrimary,
     marginBottom: 10,
   },
   optionDescription: {
     fontSize: 16,
-    color: COLORS.white80,
+    color: COLORS.textPrimary,
     lineHeight: 22,
     marginBottom: 15,
   },
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   },
   featureText: {
     fontSize: 14,
-    color: COLORS.white70,
+    color: COLORS.textPrimary,
     lineHeight: 18,
   },
   optionArrow: {

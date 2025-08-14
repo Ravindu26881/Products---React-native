@@ -46,9 +46,9 @@ export default function PaymentScreen({ navigation }) {
         fontSize: 16,
       },
       headerStyle: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: COLORS.appBackground,
       },
-      headerTintColor: '#fff',
+      headerTintColor: COLORS.textPrimary,
     });
   }, [navigation, storeId]);
 
@@ -406,18 +406,18 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
     marginBottom: 5,
   },
   productPrice: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.primary,
+    color: COLORS.textImportant,
     marginBottom: 3,
   },
   storeName: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
   },
   section: {
     backgroundColor: COLORS.surface,
@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
     marginBottom: 15,
   },
   paymentMethods: {
@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
   paymentMethodText: {
     fontSize: 16,
     fontWeight: '500',
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
   },
   input: {
     borderWidth: 1,
@@ -473,12 +473,12 @@ const styles = StyleSheet.create({
   },
   summaryLabel: {
     fontSize: 16,
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
   },
   summaryValue: {
     fontSize: 16,
     fontWeight: '500',
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
   },
   totalRow: {
     borderTopWidth: 1,
@@ -489,25 +489,25 @@ const styles = StyleSheet.create({
   totalLabel: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
   },
   totalValue: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.primary,
+    color: COLORS.textOnWhite,
   },
   bottomSpacing: {
     height: 100,
   },
   bottomBar: {
-    backgroundColor: COLORS.surface,
+    backgroundColor: COLORS.appBackground,
     padding: 20,
     paddingBottom: Platform.OS === 'ios' ? 35 : 20,
     borderTopWidth: 1,
     borderTopColor: '#e2e8f0',
   },
   payButton: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.secondary,
     padding: 18,
     borderRadius: 12,
     alignItems: 'center',
@@ -517,7 +517,7 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   payButtonText: {
-    color: COLORS.textInverse,
+    color: COLORS.textPrimary ,
     fontSize: 18,
     fontWeight: 'bold',
   },

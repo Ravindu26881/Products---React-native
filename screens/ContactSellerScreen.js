@@ -31,9 +31,9 @@ export default function ContactSellerScreen({ navigation }) {
         fontSize: 16,
       },
       headerStyle: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: COLORS.appBackground,
       },
-      headerTintColor: '#fff',
+      headerTintColor: COLORS.textPrimary,
     });
   }, [navigation, storeId]);
 
@@ -297,18 +297,18 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
     marginBottom: 5,
   },
   productPrice: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.primary,
+    color: COLORS.textImportant,
     marginBottom: 3,
   },
   storeName: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
   },
   section: {
     backgroundColor: COLORS.surface,
@@ -318,12 +318,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
     marginBottom: 5,
   },
   sectionDescription: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
     marginBottom: 15,
   },
   contactOption: {
@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 12,
     backgroundColor: COLORS.background,
-    borderColor: COLORS.primary,
+    borderColor: COLORS.textOnWhite,
     borderWidth: 1,
     marginBottom: 10,
   },
@@ -354,12 +354,12 @@ const styles = StyleSheet.create({
   contactOptionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
     marginBottom: 3,
   },
   contactOptionDescription: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
   },
   contactOptionArrow: {
     fontSize: 18,
@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
     borderColor: '#2563eb',
   },
   quickMessageText: {
-    color: COLORS.primary,
+    color: COLORS.textOnWhite,
     fontSize: 14,
     fontWeight: '500',
   },

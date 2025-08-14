@@ -291,21 +291,21 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.textInverse,
+    color: COLORS.textOnWhite,
   },
   headerSubtitle: {
     fontSize: 14,
-    color: COLORS.white70,
+    color: COLORS.textOnWhite,
     marginTop: 2,
   },
   clearButton: {
     paddingHorizontal: 15,
     paddingVertical: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 8,
+    backgroundColor:  COLORS.appBackground,
+    borderRadius: 18,
   },
   clearButtonText: {
-    color: COLORS.textInverse,
+    color: COLORS.primary,
     fontSize: 14,
     fontWeight: '600',
   },
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   cartItem: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    // backgroundColor: 'rgba(255, 255, 255, 0.1)',
     marginHorizontal: 20,
     marginTop: 15,
     borderRadius: 12,
@@ -341,12 +341,12 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
     lineHeight: 20,
   },
   storeName: {
     fontSize: 12,
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
     opacity: 0.7,
     fontStyle: 'italic',
     marginVertical: 4,
@@ -358,12 +358,12 @@ const styles = StyleSheet.create({
   },
   unitPrice: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textImportant,
     fontWeight: '500',
   },
   itemTotal: {
     fontSize: 14,
-    color: COLORS.accent,
+    color: COLORS.textOnWhite,
     fontWeight: '700',
   },
   quantityControls: {
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.secondary,
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 15,
@@ -385,14 +385,14 @@ const styles = StyleSheet.create({
     opacity: 0.4,
   },
   quantityButtonText: {
-    color: COLORS.textInverse,
+    color: COLORS.textPrimary,
     fontSize: 18,
     fontWeight: 'bold',
   },
   quantityText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
     minWidth: 30,
     textAlign: 'center',
   },
@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   bottomSummary: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.appBackground,
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 30,
@@ -429,11 +429,11 @@ const styles = StyleSheet.create({
   },
   summaryLabel: {
     fontSize: 14,
-    color: COLORS.white70,
+    color: COLORS.textPrimary,
   },
   summaryValue: {
     fontSize: 14,
-    color: COLORS.textInverse,
+    color: COLORS.textImportant,
     fontWeight: '500',
   },
   totalRow: {
@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontSize: 18,
-    color: COLORS.textInverse,
+    color: COLORS.textPrimary,
     fontWeight: 'bold',
   },
   totalValue: {
@@ -454,13 +454,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   checkoutButton: {
-    backgroundColor: COLORS.primaryWithOpacity,
+    backgroundColor: COLORS.secondary,
     paddingVertical: 16,
     borderRadius: 20,
     alignItems: 'center',
   },
   checkoutButtonText: {
-    color: COLORS.textInverse,
+    color: COLORS.textPrimary,
     fontSize: 18,
     fontWeight: 'bold',
   },

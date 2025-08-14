@@ -40,7 +40,7 @@ export default function StoreItem({
 
 const styles = StyleSheet.create({
   storeItem: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.appBackground,
     borderRadius: 20,
     shadowColor: '#000',
     shadowOffset: {
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 10,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.appBackground,
     width: 'auto',
     borderRadius: 20,
     boxShadow: '0 2px 3px rgba(0,0,0,0.1)',

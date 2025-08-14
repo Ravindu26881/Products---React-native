@@ -153,12 +153,11 @@ export default function StoreFilter({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.appBackground,
     // paddingHorizontal: 20,
     // paddingVertical: 15,
     marginLeft: -20,
     marginRight: -20,
-    marginTop: -1,
     paddingBottom: 20,
     paddingLeft: 40,
     paddingRight: 40,
@@ -169,7 +168,9 @@ const styles = StyleSheet.create({
   searchInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    // backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: COLORS.primary,
+    borderWidth: 1,
     borderRadius: 15,
     paddingHorizontal: 15,
     paddingVertical: 12,
@@ -181,13 +182,13 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: COLORS.textInverse,
+    color: COLORS.textPrimary,
   },
   clearButton: {
     padding: 5,
   },
   clearButtonText: {
-    color: COLORS.white60,
+    color: COLORS.textPrimary,
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -198,7 +199,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    // backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    borderWidth: 1,
+    borderColor: COLORS.primary,
     borderRadius: 15,
     paddingHorizontal: 15,
     paddingVertical: 12,
@@ -213,25 +216,26 @@ const styles = StyleSheet.create({
   },
   categoryHeaderText: {
     fontSize: 16,
-    color: COLORS.textInverse,
+    color: COLORS.textPrimary,
     fontWeight: '600',
   },
   expandIcon: {
     fontSize: 12,
-    color: COLORS.white80,
+    color: COLORS.textPrimary,
     transform: [{ rotate: '0deg' }],
   },
   expandIconRotated: {
     transform: [{ rotate: '180deg' }],
   },
   categoryList: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: COLORS.primary + '90',
+    borderColor: COLORS.primary,
     borderRadius: 15,
     marginTop: 10,
     overflow: 'hidden',
   },
   categoryScrollView: {
-    maxHeight: 280,
+    maxHeight: 180,
   },
   categoryItem: {
     flexDirection: 'row',
@@ -239,7 +243,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+    borderBottomColor: 'rgba(0, 0, 0, 0.1)',
   },
   selectedCategoryItem: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
@@ -251,15 +255,15 @@ const styles = StyleSheet.create({
   categoryItemText: {
     flex: 1,
     fontSize: 16,
-    color: COLORS.white80,
+    color: COLORS.textPrimary,
   },
   selectedCategoryItemText: {
-    color: COLORS.textInverse,
+    color: COLORS.textPrimary,
     fontWeight: '600',
   },
   checkmark: {
     fontSize: 16,
-    color: COLORS.accent,
+    color: COLORS.textPrimary,
     fontWeight: 'bold',
   },
   resultsContainer: {
@@ -268,7 +272,7 @@ const styles = StyleSheet.create({
   },
   resultsText: {
     fontSize: 14,
-    color: COLORS.white70,
+    color: COLORS.textPrimary,
     fontWeight: '500',
   },
 });

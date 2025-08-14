@@ -45,11 +45,12 @@ export default function ProductDetailScreen({ navigation }) {
       headerTitleStyle: {
         fontFamily: getFontFamily(storeId),
         fontSize: 16,
+        fontColor: COLORS.textPrimary,
       },
       headerStyle: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: COLORS.appBackground,
       },
-      headerTintColor: '#fff',
+      headerTintColor: COLORS.textPrimary,
     });
   }, [navigation, product, storeId]);
 
@@ -380,7 +381,7 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
     marginBottom: 15,
     lineHeight: 34,
   },
@@ -412,12 +413,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
     marginBottom: 12,
   },
   description: {
     fontSize: 16,
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
     lineHeight: 24,
   },
   featuresList: {
@@ -437,7 +438,7 @@ const styles = StyleSheet.create({
   },
   featureText: {
     fontSize: 16,
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
   },
   storeInfo: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -447,19 +448,19 @@ const styles = StyleSheet.create({
   storeInfoText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.textSecondary,
+    color: COLORS.textOnWhite,
     marginBottom: 5,
   },
   storeInfoSubtext: {
     fontSize: 14,
-    color: COLORS.textSecondary,
+    color: COLORS.textPrimary,
   },
   bottomBar: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.appBackground,
     flexDirection: 'row',
     paddingHorizontal: 20,
     paddingVertical: 15,
@@ -471,14 +472,14 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.3,
     shadowRadius: 6,
-    elevation: 10,
+    elevation: 9,
   },
   addToCartButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    // backgroundColor: COLORS.primary,
     paddingVertical: 15,
     borderRadius: 12,
     marginRight: 10,
@@ -491,7 +492,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#f59e0b',
+    backgroundColor: COLORS.secondary,
     paddingVertical: 15,
     borderRadius: 12,
     marginLeft: 10,
@@ -499,22 +500,22 @@ const styles = StyleSheet.create({
   cartIcon: {
     width: 20,
     height: 20,
-    tintColor: 'white',
+    tintColor: COLORS.textPrimary,
     marginRight: 8,
   },
   buyIcon: {
     width: 20,
     height: 20,
-    tintColor: 'white',
+    tintColor: COLORS.textPrimary,
     marginRight: 8,
   },
   addToCartText: {
-    color: COLORS.textInverse,
+    color: COLORS.textPrimary,
     fontSize: 16,
     fontWeight: '600',
   },
   buyNowText: {
-    color: COLORS.textInverse,
+    color: COLORS.textPrimary,
     fontSize: 16,
     fontWeight: '600',
   },

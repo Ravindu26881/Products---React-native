@@ -72,9 +72,9 @@ export default function HeaderWithFilter({
               }
             ]}
           >
-            <Text style={[styles.filterIcon, showFilter && styles.filterIconActive]}>
-              {showFilter ? '🔽' : '🔧'}
-            </Text>
+            {/*<Text style={[styles.filterIcon, showFilter && styles.filterIconActive]}>*/}
+            {/*  {showFilter ? '🔽' : '🔧'}*/}
+            {/*</Text>*/}
           </Animated.View>
           <Text style={[styles.filterText, showFilter && styles.filterTextActive]}>
             {showFilter ? 'Hide' : 'Filter'}
@@ -88,7 +88,7 @@ export default function HeaderWithFilter({
 const styles = StyleSheet.create({
   header: {
     // padding: 20,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.appBackground,
     marginRight: -20,
     marginLeft: -20,
   },
@@ -104,34 +104,33 @@ const styles = StyleSheet.create({
   filterToggle: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    // backgroundColor: 'rgba(0, 0, 0, 0.1)',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: COLORS.primary,
   },
   filterIconContainer: {
-    marginRight: 6,
   },
   filterIcon: {
     fontSize: 16,
-    color: COLORS.white70,
+    color: COLORS.textPrimary,
   },
   filterIconActive: {
-    color: COLORS.accent,
+    color: COLORS.textPrimary,
   },
   filterText: {
     fontSize: 14,
     fontWeight: '600',
-    color: COLORS.white70,
+    color: COLORS.textPrimary,
   },
   filterTextActive: {
-    color: COLORS.textInverse,
+    color: COLORS.textPrimary,
   },
   subtitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: COLORS.white70,
+    color: COLORS.textPrimary,
   },
 });
