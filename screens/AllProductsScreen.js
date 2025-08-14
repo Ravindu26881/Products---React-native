@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect, useMemo } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import {
   Image,
   View,
@@ -8,7 +8,8 @@ import {
   FlatList,
   ActivityIndicator,
   Platform,
-  Dimensions
+  Dimensions,
+  Animated
 } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { fetchStores } from '../data/stores';
@@ -34,7 +35,7 @@ export default function AllProductsScreen({ navigation }) {
   const [selectedCategory, setSelectedCategory] = useState(category);
   const [screenData, setScreenData] = useState(Dimensions.get('window'));
   const [showFilter, setShowFilter] = useState(false);
-  
+  const filterAnimation = useRef(new Animated.Value(0)).current;
 
   const getNumColumns = (width) => {
     if (width > 768) return 3;
@@ -44,6 +45,16 @@ export default function AllProductsScreen({ navigation }) {
   };
   
   const numColumns = getNumColumns(screenData.width);
+
+  // Animate filter panel
+  useEffect(() => {
+    Animated.spring(filterAnimation, {
+      toValue: showFilter ? 1 : 0,
+      useNativeDriver: false,
+      tension: 100,
+      friction: 8,
+    }).start();
+  }, [showFilter, filterAnimation]);
 
   useEffect(() => {
     loadAllProducts();
@@ -197,7 +208,26 @@ export default function AllProductsScreen({ navigation }) {
         showFilter={showFilter}
         onFilterToggle={() => setShowFilter(!showFilter)}
       />
-      {showFilter && (
+      <Animated.View
+        style={[
+          styles.filterContainer,
+          {
+            maxHeight: filterAnimation.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 777],
+            }),
+            opacity: filterAnimation,
+            transform: [
+              {
+                translateY: filterAnimation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [-20, 0],
+                }),
+              },
+            ],
+          },
+        ]}
+      >
         <ProductFilter
           onSearchChange={setSearchQuery}
           onCategoryChange={setSelectedCategory}
@@ -206,7 +236,7 @@ export default function AllProductsScreen({ navigation }) {
           productCount={filteredProducts.length}
           showCategoryFilter={true}
         />
-      )}
+      </Animated.View>
     </View>
   );
 
@@ -239,7 +269,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-
+  filterContainer: {
+    overflow: 'hidden',
+    marginLeft: -20,
+    marginRight: -20
+  },
   flatListContainer: {
     paddingHorizontal: 20,
     paddingBottom: 20,

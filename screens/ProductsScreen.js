@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect, useMemo } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import {
   Image,
   View,
@@ -9,7 +9,8 @@ import {
   ActivityIndicator,
   ImageBackground,
   Platform,
-  Dimensions
+  Dimensions,
+  Animated
 } from 'react-native';
 import {fetchProducts, fetchProductsByStoreId} from '../data/products';
 import { useRoute } from '@react-navigation/native';
@@ -32,7 +33,7 @@ export default function ProductsScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [screenData, setScreenData] = useState(Dimensions.get('window'));
   const [showFilter, setShowFilter] = useState(false);
-  
+  const filterAnimation = useRef(new Animated.Value(0)).current;
 
   const getNumColumns = (width) => {
     if (width > 768) return 3;
@@ -42,6 +43,16 @@ export default function ProductsScreen({ navigation }) {
   };
   
   const numColumns = getNumColumns(screenData.width);
+
+  // Animate filter panel
+  useEffect(() => {
+    Animated.spring(filterAnimation, {
+      toValue: showFilter ? 1 : 0,
+      useNativeDriver: false,
+      tension: 100,
+      friction: 8,
+    }).start();
+  }, [showFilter, filterAnimation]);
 
   useEffect(() => {
     loadProducts();
@@ -137,23 +148,42 @@ export default function ProductsScreen({ navigation }) {
 
   const ListHeaderComponent = () => (
     <View>
-      <HeaderWithFilter 
+            <HeaderWithFilter 
         title={storeName}
         showFilter={showFilter}
         onFilterToggle={() => setShowFilter(!showFilter)}
         titleStyle={{ fontFamily: getFontFamily(storeId) }}
       />
-             {showFilter && (
-         <ProductFilter
-             style={styles.filterWrapper}
-           onSearchChange={setSearchQuery}
-           onCategoryChange={() => {}}
-           searchQuery={searchQuery}
-           selectedCategory="all"
-           productCount={filteredProducts.length}
-           showCategoryFilter={false}
-         />
-       )}
+      <Animated.View
+        style={[
+          styles.filterContainer,
+          {
+            maxHeight: filterAnimation.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 777],
+            }),
+            opacity: filterAnimation,
+            transform: [
+              {
+                translateY: filterAnimation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [-20, 0],
+                }),
+              },
+            ],
+          },
+        ]}
+      >
+        <ProductFilter
+          style={styles.filterWrapper}
+          onSearchChange={setSearchQuery}
+          onCategoryChange={() => {}}
+          searchQuery={searchQuery}
+          selectedCategory="all"
+          productCount={filteredProducts.length}
+          showCategoryFilter={false}
+        />
+      </Animated.View>
     </View>
   );
 
@@ -190,6 +220,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+  },
+  filterContainer: {
+    overflow: 'hidden',
+    marginLeft: -20,
+    marginRight: -20
   },
   flatListContainer: {
     paddingHorizontal: 20,

@@ -153,11 +153,14 @@ export default function ProductFilter({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.primary,
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    // paddingHorizontal: 20,
+    // paddingVertical: 15,
     marginLeft: -20,
     marginRight: -20,
-    marginTop: -20
+    marginTop: -1,
+    paddingBottom: 20,
+    paddingLeft: 40,
+    paddingRight: 40,
   },
   searchContainer: {
     marginBottom: 15,

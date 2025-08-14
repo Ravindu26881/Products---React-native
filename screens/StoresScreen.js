@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   Image,
   View,
@@ -8,7 +8,8 @@ import {
   FlatList,
   ActivityIndicator,
   ImageBackground,
-  Platform
+  Platform,
+  Animated
 } from 'react-native';
 import { fetchStores } from '../data/stores';
 import { getFontFamily } from '../utils/fontUtils';
@@ -27,6 +28,17 @@ export default function StoresScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showFilter, setShowFilter] = useState(false);
+  const filterAnimation = useRef(new Animated.Value(0)).current;
+
+  // Animate filter panel
+  useEffect(() => {
+    Animated.spring(filterAnimation, {
+      toValue: showFilter ? 1 : 0,
+      useNativeDriver: false,
+      tension: 100,
+      friction: 8,
+    }).start();
+  }, [showFilter, filterAnimation]);
 
   useEffect(() => {
     loadStores();
@@ -120,17 +132,36 @@ export default function StoresScreen({ navigation }) {
         showFilter={showFilter}
         onFilterToggle={() => setShowFilter(!showFilter)}
       />
-      {showFilter && (
-          <View style={{ marginLeft: -20, marginRight: -20 }}>
-            <StoreFilter
-              onSearchChange={setSearchQuery}
-              onCategoryChange={setSelectedCategory}
-              searchQuery={searchQuery}
-              selectedCategory={selectedCategory}
-              storeCount={filteredStores.length}
-            />
-          </View>
-      )}
+      <Animated.View
+        style={[
+          styles.filterContainer,
+          {
+            maxHeight: filterAnimation.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 777],
+            }),
+            opacity: filterAnimation,
+            transform: [
+              {
+                translateY: filterAnimation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [-20, 0],
+                }),
+              },
+            ],
+          },
+        ]}
+      >
+        <View>
+          <StoreFilter
+            onSearchChange={setSearchQuery}
+            onCategoryChange={setSelectedCategory}
+            searchQuery={searchQuery}
+            selectedCategory={selectedCategory}
+            storeCount={filteredStores.length}
+          />
+        </View>
+      </Animated.View>
     </View>
   );
 
@@ -165,6 +196,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+  },
+  filterContainer: {
+    overflow: 'hidden',
+    marginLeft: -20,
+    marginRight: -20
   },
 
 
