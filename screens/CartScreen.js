@@ -101,9 +101,9 @@ export default function CartScreen({ navigation }) {
 
   const formatPrice = (price) => {
     if (typeof price === 'number') {
-      return `$${price.toFixed(2)}`;
+      return `Rs.${price.toFixed(2)}/=`;
     }
-    return price;
+    return 'Rs.' + price + '/=';
   };
 
   const renderCartItem = ({ item }) => {

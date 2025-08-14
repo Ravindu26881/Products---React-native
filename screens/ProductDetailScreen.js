@@ -188,7 +188,7 @@ export default function ProductDetailScreen({ navigation }) {
 
           {/* Price */}
           <View style={styles.priceContainer}>
-            <Text style={styles.price}>{product.price}</Text>
+            <Text style={styles.price}>Rs.{product.price}/=</Text>
             <View style={styles.priceBadge}>
               <Text style={styles.priceBadgeText}>Best Price</Text>
             </View>
@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: COLORS.textSecondary,
+    color: COLORS.textImportant,
     marginRight: 15,
   },
   priceBadge: {
