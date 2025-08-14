@@ -14,7 +14,7 @@ const FONT_MAP = {
 
 // Default fallback fonts by platform
 const DEFAULT_FONTS = {
-  web: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  web: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
   ios: 'System',
   android: 'System',
   default: 'System',
