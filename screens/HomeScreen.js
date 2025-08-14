@@ -15,7 +15,7 @@ import {
   StatusBar,
   ScrollView
 } from 'react-native';
-import { fetchStores } from '../data/stores';
+import { fetchStores , getCurrentPosition} from '../data/stores';
 import { fetchProductsByStoreId } from '../data/products';
 import { getFontFamily } from '../utils/fontUtils';
 import { COLORS } from '../utils/colors';
@@ -37,9 +37,13 @@ export default function HomeScreen({ navigation }) {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [location, setLocation] = useState('none');
   const [screenData, setScreenData] = useState(Dimensions.get('window'));
   const [showFilter, setShowFilter] = useState(false);
   const filterAnimation = useRef(new Animated.Value(0)).current;
+
+
+
 
   const getNumColumns = (width) => {
     if (width > 768) return 3;
@@ -59,6 +63,17 @@ export default function HomeScreen({ navigation }) {
       useNativeDriver: false,
     }).start();
   }, [showFilter, filterAnimation]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const location = await getCurrentPosition();
+        console.log('User location:', location);
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     loadAllProducts();
@@ -197,6 +212,7 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.header}>
         <View style={styles.headerTop}>
           <View style={styles.logoContainer}>
+            <Text style={styles.subtitle}></Text>
             <Image
               source={require('../assets/logo-one-line.png')}
               style={styles.logo}
@@ -208,7 +224,7 @@ export default function HomeScreen({ navigation }) {
             style={styles.cartIcon}
           />
         </View>
-        <Text style={styles.subtitle}>🎉 Discover amazing products from local businesses</Text>
+        <Text style={styles.subtitle}>{location.lng}</Text>
       </View>
       
       <View style={styles.actionBar}>

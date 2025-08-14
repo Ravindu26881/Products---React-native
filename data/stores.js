@@ -15,3 +15,13 @@ export const fetchStores = async () => {
     return error
   }
 };
+
+import * as Location from 'expo-location';
+
+export async function getCurrentPosition() {
+  const { status } = await Location.requestForegroundPermissionsAsync();
+  if (status !== 'granted') throw new Error('Location permission not granted');
+  // HighAccuracy uses GPS; you can set accuracy to Balanced if you want less battery usage
+  const pos = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
+  return { lat: pos.coords.latitude, lng: pos.coords.longitude };
+}
