@@ -57,19 +57,19 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: COLORS.textInverse,
+    color: COLORS.textOnWhite,
     marginBottom: 12,
     textAlign: 'center',
   },
   message: {
     fontSize: 16,
-    color: COLORS.white70,
+    color: COLORS.textOnWhite,
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: 30,
   },
   actionButton: {
-    backgroundColor: COLORS.primaryWithOpacity,
+    backgroundColor: COLORS.appBackground,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 25,
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   actionButtonText: {
-    color: COLORS.textInverse,
+    color: COLORS.primary,
     fontSize: 16,
     fontWeight: '600',
   },
