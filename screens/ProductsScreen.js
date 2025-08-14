@@ -44,13 +44,12 @@ export default function ProductsScreen({ navigation }) {
   
   const numColumns = getNumColumns(screenData.width);
 
-  // Animate filter panel
+  // Animate filter panel with easing
   useEffect(() => {
-    Animated.spring(filterAnimation, {
+    Animated.timing(filterAnimation, {
       toValue: showFilter ? 1 : 0,
+      duration: 300,
       useNativeDriver: false,
-      tension: 100,
-      friction: 8,
     }).start();
   }, [showFilter, filterAnimation]);
 

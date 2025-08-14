@@ -9,7 +9,8 @@ import {
   ActivityIndicator,
   Platform,
   Dimensions,
-  Animated
+  Animated,
+  Easing
 } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { fetchStores } from '../data/stores';
@@ -46,14 +47,46 @@ export default function AllProductsScreen({ navigation }) {
   
   const numColumns = getNumColumns(screenData.width);
 
-  // Animate filter panel
+  // Animate filter panel - Choose your preferred style:
   useEffect(() => {
-    Animated.spring(filterAnimation, {
+    Animated.timing(filterAnimation, {
       toValue: showFilter ? 1 : 0,
+      duration: 300,
+      easing: Easing.out(Easing.cubic),
       useNativeDriver: false,
-      tension: 100,
-      friction: 8,
     }).start();
+
+    // OPTION 2: iOS-like easeInOut (Uncomment to use)
+    // Animated.timing(filterAnimation, {
+    //   toValue: showFilter ? 1 : 0,
+    //   duration: 350,
+    //   easing: Easing.inOut(Easing.ease),
+    //   useNativeDriver: false,
+    // }).start();
+
+    // OPTION 3: Material Design easeOut (Uncomment to use)
+    // Animated.timing(filterAnimation, {
+    //   toValue: showFilter ? 1 : 0,
+    //   duration: 280,
+    //   easing: Easing.out(Easing.quad),
+    //   useNativeDriver: false,
+    // }).start();
+
+    // OPTION 4: Subtle bounce (less rubber than spring)
+    // Animated.timing(filterAnimation, {
+    //   toValue: showFilter ? 1 : 0,
+    //   duration: 400,
+    //   easing: Easing.out(Easing.back(1.2)),
+    //   useNativeDriver: false,
+    // }).start();
+
+    // OPTION 5: Linear (mechanical, precise)
+    // Animated.timing(filterAnimation, {
+    //   toValue: showFilter ? 1 : 0,
+    //   duration: 250,
+    //   easing: Easing.linear,
+    //   useNativeDriver: false,
+    // }).start();
   }, [showFilter, filterAnimation]);
 
   useEffect(() => {

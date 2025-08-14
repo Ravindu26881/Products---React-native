@@ -19,12 +19,11 @@ export default function HeaderWithFilter({
   const scaleAnimation = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    // Rotate animation
-    Animated.spring(rotateAnimation, {
+    // Smooth timing animation instead of spring
+    Animated.timing(rotateAnimation, {
       toValue: showFilter ? 1 : 0,
+      duration: 300,
       useNativeDriver: true,
-      tension: 100,
-      friction: 8,
     }).start();
   }, [showFilter, rotateAnimation]);
 
