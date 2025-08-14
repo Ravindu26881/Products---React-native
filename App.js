@@ -7,7 +7,6 @@ import ProductsScreen from './screens/ProductsScreen';
 import ProductDetailScreen from './screens/ProductDetailScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import ContactSellerScreen from './screens/ContactSellerScreen';
-import AllProductsScreen from './screens/AllProductsScreen';
 import CartScreen from './screens/CartScreen';
 import {
     Image,
@@ -31,7 +30,6 @@ const linking = {
       ProductDetail: 'product/:storeId/:storeName/:productId',
       Payment: 'payment',
       ContactSeller: 'contact/:storeId/:storeName/:productId',
-      AllProducts: 'all-products',
       Cart: 'cart',
     },
   },
@@ -116,13 +114,6 @@ export default function App() {
         <Stack.Screen 
           name="ContactSeller" 
           component={ContactSellerScreen}
-          options={{
-            headerShown: true,
-          }}
-        />
-        <Stack.Screen 
-          name="AllProducts" 
-          component={AllProductsScreen}
           options={{
             headerShown: true,
           }}
