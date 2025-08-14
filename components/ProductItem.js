@@ -84,7 +84,7 @@ export default function ProductItem({
             <Text 
               style={[
                 styles.productName, 
-                storeId && { fontFamily: getFontFamily(storeId) }
+                storeId && !showStoreName && { fontFamily: getFontFamily(storeId) }
               ]} 
               numberOfLines={1}
             >
@@ -97,36 +97,36 @@ export default function ProductItem({
               </Text>
             )}
           </View>
-          <View style={styles.actionButtons}>
-            {storeId && (
-              <TouchableOpacity 
-                style={[
-                  styles.cartButton,
-                  addingToCart && styles.cartButtonDisabled
-                ]}
-                onPress={handleAddToCart}
-                disabled={addingToCart}
-              >
-                <Image 
-                  source={
-                    isItemInCart(product._id, storeId) 
-                      ? require('../assets/icons/CartAdded.png')
-                      : require('../assets/icons/Cart.png')
-                  } 
-                  style={[
-                    styles.iconStyleCart,
-                    isItemInCart(product._id, storeId) && styles.iconStyleCartAdded
-                  ]} 
-                />
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity 
-              style={styles.buyButton}
-              onPress={() => onPress(product)}
-            >
-              <Image source={require('../assets/icons/View.png')} style={styles.iconStyleBuy} />
-            </TouchableOpacity>
-          </View>
+          {/*<View style={styles.actionButtons}>*/}
+          {/*  {storeId && (*/}
+          {/*    <TouchableOpacity */}
+          {/*      style={[*/}
+          {/*        styles.cartButton,*/}
+          {/*        addingToCart && styles.cartButtonDisabled*/}
+          {/*      ]}*/}
+          {/*      onPress={handleAddToCart}*/}
+          {/*      disabled={addingToCart}*/}
+          {/*    >*/}
+          {/*      <Image */}
+          {/*        source={*/}
+          {/*          isItemInCart(product._id, storeId) */}
+          {/*            ? require('../assets/icons/CartAdded.png')*/}
+          {/*            : require('../assets/icons/Cart.png')*/}
+          {/*        } */}
+          {/*        style={[*/}
+          {/*          styles.iconStyleCart,*/}
+          {/*          isItemInCart(product._id, storeId) && styles.iconStyleCartAdded*/}
+          {/*        ]} */}
+          {/*      />*/}
+          {/*    </TouchableOpacity>*/}
+          {/*  )}*/}
+          {/*  <TouchableOpacity */}
+          {/*    style={styles.buyButton}*/}
+          {/*    onPress={() => onPress(product)}*/}
+          {/*  >*/}
+          {/*    <Image source={require('../assets/icons/View.png')} style={styles.iconStyleBuy} />*/}
+          {/*  </TouchableOpacity>*/}
+          {/*</View>*/}
         </View>
       </TouchableOpacity>
       <CartActionModal
