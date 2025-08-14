@@ -224,7 +224,7 @@ export default function HomeScreen({ navigation }) {
             style={styles.cartIcon}
           />
         </View>
-        <Text style={styles.subtitle}>{location.lng}</Text>
+        <Text style={styles.subtitle}>🎉 Discover amazing products from local businesses</Text>
       </View>
       
       <View style={styles.actionBar}>
