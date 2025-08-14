@@ -15,6 +15,7 @@ export const COLORS = {
   textPrimary: 'white',       // Dark gray - main text
   textSecondary: 'black',     // Medium gray - secondary text
   textInverse: 'white',       // White - text on dark backgrounds
+  textImportant: 'orange',
 
   // Borders & Overlays
   border: '#e2e8f0',            // Light border
@@ -47,6 +48,7 @@ export const SKYBLUE = {
   textPrimary: 'white',       // Dark gray - main text
   textSecondary: 'black',     // Medium gray - secondary text
   textInverse: 'white',       // White - text on dark backgrounds
+  textImportant: 'orange',       // White - text on dark backgrounds
 
   // Borders & Overlays
   border: '#e2e8f0',            // Light border
@@ -79,6 +81,7 @@ export const DARKBLUE = {
   textPrimary: 'white',       // Dark gray - main text
   textSecondary: 'black',     // Medium gray - secondary text
   textInverse: 'white',       // White - text on dark backgrounds
+  textImportant: 'orange',
 
   // Borders & Overlays
   border: '#e2e8f0',            // Light border
