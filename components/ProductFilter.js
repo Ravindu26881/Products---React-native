@@ -19,7 +19,7 @@ const PRODUCT_CATEGORIES = [
 export default function ProductFilter({ 
   onSearchChange, 
   onCategoryChange, 
-  searchQuery, 
+  searchQuery,
   selectedCategory,
   productCount,
   showCategoryFilter = true
@@ -77,9 +77,14 @@ export default function ProductFilter({
             onChangeText={onSearchChange}
           />
           {searchQuery.length > 0 && (
-            <TouchableOpacity onPress={() => onSearchChange('')} style={styles.clearButton}>
-              <Text style={styles.clearButtonText}>✕</Text>
-            </TouchableOpacity>
+              <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                <TouchableOpacity onPress={() => onSearchChange('')} style={styles.clearButton}>
+                  <Text style={styles.clearButtonText}>✕</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => searchFromQuery} style={styles.searchButton}>
+                  <Text style={styles.searchButtonText}>⌕</Text>
+                </TouchableOpacity>
+              </View>
           )}
         </View>
       </View>
@@ -191,6 +196,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+
+  searchButton: {
+    padding: 5,
+    borderWidth:1,
+    borderRadius: 50,
+    borderColor: COLORS.textPrimary,
+    width:45,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 15
+  },
+  searchButtonText: {
+    fontSize: 25,
+  },
+
   categoryContainer: {
     marginBottom: 10,
   },
