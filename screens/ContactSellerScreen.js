@@ -67,7 +67,7 @@ export default function ContactSellerScreen({ navigation }) {
 
   const handlePhoneCall = () => {
     // In a real app, you would get the seller's phone number from your backend
-    const phoneNumber = '+1234567890'; // Example phone number
+    const phoneNumber = '+94774462717'; // Example phone number
     
     Alert.alert(
       'Call Seller',
@@ -89,7 +89,7 @@ export default function ContactSellerScreen({ navigation }) {
 
   const handleWhatsApp = () => {
     // In a real app, you would get the seller's WhatsApp number from your backend
-    const phoneNumber = '1234567890'; // Example phone number
+    const phoneNumber = '+94774462717'; // Example phone number
     const prefilledMessage = `Hi! I'm interested in "${product.name}" from your store.`;
     
     const whatsappURL = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(prefilledMessage)}`;
@@ -105,7 +105,7 @@ export default function ContactSellerScreen({ navigation }) {
 
   const handleEmail = () => {
     // In a real app, you would get the seller's email from your backend
-    const email = 'seller@example.com';
+    const email = 'ravinudananjayapvt@gmail.com';
     const subject = `Inquiry about ${product.name}`;
     const body = `Hi,\n\nI'm interested in purchasing "${product.name}" from your store.\n\nPlease let me know if it's still available.\n\nThank you!`;
     
@@ -257,11 +257,11 @@ export default function ContactSellerScreen({ navigation }) {
         {/* Contact Options */}
         {renderContactOptions()}
         
-        {/* Quick Messages */}
-        {renderQuickMessages()}
+        {/*/!* Quick Messages *!/*/}
+        {/*{renderQuickMessages()}*/}
         
-        {/* Message Form */}
-        {renderMessageForm()}
+        {/*/!* Message Form *!/*/}
+        {/*{renderMessageForm()}*/}
         
         <View style={styles.bottomSpacing} />
       </ScrollView>
@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: COLORS.textOnWhite,
-    marginBottom: 5,
+    marginBottom: 25,
   },
   sectionDescription: {
     fontSize: 14,

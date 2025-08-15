@@ -15,25 +15,25 @@ import {
 import { useRoute } from '@react-navigation/native';
 import { getFontFamily } from '../utils/fontUtils';
 import { COLORS } from '../utils/colors';
+import { PAYHERE_CONFIG, generateOrderId, formatAmount } from '../config/payhere';
+import PayHereWebView from '../components/PayHereWebView';
 
 export default function PaymentScreen({ navigation }) {
   const route = useRoute();
   const { product, storeId, storeName } = route.params;
   
   const [loading, setLoading] = useState(false);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('card');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('payhere');
+  const [showPayHereWebView, setShowPayHereWebView] = useState(false);
+  const [paymentData, setPaymentData] = useState(null);
   const [formData, setFormData] = useState({
-    // Card Details
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-    cardName: '',
     // Billing Address
     address: '',
     city: '',
     zipCode: '',
-    country: 'USA',
+    country: 'Sri Lanka',
     // Contact Info
+    customerName: '',
     email: '',
     phone: '',
   });
@@ -52,40 +52,14 @@ export default function PaymentScreen({ navigation }) {
     });
   }, [navigation, storeId]);
 
-  const formatCardNumber = (text) => {
-    const cleaned = text.replace(/\s/g, '');
-    const formatted = cleaned.replace(/(.{4})/g, '$1 ').trim();
-    return formatted.substring(0, 19);
-  };
-
-  const formatExpiryDate = (text) => {
-    const cleaned = text.replace(/\D/g, '');
-    if (cleaned.length >= 2) {
-      return cleaned.substring(0, 2) + '/' + cleaned.substring(2, 4);
-    }
-    return cleaned;
-  };
+  // Card formatting functions removed - not needed for PayHere-only integration
 
   const validateForm = () => {
-    if (selectedPaymentMethod === 'card') {
-      if (!formData.cardNumber || formData.cardNumber.replace(/\s/g, '').length < 16) {
-        Alert.alert('Error', 'Please enter a valid card number');
-        return false;
-      }
-      if (!formData.expiryDate || formData.expiryDate.length < 5) {
-        Alert.alert('Error', 'Please enter a valid expiry date');
-        return false;
-      }
-      if (!formData.cvv || formData.cvv.length < 3) {
-        Alert.alert('Error', 'Please enter a valid CVV');
-        return false;
-      }
-      if (!formData.cardName.trim()) {
-        Alert.alert('Error', 'Please enter the cardholder name');
-        return false;
-      }
+    // PayHere requires basic customer information
+    if (!formData.customerName.trim()) {
+      Alert.alert('Error', 'Please enter your full name');
+      return false;
     }
-    
     if (!formData.email.trim() || !formData.email.includes('@')) {
       Alert.alert('Error', 'Please enter a valid email address');
       return false;
@@ -98,8 +72,82 @@ export default function PaymentScreen({ navigation }) {
       Alert.alert('Error', 'Please enter your address');
       return false;
     }
+    if (!formData.city.trim()) {
+      Alert.alert('Error', 'Please enter your city');
+      return false;
+    }
     
     return true;
+  };
+
+  const processPayHerePayment = () => {
+    const paymentObject = {
+      sandbox: PAYHERE_CONFIG.sandbox,
+      merchant_id: PAYHERE_CONFIG.merchantId,
+      notify_url: PAYHERE_CONFIG.notifyUrl,
+      order_id: generateOrderId(),
+      items: product.name,
+      amount: formatAmount(product.price),
+      currency: PAYHERE_CONFIG.currency,
+      first_name: formData.customerName.split(' ')[0] || "Customer",
+      last_name: formData.customerName.split(' ').slice(1).join(' ') || "Name",
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
+      city: formData.city,
+      country: PAYHERE_CONFIG.country,
+      delivery_address: formData.address,
+      delivery_city: formData.city,
+      delivery_country: PAYHERE_CONFIG.country,
+      custom_1: `store_${storeId}`,
+      custom_2: `product_${product._id || product.id}`
+    };
+
+    // Debug logging for testing
+    console.log("🔍 PayHere Payment Object Debug:");
+    console.log("================================");
+    Object.keys(paymentObject).forEach(key => {
+      console.log(`${key}: ${paymentObject[key]}`);
+    });
+    console.log("================================");
+
+    // Store payment data and show WebView
+    setPaymentData(paymentObject);
+    setShowPayHereWebView(true);
+    setLoading(false);
+  };
+
+  const handlePayHereSuccess = (message) => {
+    console.log("✅ PayHere Payment Completed:", message);
+    setShowPayHereWebView(false);
+    Alert.alert(
+      'Payment Successful! 🎉',
+      `Your order for "${product.name}" has been confirmed.\nYou will receive a confirmation email shortly.`,
+      [
+        {
+          text: 'Continue Shopping',
+          onPress: () => navigation.navigate('Products', { storeId, storeName }),
+        },
+        {
+          text: 'View Order',
+          onPress: () => {
+            Alert.alert('Order Details', 'Order tracking feature coming soon!');
+          },
+          style: 'default',
+        },
+      ]
+    );
+  };
+
+  const handlePayHereError = (error) => {
+    console.error("❌ PayHere Payment Error:", error);
+    setShowPayHereWebView(false);
+    Alert.alert("Payment Failed", `Error: ${error}`);
+  };
+
+  const handlePayHereClose = () => {
+    console.log("ℹ️ PayHere Payment Dismissed");
+    setShowPayHereWebView(false);
   };
 
   const processPayment = async () => {
@@ -107,60 +155,8 @@ export default function PaymentScreen({ navigation }) {
 
     setLoading(true);
     
-    try {
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
-      // In a real app, you would integrate with payment processors like:
-      // - Stripe
-      // - PayPal
-      // - Square
-      // - Razorpay
-      // etc.
-      
-      const paymentData = {
-        amount: parseFloat(product.price.replace(/[^\d.]/g, '')),
-        currency: 'USD',
-        productId: product._id || product.id,
-        storeId: storeId,
-        paymentMethod: selectedPaymentMethod,
-        customerInfo: {
-          email: formData.email,
-          phone: formData.phone,
-          address: formData.address,
-          city: formData.city,
-          zipCode: formData.zipCode,
-          country: formData.country,
-        },
-      };
-
-      console.log('Payment processed:', paymentData);
-      
-      Alert.alert(
-        'Payment Successful! 🎉',
-        `Your order for "${product.name}" has been confirmed. You will receive a confirmation email shortly.`,
-        [
-          {
-            text: 'Continue Shopping',
-            onPress: () => navigation.navigate('Products', { storeId, storeName }),
-          },
-          {
-            text: 'View Order',
-            onPress: () => {
-              // Navigate to order details or receipt screen
-              Alert.alert('Order Details', 'Order tracking feature coming soon!');
-            },
-            style: 'default',
-          },
-        ]
-      );
-      
-    } catch (error) {
-      Alert.alert('Payment Failed', 'There was an error processing your payment. Please try again.');
-      console.error('Payment error:', error);
-    } finally {
-      setLoading(false);
-    }
+    // Process PayHere payment (only payment method available)
+    processPayHerePayment();
   };
 
   const renderPaymentMethodSelector = () => (
@@ -170,89 +166,30 @@ export default function PaymentScreen({ navigation }) {
         <TouchableOpacity
           style={[
             styles.paymentMethodButton,
-            selectedPaymentMethod === 'card' && styles.selectedPaymentMethod,
+            styles.selectedPaymentMethod,
           ]}
-          onPress={() => setSelectedPaymentMethod('card')}
+          disabled={true}
         >
-          <Text style={styles.paymentMethodText}>💳 Credit/Debit Card</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.paymentMethodButton,
-            selectedPaymentMethod === 'paypal' && styles.selectedPaymentMethod,
-          ]}
-          onPress={() => setSelectedPaymentMethod('paypal')}
-        >
-          <Text style={styles.paymentMethodText}>🅿️ PayPal</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.paymentMethodButton,
-            selectedPaymentMethod === 'apple' && styles.selectedPaymentMethod,
-          ]}
-          onPress={() => setSelectedPaymentMethod('apple')}
-        >
-          <Text style={styles.paymentMethodText}>🍎 Apple Pay</Text>
+          <Text style={styles.paymentMethodText}>💳 PayHere</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 
-  const renderCardForm = () => {
-    if (selectedPaymentMethod !== 'card') return null;
-
-    return (
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Card Information</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Card Number"
-          value={formData.cardNumber}
-          onChangeText={(text) => 
-            setFormData(prev => ({ ...prev, cardNumber: formatCardNumber(text) }))
-          }
-          keyboardType="numeric"
-          maxLength={19}
-        />
-        <View style={styles.row}>
-          <TextInput
-            style={[styles.input, styles.halfInput]}
-            placeholder="MM/YY"
-            value={formData.expiryDate}
-            onChangeText={(text) => 
-              setFormData(prev => ({ ...prev, expiryDate: formatExpiryDate(text) }))
-            }
-            keyboardType="numeric"
-            maxLength={5}
-          />
-          <TextInput
-            style={[styles.input, styles.halfInput]}
-            placeholder="CVV"
-            value={formData.cvv}
-            onChangeText={(text) => 
-              setFormData(prev => ({ ...prev, cvv: text.replace(/\D/g, '') }))
-            }
-            keyboardType="numeric"
-            maxLength={4}
-            secureTextEntry
-          />
-        </View>
-        <TextInput
-          style={styles.input}
-          placeholder="Cardholder Name"
-          value={formData.cardName}
-          onChangeText={(text) => 
-            setFormData(prev => ({ ...prev, cardName: text }))
-          }
-          autoCapitalize="words"
-        />
-      </View>
-    );
-  };
+  // Card form removed - PayHere handles payment method selection internally
 
   const renderContactForm = () => (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>Contact Information</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Full Name"
+        value={formData.customerName}
+        onChangeText={(text) => 
+          setFormData(prev => ({ ...prev, customerName: text }))
+        }
+        autoCapitalize="words"
+      />
       <TextInput
         style={styles.input}
         placeholder="Email Address"
@@ -330,7 +267,6 @@ export default function PaymentScreen({ navigation }) {
 
         {/* Payment Form */}
         {renderPaymentMethodSelector()}
-        {renderCardForm()}
         {renderContactForm()}
         {renderBillingForm()}
 
@@ -369,11 +305,22 @@ export default function PaymentScreen({ navigation }) {
             <ActivityIndicator color="white" />
           ) : (
             <Text style={styles.payButtonText}>
-              Complete Payment • {product.price}
+              Pay with PayHere • {product.price}
             </Text>
           )}
         </TouchableOpacity>
       </View>
+
+      {/* PayHere WebView Modal */}
+      {paymentData && (
+        <PayHereWebView
+          visible={showPayHereWebView}
+          onClose={handlePayHereClose}
+          onSuccess={handlePayHereSuccess}
+          onError={handlePayHereError}
+          paymentData={paymentData}
+        />
+      )}
     </SafeAreaView>
   );
 }
