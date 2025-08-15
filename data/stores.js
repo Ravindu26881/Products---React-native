@@ -1,4 +1,6 @@
 // API endpoint for products
+import {Alert, Linking, Platform} from "react-native";
+
 const API_URL = 'https://products-api-production-124f.up.railway.app/stores';
 
 // Fetch products from API
@@ -19,11 +21,56 @@ export const fetchStores = async () => {
 import * as Location from 'expo-location';
 
 export async function getCurrentPosition() {
-  const { status } = await Location.requestForegroundPermissionsAsync();
-  if (status !== 'granted') throw new Error('Location permission not granted');
-  // HighAccuracy uses GPS; you can set accuracy to Balanced if you want less battery usage
-  const pos = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
-  return { lat: pos.coords.latitude, lng: pos.coords.longitude };
+  try {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      return { success: false, error: 'Location permission not granted' };
+    }
+
+    const pos = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.High
+    });
+
+    return {
+      success: true,
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude
+    };
+
+  } catch (err) {
+    return { success: false, error: err.message || 'Failed to get location' };
+  }
+}
+
+export async function locationPermissionRetry() {
+  try {
+    let { status, canAskAgain } = await Location.getForegroundPermissionsAsync();
+
+    if (canAskAgain) {
+      const result = await Location.requestForegroundPermissionsAsync();
+      status = result.status;
+      canAskAgain = result.canAskAgain;
+    }
+
+    if (status === 'granted') {
+      return { success: true };
+    }
+
+    if (!canAskAgain) {
+      Alert.alert(
+          'Location Permission Needed',
+          'Please enable location in your device settings.',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Open Settings', onPress: () => Linking.openSettings() }
+          ]
+      );
+    }
+
+    return { success: false, error: 'Location permission not granted' };
+  } catch (err) {
+    return { success: false, error: err.message || 'Failed to get location' };
+  }
 }
 
 function deg2rad(deg) {

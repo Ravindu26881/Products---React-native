@@ -15,17 +15,12 @@ import {
 import { useRoute } from '@react-navigation/native';
 import { getFontFamily } from '../utils/fontUtils';
 import { COLORS } from '../utils/colors';
-import { PAYHERE_CONFIG, generateOrderId, formatAmount } from '../config/payhere';
-import PayHereWebView from '../components/PayHereWebView';
 
 export default function PaymentScreen({ navigation }) {
   const route = useRoute();
   const { product, storeId, storeName } = route.params;
   
   const [loading, setLoading] = useState(false);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('payhere');
-  const [showPayHereWebView, setShowPayHereWebView] = useState(false);
-  const [paymentData, setPaymentData] = useState(null);
   const [formData, setFormData] = useState({
     // Billing Address
     address: '',
@@ -40,7 +35,7 @@ export default function PaymentScreen({ navigation }) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Secure Payment',
+      title: 'Order Details',
       headerTitleStyle: {
         fontFamily: getFontFamily(storeId),
         fontSize: 16,
@@ -52,10 +47,7 @@ export default function PaymentScreen({ navigation }) {
     });
   }, [navigation, storeId]);
 
-  // Card formatting functions removed - not needed for PayHere-only integration
-
   const validateForm = () => {
-    // PayHere requires basic customer information
     if (!formData.customerName.trim()) {
       Alert.alert('Error', 'Please enter your full name');
       return false;
@@ -80,103 +72,30 @@ export default function PaymentScreen({ navigation }) {
     return true;
   };
 
-  const processPayHerePayment = () => {
-    const paymentObject = {
-      sandbox: PAYHERE_CONFIG.sandbox,
-      merchant_id: PAYHERE_CONFIG.merchantId,
-      notify_url: PAYHERE_CONFIG.notifyUrl,
-      order_id: generateOrderId(),
-      items: product.name,
-      amount: formatAmount(product.price),
-      currency: PAYHERE_CONFIG.currency,
-      first_name: formData.customerName.split(' ')[0] || "Customer",
-      last_name: formData.customerName.split(' ').slice(1).join(' ') || "Name",
-      email: formData.email,
-      phone: formData.phone,
-      address: formData.address,
-      city: formData.city,
-      country: PAYHERE_CONFIG.country,
-      delivery_address: formData.address,
-      delivery_city: formData.city,
-      delivery_country: PAYHERE_CONFIG.country,
-      custom_1: `store_${storeId}`,
-      custom_2: `product_${product._id || product.id}`
-    };
-
-    // Debug logging for testing
-    console.log("🔍 PayHere Payment Object Debug:");
-    console.log("================================");
-    Object.keys(paymentObject).forEach(key => {
-      console.log(`${key}: ${paymentObject[key]}`);
-    });
-    console.log("================================");
-
-    // Store payment data and show WebView
-    setPaymentData(paymentObject);
-    setShowPayHereWebView(true);
-    setLoading(false);
-  };
-
-  const handlePayHereSuccess = (message) => {
-    console.log("✅ PayHere Payment Completed:", message);
-    setShowPayHereWebView(false);
-    Alert.alert(
-      'Payment Successful! 🎉',
-      `Your order for "${product.name}" has been confirmed.\nYou will receive a confirmation email shortly.`,
-      [
-        {
-          text: 'Continue Shopping',
-          onPress: () => navigation.navigate('Products', { storeId, storeName }),
-        },
-        {
-          text: 'View Order',
-          onPress: () => {
-            Alert.alert('Order Details', 'Order tracking feature coming soon!');
-          },
-          style: 'default',
-        },
-      ]
-    );
-  };
-
-  const handlePayHereError = (error) => {
-    console.error("❌ PayHere Payment Error:", error);
-    setShowPayHereWebView(false);
-    Alert.alert("Payment Failed", `Error: ${error}`);
-  };
-
-  const handlePayHereClose = () => {
-    console.log("ℹ️ PayHere Payment Dismissed");
-    setShowPayHereWebView(false);
-  };
-
-  const processPayment = async () => {
+  const processOrder = async () => {
     if (!validateForm()) return;
 
     setLoading(true);
     
-    // Process PayHere payment (only payment method available)
-    processPayHerePayment();
+    // Simulate order processing
+    setTimeout(() => {
+      setLoading(false);
+      Alert.alert(
+        'Order Placed! 🎉',
+        `Your order for "${product.name}" has been placed successfully.\n\nThe seller will contact you shortly to arrange payment and delivery.`,
+        [
+          {
+            text: 'Continue Shopping',
+            onPress: () => navigation.navigate('Products', { storeId, storeName }),
+          },
+          {
+            text: 'OK',
+            style: 'default',
+          },
+        ]
+      );
+    }, 2000);
   };
-
-  const renderPaymentMethodSelector = () => (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Payment Method</Text>
-      <View style={styles.paymentMethods}>
-        <TouchableOpacity
-          style={[
-            styles.paymentMethodButton,
-            styles.selectedPaymentMethod,
-          ]}
-          disabled={true}
-        >
-          <Text style={styles.paymentMethodText}>💳 PayHere</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-
-  // Card form removed - PayHere handles payment method selection internally
 
   const renderContactForm = () => (
     <View style={styles.section}>
@@ -214,7 +133,7 @@ export default function PaymentScreen({ navigation }) {
 
   const renderBillingForm = () => (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Billing Address</Text>
+      <Text style={styles.sectionTitle}>Delivery Address</Text>
       <TextInput
         style={styles.input}
         placeholder="Street Address"
@@ -265,8 +184,15 @@ export default function PaymentScreen({ navigation }) {
           </View>
         </View>
 
-        {/* Payment Form */}
-        {renderPaymentMethodSelector()}
+        {/* Order Information */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Order Information</Text>
+          <Text style={styles.infoText}>
+            Fill out the form below and the seller will contact you to arrange payment and delivery.
+          </Text>
+        </View>
+
+        {/* Order Form */}
         {renderContactForm()}
         {renderBillingForm()}
 
@@ -274,16 +200,12 @@ export default function PaymentScreen({ navigation }) {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Order Summary</Text>
           <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Subtotal</Text>
+            <Text style={styles.summaryLabel}>Item Price</Text>
             <Text style={styles.summaryValue}>{product.price}</Text>
           </View>
           <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Shipping</Text>
-            <Text style={styles.summaryValue}>Free</Text>
-          </View>
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Tax</Text>
-            <Text style={styles.summaryValue}>$0.00</Text>
+            <Text style={styles.summaryLabel}>Delivery</Text>
+            <Text style={styles.summaryValue}>Contact seller</Text>
           </View>
           <View style={[styles.summaryRow, styles.totalRow]}>
             <Text style={styles.totalLabel}>Total</Text>
@@ -294,33 +216,22 @@ export default function PaymentScreen({ navigation }) {
         <View style={styles.bottomSpacing} />
       </ScrollView>
 
-      {/* Pay Button */}
+      {/* Place Order Button */}
       <View style={styles.bottomBar}>
         <TouchableOpacity
-          style={[styles.payButton, loading && styles.payButtonDisabled]}
-          onPress={processPayment}
+          style={[styles.orderButton, loading && styles.orderButtonDisabled]}
+          onPress={processOrder}
           disabled={loading}
         >
           {loading ? (
             <ActivityIndicator color="white" />
           ) : (
-            <Text style={styles.payButtonText}>
-              Pay with PayHere • {product.price}
+            <Text style={styles.orderButtonText}>
+              Place Order • {product.price}
             </Text>
           )}
         </TouchableOpacity>
       </View>
-
-      {/* PayHere WebView Modal */}
-      {paymentData && (
-        <PayHereWebView
-          visible={showPayHereWebView}
-          onClose={handlePayHereClose}
-          onSuccess={handlePayHereSuccess}
-          onError={handlePayHereError}
-          paymentData={paymentData}
-        />
-      )}
     </SafeAreaView>
   );
 }
@@ -377,24 +288,10 @@ const styles = StyleSheet.create({
     color: COLORS.textOnWhite,
     marginBottom: 15,
   },
-  paymentMethods: {
-    gap: 10,
-  },
-  paymentMethodButton: {
-    padding: 15,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: COLORS.border,
-    backgroundColor: COLORS.background,
-  },
-  selectedPaymentMethod: {
-    borderColor: '#2563eb',
-    backgroundColor: 'rgba(37, 99, 235, 0.1)',
-  },
-  paymentMethodText: {
-    fontSize: 16,
-    fontWeight: '500',
+  infoText: {
+    fontSize: 14,
     color: COLORS.textOnWhite,
+    lineHeight: 20,
   },
   input: {
     borderWidth: 1,
@@ -404,6 +301,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 15,
     backgroundColor: COLORS.surface,
+    color: COLORS.textOnWhite,
   },
   row: {
     flexDirection: 'row',
@@ -453,18 +351,18 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#e2e8f0',
   },
-  payButton: {
+  orderButton: {
     backgroundColor: COLORS.secondary,
     padding: 18,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  payButtonDisabled: {
+  orderButtonDisabled: {
     opacity: 0.6,
   },
-  payButtonText: {
-    color: COLORS.textPrimary ,
+  orderButtonText: {
+    color: COLORS.textPrimary,
     fontSize: 18,
     fontWeight: 'bold',
   },

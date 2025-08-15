@@ -9,9 +9,9 @@ import {
   ActivityIndicator,
   ImageBackground,
   Platform,
-  Animated
+  Animated, AppState
 } from 'react-native';
-import {fetchStores, getCurrentPosition, sortStoresByDistance} from '../data/stores';
+import {fetchStores, getCurrentPosition, locationPermissionRetry, sortStoresByDistance} from '../data/stores';
 import { getFontFamily } from '../utils/fontUtils';
 import { COLORS } from '../utils/colors';
 import StoreFilter from '../components/StoreFilter';
@@ -26,9 +26,11 @@ export default function StoresScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [locationError, setLocationError] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showFilter, setShowFilter] = useState(false);
   const filterAnimation = useRef(new Animated.Value(0)).current;
+  const appState = useRef(AppState.currentState);
 
   // Animate filter panel with smooth timing
   useEffect(() => {
@@ -43,10 +45,35 @@ export default function StoresScreen({ navigation }) {
     loadStores();
   }, []);
 
-  const sortOrder = async (order, storeList = stores) => {
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
+        console.log('Returned to app from background');
+        loadStores()
+      }
+      appState.current = nextAppState;
+    });
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  const checkPermissionsAgain = async () => {
+    // Call your permission check function here
+    const result = await locationPermissionRetry();
+    console.log(result);
+  };
+
+
+  const sortOrder = async (order, storeList = stores, retry) => {
     if (order === 'nearest') {
       try {
-        const userLocation = await getCurrentPosition();
+        const userLocation = await getCurrentPosition(retry);
+        if (userLocation.error === 'Location permission not granted' || userLocation.error === 'Failed to get location') {
+          setLocationError(userLocation.error)
+        } else {
+          setLocationError('');
+        }
         const sortedStores = sortStoresByDistance(
             storeList,
             userLocation.lat,
@@ -58,6 +85,14 @@ export default function StoresScreen({ navigation }) {
       }
     }
   };
+
+  const requestLocationPermission = async () => {
+    try {
+     const permissions = await locationPermissionRetry()
+    } catch (err) {
+      return
+    }
+  }
 
   const loadStores = async () => {
     try {
@@ -152,10 +187,21 @@ export default function StoresScreen({ navigation }) {
         showFilter={showFilter}
         onFilterToggle={() => setShowFilter(!showFilter)}
       />
-      {Platform.OS !== 'web' ?
+      {Platform.OS !== 'web' && !(locationError) ?
           <Text style={styles.Header}>
             Showing nearest stores to you current location
           </Text> : ''
+      }
+      {Platform.OS !== 'web' && locationError ?
+          <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+            <Text style={styles.Header}>
+            Allow location access to find nearest stores
+            </Text>
+            <TouchableOpacity onPress={requestLocationPermission}>
+              <Text style={{ fontSize: 20 }}>↺</Text>
+            </TouchableOpacity>
+          </View>
+          : ''
       }
       <Animated.View
         style={[
