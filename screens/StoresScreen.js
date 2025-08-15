@@ -11,7 +11,7 @@ import {
   Platform,
   Animated
 } from 'react-native';
-import { fetchStores } from '../data/stores';
+import {fetchStores, getCurrentPosition, sortStoresByDistance} from '../data/stores';
 import { getFontFamily } from '../utils/fontUtils';
 import { COLORS } from '../utils/colors';
 import StoreFilter from '../components/StoreFilter';
@@ -43,17 +43,38 @@ export default function StoresScreen({ navigation }) {
     loadStores();
   }, []);
 
+  const sortOrder = async (order, storeList = stores) => {
+    if (order === 'nearest') {
+      try {
+        const userLocation = await getCurrentPosition();
+        const sortedStores = sortStoresByDistance(
+            storeList,
+            userLocation.lat,
+            userLocation.lng
+        );
+        setStores(sortedStores);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
   const loadStores = async () => {
     try {
       setLoading(true);
       setError(null);
       const data = await fetchStores();
-      setStores(data);
+      if (Platform.OS !== 'web') {
+        await sortOrder('nearest', data); // pass fresh store data to sort
+      } else {
+        setStores(data);
+      }
+
     } catch (err) {
       setError('Failed to load stores');
       console.error('Error loading stores:', err);
     } finally {
-      setLoading(false);
+      setLoading(false); // no second sort here
     }
   };
 
@@ -131,6 +152,11 @@ export default function StoresScreen({ navigation }) {
         showFilter={showFilter}
         onFilterToggle={() => setShowFilter(!showFilter)}
       />
+      {Platform.OS !== 'web' ?
+          <Text style={styles.Header}>
+            Showing nearest stores to you current location
+          </Text> : ''
+      }
       <Animated.View
         style={[
           styles.filterContainer,

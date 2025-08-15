@@ -28,6 +28,10 @@ export default function StoreItem({
               {store.name}
             </Text>
             <Text style={styles.storeOwner}>By, {store.owner}</Text>
+            { store.distance ?
+                <Text style={styles.storeDistance}>Distance: {store.distance.toFixed(2)}km</Text> :
+                ''
+            }
           </View>
           <View style={styles.iconContainer}>
             <Image source={require('../assets/icons/Bag.png')} style={styles.iconStyleBuy} />
@@ -80,6 +84,12 @@ const styles = StyleSheet.create({
   },
   storeOwner: {
     fontWeight: '200',
+    fontSize: 14,
+    color: COLORS.textPrimary,
+  },
+  storeDistance: {
+    fontWeight: '400',
+    marginTop: 5,
     fontSize: 14,
     color: COLORS.textPrimary,
   },

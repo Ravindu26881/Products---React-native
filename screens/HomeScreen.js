@@ -64,16 +64,7 @@ export default function HomeScreen({ navigation }) {
     }).start();
   }, [showFilter, filterAnimation]);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const location = await getCurrentPosition();
-        console.log('User location:', location);
-      } catch (err) {
-        console.error(err);
-      }
-    })();
-  }, []);
+
 
   useEffect(() => {
     loadAllProducts();
