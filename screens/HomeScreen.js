@@ -203,7 +203,6 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.header}>
         <View style={styles.headerTop}>
           <View style={styles.logoContainer}>
-            <Text style={styles.subtitle}></Text>
             <Image
               source={require('../assets/logo-one-line.png')}
               style={styles.logo}
@@ -301,7 +300,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   header: {
-    paddingVertical: 20,
     backgroundColor: COLORS.appBackground,
     marginHorizontal: -20,
     paddingHorizontal: 20,
@@ -332,6 +330,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '200',
     marginTop: 0,
+    marginBottom: 20,
   },
   actionBar: {
     flexDirection: 'row',
