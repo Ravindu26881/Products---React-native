@@ -78,8 +78,8 @@ export default function ConfirmationModal({
       default:
         return {
           icon: '',
-          titleColor: COLORS.success,
-          accent: COLORS.success,
+          titleColor: COLORS.primary,
+          accent: COLORS.primary,
         };
     }
   };
@@ -120,9 +120,12 @@ export default function ConfirmationModal({
           ]}
         >
           {/* Icon */}
-          <View style={styles.iconContainer}>
-            <Text style={styles.icon}>{typeStyles.icon}</Text>
-          </View>
+          {typeStyles.icon ?
+              <View style={styles.iconContainer}>
+                <Text style={styles.icon}>{typeStyles.icon}</Text>
+              </View> : ''
+          }
+
 
           {/* Title */}
           <Text style={[styles.title, { color: typeStyles.titleColor }]}>
@@ -211,7 +214,6 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   button: {
-    flex: 1,
     paddingVertical: 14,
     borderRadius: 10,
     alignItems: 'center',

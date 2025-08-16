@@ -25,6 +25,10 @@ appBackground: 'white',
   textImportant: 'orange',
   textOnWhite: 'black', // Text color for white backgrounds
   textOnBlack: 'white', // Text color for black backgrounds
+  textOnPrimary: 'white', // Text color for primary backgrounds
+  warning: '#FFA502', // Warning color
+  info: '#70A1FF', // Info color
+  disabled: '#BDC3C7', // Disabled state
 
   // Borders & Overlays
   border: '#e2e8f0',            // Light border

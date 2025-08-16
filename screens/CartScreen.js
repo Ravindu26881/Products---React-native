@@ -8,7 +8,6 @@ import {
   Image,
   SafeAreaView,
   StatusBar,
-  Alert,
   Dimensions,
   Platform,
 } from 'react-native';
@@ -17,6 +16,7 @@ import { COLORS } from '../utils/colors';
 import { getFontFamily } from '../utils/fontUtils';
 import EmptyState from '../components/EmptyState';
 import LoadingState from '../components/LoadingState';
+import { useNotification } from '../components/NotificationSystem';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -32,6 +32,7 @@ export default function CartScreen({ navigation }) {
   } = useCart();
 
   const [processingItemId, setProcessingItemId] = useState(null);
+  const { showModal, showSuccess, showError } = useNotification();
 
   const handleQuantityChange = async (itemId, newQuantity) => {
     if (processingItemId === itemId) return;
@@ -53,18 +54,24 @@ export default function CartScreen({ navigation }) {
         removeFromCart(itemId);
       }
     } else {
-      Alert.alert(
-        'Remove Item',
-        `Are you sure you want to remove "${productName}" from your cart?`,
-        [
-          { text: 'Cancel', style: 'cancel' },
+      showModal({
+        title: 'Remove Item',
+        message: `Are you sure you want to remove "${productName}" from your cart?`,
+        type: 'warning',
+        buttons: [
           { 
-            text: 'Remove', 
-            style: 'destructive',
-            onPress: () => removeFromCart(itemId)
+            text: 'Cancel', 
+            style: 'cancel' 
+          },
+          { 
+            text: 'Remove',
+            onPress: () => {
+              removeFromCart(itemId);
+              showSuccess('Item removed from cart');
+            }
           },
         ]
-      );
+      });
     }
   };
 
@@ -75,18 +82,24 @@ export default function CartScreen({ navigation }) {
         clearCart();
       }
     } else {
-      Alert.alert(
-        'Clear Cart',
-        'Are you sure you want to remove all items from your cart?',
-        [
-          { text: 'Cancel', style: 'cancel' },
+      showModal({
+        title: 'Clear Cart',
+        message: 'Are you sure you want to remove all items from your cart?',
+        type: 'warning',
+        buttons: [
           { 
-            text: 'Clear All', 
-            style: 'destructive',
-            onPress: clearCart
+            text: 'Cancel', 
+            style: 'cancel' 
+          },
+          { 
+            text: 'Clear All',
+            onPress: () => {
+              clearCart();
+              showSuccess('Cart cleared successfully');
+            }
           },
         ]
-      );
+      });
     }
   };
 

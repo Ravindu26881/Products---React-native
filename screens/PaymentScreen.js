@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
-  Alert,
   ActivityIndicator,
   SafeAreaView,
   Image,
@@ -15,10 +14,12 @@ import {
 import { useRoute } from '@react-navigation/native';
 import { getFontFamily } from '../utils/fontUtils';
 import { COLORS } from '../utils/colors';
+import { useNotification } from '../components/NotificationSystem';
 
 export default function PaymentScreen({ navigation }) {
   const route = useRoute();
   const { product, storeId, storeName } = route.params;
+  const { showModal, showSuccess, showError } = useNotification();
   
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -49,23 +50,23 @@ export default function PaymentScreen({ navigation }) {
 
   const validateForm = () => {
     if (!formData.customerName.trim()) {
-      Alert.alert('Error', 'Please enter your full name');
+      showError('Please enter your full name');
       return false;
     }
     if (!formData.email.trim() || !formData.email.includes('@')) {
-      Alert.alert('Error', 'Please enter a valid email address');
+      showError('Please enter a valid email address');
       return false;
     }
     if (!formData.phone.trim()) {
-      Alert.alert('Error', 'Please enter your phone number');
+      showError('Please enter your phone number');
       return false;
     }
     if (!formData.address.trim()) {
-      Alert.alert('Error', 'Please enter your address');
+      showError('Please enter your address');
       return false;
     }
     if (!formData.city.trim()) {
-      Alert.alert('Error', 'Please enter your city');
+      showError('Please enter your city');
       return false;
     }
     

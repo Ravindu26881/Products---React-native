@@ -71,27 +71,27 @@ export default function Toast({
       case 'success':
         return {
           backgroundColor: COLORS.success,
-          icon: '✅',
+          icon: '',
         };
       case 'error':
         return {
           backgroundColor: COLORS.error,
-          icon: '❌',
+          icon: '',
         };
       case 'warning':
         return {
           backgroundColor: COLORS.warning,
-          icon: '⚠️',
+          icon: '',
         };
       case 'info':
         return {
           backgroundColor: COLORS.primary,
-          icon: 'ℹ️',
+          icon: '',
         };
       default:
         return {
           backgroundColor: COLORS.primary,
-          icon: '💭',
+          icon: '',
         };
     }
   };

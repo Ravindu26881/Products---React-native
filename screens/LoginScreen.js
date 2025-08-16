@@ -60,6 +60,8 @@ export default function LoginScreen() {
     ]).start();
   }, []);
 
+
+
   // Removed showAlert function - using custom components instead
 
   const validateUsername = (value) => {
@@ -81,6 +83,18 @@ export default function LoginScreen() {
     }
     return null;
   };
+
+  const checkNewPassword = (value) => {
+      if (!value) {
+        setErrors({ password: 'Password is required' });
+        return;
+      }
+      if (value.length < 6) {
+        setErrors({ password: 'Password must be at least 6 characters' });
+        return;
+      }
+      setStep(3)
+  }
 
   const handleUsernameNext = async () => {
     const error = validateUsername(username);
@@ -156,18 +170,21 @@ export default function LoginScreen() {
   };
 
   const handleRegister = async () => {
+    console.log(111)
     const passwordError = validatePassword(password);
     if (passwordError) {
       setErrors({ password: passwordError });
+      console.log(222, passwordError);
       return;
     }
 
     // Validate optional fields
     if (email && !isValidEmail(email)) {
       setErrors({ email: 'Please enter a valid email address' });
+      console.log(333, 'Please enter a valid email address');
       return;
     }
-
+  console.log(444)
     setErrors({});
     setLoading(true);
 
@@ -245,7 +262,7 @@ export default function LoginScreen() {
         autoCorrect={false}
         returnKeyType="next"
         onSubmitEditing={handleUsernameNext}
-        autoFocus={true}
+        autoFocus={false}
       />
       
       {errors.username && (
@@ -362,7 +379,7 @@ export default function LoginScreen() {
             }}
             secureTextEntry={true}
             returnKeyType="next"
-            onSubmitEditing={() => setStep(3)}
+            onSubmitEditing={() => checkNewPassword(password)}
           />
           
           {errors.password && (
@@ -374,7 +391,7 @@ export default function LoginScreen() {
               styles.nextButton,
               (!password || loading) && styles.nextButtonDisabled,
             ]}
-            onPress={() => setStep(3)}
+            onPress={() => checkNewPassword(password)}
             disabled={!password || loading}
           >
             <Text style={[
@@ -485,10 +502,6 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        style={styles.keyboardView}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
         <View style={styles.header}>
           <Image 
             source={require('../assets/logo-one-line.png')} 
@@ -515,7 +528,6 @@ export default function LoginScreen() {
             Continue as guest - you can login anytime later
           </Text>
         </View>
-      </KeyboardAvoidingView>
 
       {/* New User Confirmation Modal */}
       <ConfirmationModal

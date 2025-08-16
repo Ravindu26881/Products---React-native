@@ -1,5 +1,5 @@
 // API endpoint for products
-import {Alert, Linking, Platform} from "react-native";
+import { Linking, Platform} from "react-native";
 
 const API_URL = 'https://products-api-production-124f.up.railway.app/stores';
 
@@ -57,14 +57,9 @@ export async function locationPermissionRetry() {
     }
 
     if (!canAskAgain) {
-      Alert.alert(
-          'Location Permission Needed',
-          'Please enable location in your device settings.',
-          [
-            { text: 'Cancel', style: 'cancel' },
-            { text: 'Open Settings', onPress: () => Linking.openSettings() }
-          ]
-      );
+      // Location permission permanently denied - user can enable in settings if needed
+      console.log('Location permission permanently denied. User can enable in device settings if needed.');
+      return { success: false, error: 'Location permission permanently denied' };
     }
 
     return { success: false, error: 'Location permission not granted' };

@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
-  Alert,
   SafeAreaView,
   Image,
   Platform,
@@ -15,10 +14,12 @@ import {
 import { useRoute } from '@react-navigation/native';
 import { getFontFamily } from '../utils/fontUtils';
 import { COLORS } from '../utils/colors';
+import { useNotification } from '../components/NotificationSystem';
 
 export default function ContactSellerScreen({ navigation }) {
   const route = useRoute();
   const { product, storeId, storeName } = route.params;
+  const { showModal, showSuccess, showError } = useNotification();
   
   const [message, setMessage] = useState('');
   const [contactMethod, setContactMethod] = useState('message');
@@ -39,23 +40,24 @@ export default function ContactSellerScreen({ navigation }) {
 
   const handleSendMessage = () => {
     if (!message.trim()) {
-      Alert.alert('Error', 'Please enter a message');
+      showError('Please enter a message');
       return;
     }
 
     // In a real app, you would send this message to your backend
     // and notify the seller via push notification, email, or SMS
     
-    Alert.alert(
-      'Message Sent! 📩',
-      'Your message has been sent to the seller. They will respond soon.',
-      [
+    showModal({
+      title: 'Message Sent! 📩',
+      message: 'Your message has been sent to the seller. They will respond soon.',
+      type: 'success',
+      buttons: [
         {
-          text: 'OK',
+          text: 'Continue',
           onPress: () => navigation.goBack(),
         },
       ]
-    );
+    });
     
     console.log('Message sent:', {
       productId: product._id || product.id,
@@ -69,10 +71,11 @@ export default function ContactSellerScreen({ navigation }) {
     // In a real app, you would get the seller's phone number from your backend
     const phoneNumber = '+94774462717'; // Example phone number
     
-    Alert.alert(
-      'Call Seller',
-      `Would you like to call ${storeName}?`,
-      [
+    showModal({
+      title: 'Call Seller',
+      message: `Would you like to call ${storeName}?`,
+      type: 'info',
+      buttons: [
         {
           text: 'Cancel',
           style: 'cancel',
@@ -84,7 +87,7 @@ export default function ContactSellerScreen({ navigation }) {
           },
         },
       ]
-    );
+    });
   };
 
   const handleWhatsApp = () => {
@@ -98,7 +101,7 @@ export default function ContactSellerScreen({ navigation }) {
       if (supported) {
         Linking.openURL(whatsappURL);
       } else {
-        Alert.alert('WhatsApp Not Available', 'WhatsApp is not installed on your device.');
+        showError('WhatsApp is not installed on your device.');
       }
     });
   };

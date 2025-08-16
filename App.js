@@ -22,6 +22,7 @@ import { UserProvider, useUser } from './contexts/UserContext';
 import LoadingState from './components/LoadingState';
 import GlobalUserControl from './components/GlobalUserControl';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { NotificationProvider } from './components/NotificationSystem';
 
 const Stack = createNativeStackNavigator();
 
@@ -151,10 +152,12 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <UserProvider>
-        <GlobalUserControl />
-        <AppContent />
-      </UserProvider>
+      <NotificationProvider>
+        <UserProvider>
+          <GlobalUserControl />
+          <AppContent />
+        </UserProvider>
+      </NotificationProvider>
     </SafeAreaProvider>
   );
 }

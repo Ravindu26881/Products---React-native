@@ -1,38 +1,50 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useUser } from '../contexts/UserContext';
 import { COLORS } from '../utils/colors';
+import { useNotification } from '../components/NotificationSystem';
 
 export default function UserProfile() {
   const { user, isLoggedIn, isGuest, logoutUser, showLoginScreen } = useUser();
+  const { showModal, showSuccess } = useNotification();
 
   const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        { text: 'Cancel', style: 'cancel' },
+    showModal({
+      title: 'Logout',
+      message: 'Are you sure you want to logout?',
+      type: 'warning',
+      buttons: [
         { 
-          text: 'Logout', 
-          style: 'destructive',
-          onPress: logoutUser
+          text: 'Cancel', 
+          style: 'cancel'
+        },
+        { 
+          text: 'Logout',
+          onPress: () => {
+            logoutUser();
+            showSuccess('Logged out successfully');
+          }
         },
       ]
-    );
+    });
   };
 
   const handleLoginPrompt = () => {
-    Alert.alert(
-      'Login',
-      'Would you like to login to access more features?',
-      [
-        { text: 'Not now', style: 'cancel' },
+    showModal({
+      title: 'Login',
+      message: 'Would you like to login to access more features?',
+      type: 'info',
+      buttons: [
         { 
-          text: 'Login', 
+          text: 'Not now', 
+          style: 'cancel'
+        },
+        { 
+          text: 'Login',
           onPress: showLoginScreen
         },
       ]
-    );
+    });
   };
 
   if (isLoggedIn && user) {
