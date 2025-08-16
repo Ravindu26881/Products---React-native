@@ -26,6 +26,7 @@ import ErrorState from '../components/ErrorState';
 import EmptyState from '../components/EmptyState';
 import ProductItem from '../components/ProductItem';
 import CartIcon from '../components/CartIcon';
+import UserProfile from '../components/UserProfile';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
@@ -216,6 +217,10 @@ export default function HomeScreen({ navigation }) {
         </View>
         <Text style={styles.subtitle}>🎉 Discover amazing products from local businesses</Text>
       </View>
+
+      <View style={styles.userProfileContainer}>
+        <UserProfile />
+      </View>
       
       <View style={styles.actionBar}>
         <TouchableOpacity 
@@ -331,6 +336,10 @@ const styles = StyleSheet.create({
     fontWeight: '200',
     marginTop: 0,
     marginBottom: 20,
+  },
+  userProfileContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 15,
   },
   actionBar: {
     flexDirection: 'row',

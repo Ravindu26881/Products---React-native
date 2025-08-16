@@ -8,6 +8,7 @@ import ProductDetailScreen from './screens/ProductDetailScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import ContactSellerScreen from './screens/ContactSellerScreen';
 import CartScreen from './screens/CartScreen';
+import LoginScreen from './screens/LoginScreen';
 import {
     Image,
     View,
@@ -17,6 +18,10 @@ import * as Font from 'expo-font';
 import { FONTS } from './utils/fontUtils';
 import { COLORS } from './utils/colors';
 import { CartProvider } from './contexts/CartContext';
+import { UserProvider, useUser } from './contexts/UserContext';
+import LoadingState from './components/LoadingState';
+import GlobalUserControl from './components/GlobalUserControl';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,31 +41,9 @@ const linking = {
   enabled: true,
 };
 
-export default function App() {
-    const [fontsLoaded] = Font.useFonts({
-        [FONTS.CAKE_BY_DEE]: require('./assets/fonts/CakeByDee.ttf'),
-        [FONTS.FASHION_HOME]: require('./assets/fonts/FashionHome.ttf'),
-    });
-
-    const navigationRef = useRef(null);
-
-    useEffect(() => {
-        if (Platform.OS === 'web') {
-            const handleBeforeUnload = (event) => {
-                return;
-            };
-
-            window.addEventListener('beforeunload', handleBeforeUnload);
-
-            return () => {
-                window.removeEventListener('beforeunload', handleBeforeUnload);
-            };
-        }
-    }, []);
-
-    if (!fontsLoaded) {
-        return null;
-    }
+// Main App Navigator - only shown after login/skip
+function AppNavigator() {
+  const navigationRef = useRef(null);
 
   return (
     <CartProvider>
@@ -128,5 +111,50 @@ export default function App() {
         </Stack.Navigator>
       </NavigationContainer>
     </CartProvider>
+  );
+}
+
+// App Content - handles login/main app logic
+function AppContent() {
+  const { loading, shouldShowLoginScreen } = useUser();
+  const [fontsLoaded] = Font.useFonts({
+      [FONTS.CAKE_BY_DEE]: require('./assets/fonts/CakeByDee.ttf'),
+      [FONTS.FASHION_HOME]: require('./assets/fonts/FashionHome.ttf'),
+  });
+
+  if (!fontsLoaded || loading) {
+    return <LoadingState />;
+  }
+
+  if (shouldShowLoginScreen()) {
+    return <LoginScreen />;
+  }
+
+  return <AppNavigator />;
+}
+
+// Main App Component
+export default function App() {
+    useEffect(() => {
+        if (Platform.OS === 'web') {
+            const handleBeforeUnload = (event) => {
+                return;
+            };
+
+            window.addEventListener('beforeunload', handleBeforeUnload);
+
+            return () => {
+                window.removeEventListener('beforeunload', handleBeforeUnload);
+            };
+        }
+    }, []);
+
+  return (
+    <SafeAreaProvider>
+      <UserProvider>
+        <GlobalUserControl />
+        <AppContent />
+      </UserProvider>
+    </SafeAreaProvider>
   );
 }

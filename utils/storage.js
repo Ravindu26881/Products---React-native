@@ -8,6 +8,7 @@ if (Platform.OS !== 'web') {
 
 const CART_KEY = 'salesale_cart';
 const USER_PREFERENCES_KEY = 'salesale_user_preferences';
+const USER_DATA_KEY = 'salesale_user_data';
 
 class StorageService {
   // Generic storage methods that work across platforms
@@ -108,6 +109,20 @@ class StorageService {
   async getUserPreferences() {
     const preferences = await this.getItem(USER_PREFERENCES_KEY);
     return preferences || {};
+  }
+
+  // User data methods
+  async saveUserData(userData) {
+    return await this.setItem(USER_DATA_KEY, userData);
+  }
+
+  async getUserData() {
+    const userData = await this.getItem(USER_DATA_KEY);
+    return userData || null;
+  }
+
+  async clearUserData() {
+    return await this.removeItem(USER_DATA_KEY);
   }
 
   // Migration method for future backend integration
