@@ -239,7 +239,7 @@ export default function StoresScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <FlatList
-        data={filteredStores}
+          data={filteredStores.filter(item => item.isActive)}
         renderItem={renderStoreItem}
         keyExtractor={(item) => item._id || item.id}
         ListHeaderComponent={ListHeaderComponent}

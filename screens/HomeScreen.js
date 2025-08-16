@@ -273,7 +273,7 @@ export default function HomeScreen({ navigation }) {
         translucent={false}
       />
       <FlatList
-        data={filteredProducts}
+          data={filteredProducts.filter(item => item.store.isActive)}
         renderItem={renderProductItem}
         keyExtractor={(item, index) => `${item.storeId}-${item._id || item.id}-${index}`}
         numColumns={numColumns}
