@@ -215,7 +215,7 @@ export default function HomeScreen({ navigation }) {
             style={styles.cartIcon}
           />
         </View>
-        <Text style={styles.subtitle}>🎉 Discover amazing products from local businesses</Text>
+        <Text style={styles.subtitle}>Discover amazing products from local businesses</Text>
       </View>
 
       <View style={styles.userProfileContainer}>
@@ -227,7 +227,7 @@ export default function HomeScreen({ navigation }) {
           style={styles.browseStoresButton}
           onPress={() => navigation.navigate('Stores')}
         >
-          <Text style={styles.browseStoresText}>🏪 Browse by Stores</Text>
+          <Text style={styles.browseStoresText}>Browse by Stores</Text>
         </TouchableOpacity>
         
         <TouchableOpacity 

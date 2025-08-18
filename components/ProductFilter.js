@@ -11,9 +11,9 @@ import {
 import { COLORS } from '../utils/colors';
 
 const PRODUCT_CATEGORIES = [
-  { id: 'all', name: 'All Products', icon: '📦' },
-  { id: 'cakes', name: 'Cakes & Desserts', icon: '🎂' },
-  { id: 'clothing', name: 'Clothing & Fashion', icon: '👕' },
+  { id: 'all', name: 'All Products', },
+  { id: 'cakes', name: 'Cakes & Desserts', },
+  { id: 'clothing', name: 'Clothing & Fashion',},
 ];
 
 export default function ProductFilter({ 

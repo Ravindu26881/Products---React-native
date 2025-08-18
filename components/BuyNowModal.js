@@ -64,9 +64,6 @@ export default function BuyNowModal({
               activeOpacity={0.8}
             >
               <View style={styles.optionContent}>
-                <View style={styles.optionIcon}>
-                  <Text style={styles.optionIconText}>💬</Text>
-                </View>
                 <View style={styles.optionTextContainer}>
                   <Text style={styles.optionTitle}>Contact Seller</Text>
                   <Text style={styles.optionDescription}>
@@ -84,9 +81,6 @@ export default function BuyNowModal({
               activeOpacity={0.8}
             >
               <View style={styles.optionContent}>
-                <View style={styles.optionIcon}>
-                  <Text style={styles.optionIconText}>💳</Text>
-                </View>
                 <View style={styles.optionTextContainer}>
                   <Text style={styles.optionTitle}>Pay Now</Text>
                   <Text style={styles.optionDescription}>

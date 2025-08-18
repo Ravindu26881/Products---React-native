@@ -65,7 +65,7 @@ export default function UserProfile() {
     return (
       <View style={styles.container}>
         <View style={styles.welcomeContainer}>
-          <Text style={styles.guestText}>👋 Guest User</Text>
+          <Text style={styles.guestText}>Guest User</Text>
           <Text style={styles.guestSubtext}>Login to access all features</Text>
         </View>
         <TouchableOpacity style={styles.loginButton} onPress={handleLoginPrompt}>

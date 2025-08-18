@@ -59,25 +59,21 @@ export default function ConfirmationModal({
     switch (type) {
       case 'success':
         return {
-          icon: '✅',
           titleColor: COLORS.success,
           accent: COLORS.success,
         };
       case 'warning':
         return {
-          icon: '⚠️',
           titleColor: COLORS.warning,
           accent: COLORS.warning,
         };
       case 'info':
         return {
-          icon: 'ℹ️',
           titleColor: COLORS.primary,
           accent: COLORS.primary,
         };
       default:
         return {
-          icon: '',
           titleColor: COLORS.primary,
           accent: COLORS.primary,
         };
@@ -119,12 +115,6 @@ export default function ConfirmationModal({
             }
           ]}
         >
-          {/* Icon */}
-          {typeStyles.icon ?
-              <View style={styles.iconContainer}>
-                <Text style={styles.icon}>{typeStyles.icon}</Text>
-              </View> : ''
-          }
 
 
           {/* Title */}
@@ -188,12 +178,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 20,
     elevation: 20,
-  },
-  iconContainer: {
-    marginBottom: 16,
-  },
-  icon: {
-    fontSize: 40,
   },
   title: {
     fontSize: 20,
