@@ -18,6 +18,7 @@ import { COLORS } from '../utils/colors';
 import { fetchProductById } from '../data/products';
 import BuyNowModal from '../components/BuyNowModal';
 import { useCart } from '../contexts/CartContext';
+import { useOrder } from '../contexts/OrderContext';
 import CartActionModal from '../components/CartActionModal';
 
 export default function ProductDetailScreen({ navigation }) {
@@ -34,6 +35,7 @@ export default function ProductDetailScreen({ navigation }) {
 
   const [showCartModal, setShowCartModal] = useState(false);
   const { addToCart, isItemInCart, getItemQuantityInCart, removeFromCart, updateQuantity, getCartItemId } = useCart();
+  const { setSingleProductOrder } = useOrder();
 
   useEffect(() => {
     loadProduct();
@@ -128,11 +130,9 @@ export default function ProductDetailScreen({ navigation }) {
 
   const handleOrderNow = () => {
     setShowBuyNowModal(false);
-    navigation.navigate('Order', {
-      products: [{ product: product, quantity: 1, storeId: storeId, storeName: storeName }],
-      storeId: storeId,
-      storeName: storeName,
-    });
+    // Save order data to global context
+    setSingleProductOrder(product, storeId, storeName, 1);
+    navigation.navigate('Order');
   };
 
   if (loading) {

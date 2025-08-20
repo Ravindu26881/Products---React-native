@@ -12,6 +12,7 @@ import {
   Platform,
 } from 'react-native';
 import { useCart } from '../contexts/CartContext';
+import { useOrder } from '../contexts/OrderContext';
 import { COLORS } from '../utils/colors';
 import { getFontFamily } from '../utils/fontUtils';
 import EmptyState from '../components/EmptyState';
@@ -30,6 +31,7 @@ export default function CartScreen({ navigation }) {
     updateQuantity, 
     clearCart 
   } = useCart();
+  const { setCartOrder } = useOrder();
 
   const [processingItemId, setProcessingItemId] = useState(null);
   const { showModal, showSuccess, showError } = useNotification();
@@ -104,12 +106,10 @@ export default function CartScreen({ navigation }) {
   };
 
   const handleCheckout = () => {
-    // Navigate to payment screen with all cart items
-    navigation.navigate('Order', {
-      products: items,
-      storeId: items[0]?.storeId || null,
-      storeName: items[0]?.storeName || 'Multiple Stores'
-    });
+    // Save cart data to global context
+    setCartOrder(items);
+    // Navigate to payment screen
+    navigation.navigate('Order');
   };
 
   const formatPrice = (price) => {

@@ -19,6 +19,7 @@ import * as Font from 'expo-font';
 import { FONTS } from './utils/fontUtils';
 import { COLORS } from './utils/colors';
 import { CartProvider } from './contexts/CartContext';
+import { OrderProvider } from './contexts/OrderContext';
 import { UserProvider, useUser } from './contexts/UserContext';
 import LoadingState from './components/LoadingState';
 import GlobalUserControl from './components/GlobalUserControl';
@@ -48,12 +49,13 @@ function AppNavigator() {
   const navigationRef = useRef(null);
 
   return (
-    <CartProvider>
-      <NavigationContainer 
-        ref={navigationRef}
-        linking={linking}
-        fallback={<View style={{ flex: 1, backgroundColor: COLORS.primary }} />}
-      >
+    <OrderProvider>
+      <CartProvider>
+        <NavigationContainer 
+          ref={navigationRef}
+          linking={linking}
+          fallback={<View style={{ flex: 1, backgroundColor: COLORS.primary }} />}
+        >
         <Stack.Navigator
             screenOptions={{
                 headerStyle: {
@@ -119,8 +121,9 @@ function AppNavigator() {
           }}
         />
         </Stack.Navigator>
-      </NavigationContainer>
-    </CartProvider>
+        </NavigationContainer>
+      </CartProvider>
+    </OrderProvider>
   );
 }
 

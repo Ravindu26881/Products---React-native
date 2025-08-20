@@ -16,11 +16,13 @@ import { getFontFamily } from '../utils/fontUtils';
 import { COLORS } from '../utils/colors';
 import { useNotification } from '../components/NotificationSystem';
 import { useUser } from '../contexts/UserContext';
+import { useOrder } from '../contexts/OrderContext';
 import { sendOrder } from '../data/products';
 
 export default function PaymentScreen({ navigation }) {
   const route = useRoute();
-  const { products, storeId, storeName } = route.params;
+  // Get order data from global context instead of navigation props
+  const { products, storeId, storeName, loading: orderLoading, clearOrderData } = useOrder();
   const [ quantity, setQuantity]  = useState(1);
   const { showModal, showSuccess, showError } = useNotification();
   const { user,isLoggedIn, isGuest, showLoginScreen } = useUser();
@@ -94,6 +96,9 @@ export default function PaymentScreen({ navigation }) {
       const storeCount = storeGroupsArray.length;
       const storeNames = storeGroupsArray.map(group => group.storeName);
       
+      // Clear order data after successful order placement
+      await clearOrderData();
+      
       showModal({
         title: 'Orders Placed!',
         message: `Your orders for ${totalItems} items from ${storeCount > 1 ? `${storeCount} stores (${storeNames.join(', ')})` : storeNames[0]} have been placed successfully.\n\nThe sellers will contact you shortly to arrange payment and delivery.`,
@@ -113,6 +118,36 @@ export default function PaymentScreen({ navigation }) {
   };
 
 
+
+  // Show loading state while order data is loading
+  if (orderLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+          <Text style={styles.loadingText}>Loading order details...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  // Show error state if no order data is available
+  if (!products || products.length === 0) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>No order data found.</Text>
+          <Text style={styles.errorSubtext}>Please go back and try again.</Text>
+          <TouchableOpacity 
+            style={styles.backButton} 
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.backButtonText}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -239,6 +274,48 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  loadingText: {
+    marginTop: 15,
+    fontSize: 16,
+    color: COLORS.textOnWhite,
+    textAlign: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.textOnWhite,
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  errorSubtext: {
+    fontSize: 14,
+    color: COLORS.textOnWhite,
+    textAlign: 'center',
+    marginBottom: 30,
+  },
+  backButton: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: 30,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  backButtonText: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontWeight: '600',
   },
   productSummary: {
     flexDirection: 'row',

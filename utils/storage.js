@@ -9,6 +9,7 @@ if (Platform.OS !== 'web') {
 const CART_KEY = 'salesale_cart';
 const USER_PREFERENCES_KEY = 'salesale_user_preferences';
 const USER_DATA_KEY = 'salesale_user_data';
+const ORDER_DATA_KEY = 'salesale_order_data';
 
 class StorageService {
   // Generic storage methods that work across platforms
@@ -123,6 +124,23 @@ class StorageService {
 
   async clearUserData() {
     return await this.removeItem(USER_DATA_KEY);
+  }
+
+  // Order data methods
+  async saveOrderData(orderData) {
+    return await this.setItem(ORDER_DATA_KEY, {
+      ...orderData,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  async getOrderData() {
+    const orderData = await this.getItem(ORDER_DATA_KEY);
+    return orderData || null;
+  }
+
+  async clearOrderData() {
+    return await this.removeItem(ORDER_DATA_KEY);
   }
 
   // Migration method for future backend integration
