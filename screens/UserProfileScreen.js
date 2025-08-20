@@ -211,8 +211,9 @@ export default function UserProfileScreen({ navigation }) {
           </Text>
         </View>
         <View style={styles.userInfo}>
-          <Text style={styles.username}>{user?.username || 'User'}</Text>
-          <Text style={styles.userEmail}>{user?.email || 'user@example.com'}</Text>
+          <Text style={styles.username}>{user?.username}</Text>
+          {/*<Text style={styles.userEmail}>{user?.email || 'No email address'}</Text>*/}
+          <Text style={styles.userEmail}>{user?.phone || 'No Phone Number'}</Text>
           <Text style={styles.joinDate}>
             Member since {user?.joinDate || 'January 2024'}
           </Text>
@@ -225,9 +226,9 @@ export default function UserProfileScreen({ navigation }) {
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Orders</Text>
-        {/*<TouchableOpacity onPress={}>*/}
-        {/*  <Text style={styles.viewAllText}>View All</Text>*/}
-        {/*</TouchableOpacity>*/}
+        <TouchableOpacity onPress={onRefresh}>
+          <Text style={styles.viewAllText}>Refresh ↻</Text>
+        </TouchableOpacity>
       </View>
       
       {userOrders.length === 0 ? (
