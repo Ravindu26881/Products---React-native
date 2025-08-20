@@ -79,7 +79,7 @@ export default function UserProfile({
     }
   }
 
-  if (isGuest) {
+  if (isGuest || !isLoggedIn) {
     if (mini) {
       return (
           <TouchableOpacity onPress={handleLoginPrompt} style={styles.containerMini}>

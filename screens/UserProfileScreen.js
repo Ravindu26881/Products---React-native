@@ -14,12 +14,12 @@ import AuthAPI from '../services/authAPI';
 import { useNotification } from '../components/NotificationSystem';
 import { COLORS } from '../utils/colors';
 import StorageService from '../utils/storage';
-import {fetchProductById} from "../data/products";
+import {deleteOrder, fetchProductById} from "../data/products";
 import {fetchStoreById} from "../data/stores";
 
 export default function UserProfileScreen({ navigation }) {
   const { user, logoutUser } = useUser();
-  const { showModal, showSuccess } = useNotification();
+  const { showModal, showSuccess, showError } = useNotification();
   const [userOrders, setUserOrders] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -114,8 +114,10 @@ export default function UserProfileScreen({ navigation }) {
     // In a real app, you would get the seller's phone number from your backend
     const phoneNumber = ''; // Example phone number
     try {
+      setLoading(true);
       const store = await fetchStoreById(storeId)
       console.log('store', store);
+      setLoading(false)
       if(store.phone) {
         await Linking.openURL(`tel:${phoneNumber}`)
       } else {
@@ -130,13 +132,20 @@ export default function UserProfileScreen({ navigation }) {
       }
     } catch (error) {
       console.error('Error fetching store details:', error);
-      showModal({
-        title: 'Error',
-        message: 'Failed to fetch store details. Please try again later.',
-        type: 'error',
-        buttons: [{text: 'OK', style: 'cancel'}],
-      });
+      showError('Error fetching store details. Please try again later.');
       return;
+    }
+  };
+
+  const handleDeleteOrder = async (orderId) => {
+    try {
+      setLoading(true);
+      await deleteOrder(orderId);
+      showSuccess('Order Removed Successfully');
+      await onRefresh();
+    } catch (error) {
+      console.error('Error deleting order:', error);
+      showError('Failed to delete order. Please try again later.');
     }
   };
 
@@ -147,14 +156,17 @@ export default function UserProfileScreen({ navigation }) {
       buttons: [
         {
           text: 'Contact Store Owner',
-          onPress: () => {handlePhoneCall(storeId)},
+          onPress: () => {
+            handlePhoneCall(storeId)
+          },
           style: 'cancel'
         },
         {
           text: 'Delete Order',
           onPress: () => {
-
+            handleDeleteOrder(orderId);
           },
+          style: 'cancel'
         },
       ]
     });
@@ -186,6 +198,10 @@ export default function UserProfileScreen({ navigation }) {
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Account Details</Text>
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Text>Logout ⍈</Text>
+        </TouchableOpacity>
+
       </View>
 
       <View style={styles.userCard}>
@@ -283,7 +299,6 @@ export default function UserProfileScreen({ navigation }) {
     return (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#007AFF" />
-          <Text style={styles.loadingText}>Loading User Profile...</Text>
         </View>
     );
   } else {
@@ -330,7 +345,7 @@ const styles = StyleSheet.create({
     color: COLORS.textInverse,
   },
   section: {
-    margin: 16,
+    margin: 25,
     marginBottom: 24,
   },
   sectionTitle: {
@@ -492,9 +507,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   logoutButton: {
-    backgroundColor: COLORS.error + '10',
-    borderColor: COLORS.error + '30',
+    paddingVertical: 5,
+    paddingHorizontal: 8,
+borderRadius: 10,
     borderWidth: 1,
+    borderColor: COLORS.bordersLight,
   },
   logoutButtonText: {
     color: COLORS.error,

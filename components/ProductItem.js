@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     height: 200,
     filter: 'brightness(0.9)',
     // boxShadow: "0px 0px 17px 0px rgba(0, 0, 0, 0.3)",
-    borderRadius: 20
+    borderRadius: 0
   },
   productPriceWrapper: {
     flexDirection: 'row',
@@ -183,7 +183,6 @@ const styles = StyleSheet.create({
   },
   productInfo: {
     flex: 1,
-    paddingHorizontal: 10,
   },
   storeBadge: {
     alignSelf: 'flex-start',

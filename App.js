@@ -115,7 +115,7 @@ function AppNavigator() {
           component={UserProfileScreen}
           options={{
             headerShown: true,
-            title: 'My Profile',
+            title: 'Profile',
           }}
         />
         </Stack.Navigator>

@@ -18,6 +18,7 @@ import { COLORS } from '../utils/colors';
 import AuthAPI from '../services/authAPI';
 import ConfirmationModal from '../components/ConfirmationModal';
 import Toast from '../components/Toast';
+import {useNotification} from "../components/NotificationSystem";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -32,7 +33,7 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [userExists, setUserExists] = useState(null);
-  
+  const { showModal, showSuccess, showError } = useNotification();
   // Modal and Toast states
   const [showNewUserModal, setShowNewUserModal] = useState(false);
   const [showSkipModal, setShowSkipModal] = useState(false);
@@ -85,15 +86,15 @@ export default function LoginScreen() {
   };
 
   const checkNewPassword = (value) => {
-      if (!value) {
-        setErrors({ password: 'Password is required' });
-        return;
-      }
-      if (value.length < 6) {
-        setErrors({ password: 'Password must be at least 6 characters' });
-        return;
-      }
-      setStep(3)
+    if (!value) {
+      setErrors({ password: 'Password is required' });
+      return;
+    }
+    if (value.length < 6) {
+      setErrors({ password: 'Password must be at least 6 characters' });
+      return;
+    }
+    setStep(3)
   }
 
   const handleUsernameNext = async () => {
@@ -102,18 +103,18 @@ export default function LoginScreen() {
       setErrors({ username: error });
       return;
     }
-    
+
     setLoading(true);
     setErrors({});
 
     try {
       // Check if username exists
       const result = await AuthAPI.checkUsername(username);
-      
+
       if (result.success) {
         const exists = result.data.exists || result.data.userExists;
         setUserExists(exists);
-        
+
         if (exists) {
           // User exists - proceed to login
           setMode('login');
@@ -149,13 +150,13 @@ export default function LoginScreen() {
 
     try {
       const result = await AuthAPI.authenticateUser(username, password);
-      
+
       if (result.success) {
         const userData = {
           ...result.data.user,
           loginTime: new Date().toISOString(),
         };
-        
+
         await loginUser(userData);
       } else {
         // Authentication failed
@@ -169,9 +170,24 @@ export default function LoginScreen() {
     }
   };
 
+  const validatePhoneNumber = (value) => {
+    if (!value.trim()) {
+      return 'Phone number is required';
+    }
+    // Add more validation logic if needed
+    return null;
+  };
+
   const handleRegister = async () => {
     console.log(111)
     const passwordError = validatePassword(password);
+    const phoneNumberError = validatePhoneNumber(phone);
+    if (phoneNumberError) {
+      setErrors({phone: phoneNumberError});
+      showError(phoneNumberError);
+      return;
+    }
+
     if (passwordError) {
       setErrors({ password: passwordError });
       console.log(222, passwordError);
@@ -184,7 +200,7 @@ export default function LoginScreen() {
       console.log(333, 'Please enter a valid email address');
       return;
     }
-  console.log(444)
+    console.log(444)
     setErrors({});
     setLoading(true);
 
@@ -198,18 +214,18 @@ export default function LoginScreen() {
       };
 
       const result = await AuthAPI.createUser(userData);
-      
+
       if (result.success) {
         // Registration successful - auto login
         const newUserData = {
           ...result.data.user,
           loginTime: new Date().toISOString(),
         };
-        
+
         // Show success toast and auto login
         setSuccessMessage(`Welcome to SaleSale, ${username}! Account created successfully.`);
         setShowSuccessToast(true);
-        
+
         // Auto login after a short delay to let user see the success message
         setTimeout(() => {
           loginUser(newUserData);
@@ -235,278 +251,278 @@ export default function LoginScreen() {
   };
 
   const renderStep1 = () => (
-    <Animated.View 
-      style={[
-        styles.stepContainer,
-        {
-          opacity: fadeAnim,
-          transform: [{ translateY: slideAnim }],
-        },
-      ]}
-    >
-      <Text style={styles.stepTitle}>What's your username?</Text>
-      <Text style={styles.stepSubtitle}>Enter your username to get started</Text>
-      
-      <TextInput
-        style={[
-          styles.input,
-          errors.username && styles.inputError,
-        ]}
-        placeholder="Enter username"
-        value={username}
-        onChangeText={(text) => {
-          setUsername(text);
-          if (errors.username) setErrors({});
-        }}
-        autoCapitalize="none"
-        autoCorrect={false}
-        returnKeyType="next"
-        onSubmitEditing={handleUsernameNext}
-        autoFocus={false}
-      />
-      
-      {errors.username && (
-        <Text style={styles.errorText}>{errors.username}</Text>
-      )}
-
-      <TouchableOpacity
-        style={[
-          styles.nextButton,
-          (!username.trim() || loading) && styles.nextButtonDisabled,
-        ]}
-        onPress={handleUsernameNext}
-        disabled={!username.trim() || loading}
+      <Animated.View
+          style={[
+            styles.stepContainer,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            },
+          ]}
       >
-        <Text style={[
-          styles.nextButtonText,
-          (!username.trim() || loading) && styles.nextButtonTextDisabled,
-        ]}>
-          {loading ? 'Checking...' : 'Next →'}
-        </Text>
-      </TouchableOpacity>
-    </Animated.View>
+        <Text style={styles.stepTitle}>What's your username?</Text>
+        <Text style={styles.stepSubtitle}>Enter your username to get started</Text>
+
+        <TextInput
+            style={[
+              styles.input,
+              errors.username && styles.inputError,
+            ]}
+            placeholder="Enter username"
+            value={username}
+            onChangeText={(text) => {
+              setUsername(text);
+              if (errors.username) setErrors({});
+            }}
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="next"
+            onSubmitEditing={handleUsernameNext}
+            autoFocus={false}
+        />
+
+        {errors.username && (
+            <Text style={styles.errorText}>{errors.username}</Text>
+        )}
+
+        <TouchableOpacity
+            style={[
+              styles.nextButton,
+              (!username.trim() || loading) && styles.nextButtonDisabled,
+            ]}
+            onPress={handleUsernameNext}
+            disabled={!username.trim() || loading}
+        >
+          <Text style={[
+            styles.nextButtonText,
+            (!username.trim() || loading) && styles.nextButtonTextDisabled,
+          ]}>
+            {loading ? 'Checking...' : 'Next →'}
+          </Text>
+        </TouchableOpacity>
+      </Animated.View>
   );
 
   const renderStep2 = () => {
     if (mode === 'login') {
       return (
-        <Animated.View 
-          style={[
-            styles.stepContainer,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }],
-            },
-          ]}
-        >
-          <Text style={styles.stepTitle}>Welcome back, {username}!</Text>
-          <Text style={styles.stepSubtitle}>Please enter your password</Text>
-          
-          <TextInput
-            ref={passwordInputRef}
-            style={[
-              styles.input,
-              errors.password && styles.inputError,
-            ]}
-            placeholder="Enter password"
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              if (errors.password) setErrors({});
-            }}
-            secureTextEntry={true}
-            returnKeyType="done"
-            onSubmitEditing={handleLogin}
-          />
-          
-          {errors.password && (
-            <Text style={styles.errorText}>{errors.password}</Text>
-          )}
-
-          <TouchableOpacity
-            style={[
-              styles.loginButton,
-              loading && styles.loginButtonDisabled,
-            ]}
-            onPress={handleLogin}
-            disabled={loading}
+          <Animated.View
+              style={[
+                styles.stepContainer,
+                {
+                  opacity: fadeAnim,
+                  transform: [{ translateY: slideAnim }],
+                },
+              ]}
           >
-            <Text style={styles.loginButtonText}>
-              {loading ? 'Signing in...' : 'Sign In'}
-            </Text>
-          </TouchableOpacity>
+            <Text style={styles.stepTitle}>Welcome back, {username}!</Text>
+            <Text style={styles.stepSubtitle}>Please enter your password</Text>
 
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => {
-              setStep(1);
-              setPassword('');
-              setErrors({});
-              setUserExists(null);
-            }}
-            disabled={loading}
-          >
-            <Text style={styles.backButtonText}>← Change Username</Text>
-          </TouchableOpacity>
-        </Animated.View>
+            <TextInput
+                ref={passwordInputRef}
+                style={[
+                  styles.input,
+                  errors.password && styles.inputError,
+                ]}
+                placeholder="Enter password"
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  if (errors.password) setErrors({});
+                }}
+                secureTextEntry={true}
+                returnKeyType="done"
+                onSubmitEditing={handleLogin}
+            />
+
+            {errors.password && (
+                <Text style={styles.errorText}>{errors.password}</Text>
+            )}
+
+            <TouchableOpacity
+                style={[
+                  styles.loginButton,
+                  loading && styles.loginButtonDisabled,
+                ]}
+                onPress={handleLogin}
+                disabled={loading}
+            >
+              <Text style={styles.loginButtonText}>
+                {loading ? 'Signing in...' : 'Sign In'}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => {
+                  setStep(1);
+                  setPassword('');
+                  setErrors({});
+                  setUserExists(null);
+                }}
+                disabled={loading}
+            >
+              <Text style={styles.backButtonText}>← Change Username</Text>
+            </TouchableOpacity>
+          </Animated.View>
       );
     } else {
       // Registration mode
       return (
-        <Animated.View 
-          style={[
-            styles.stepContainer,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }],
-            },
-          ]}
-        >
-          <Text style={styles.stepTitle}>Create Account</Text>
-          <Text style={styles.stepSubtitle}>Setup your password for {username}</Text>
-          
-          <TextInput
-            ref={passwordInputRef}
-            style={[
-              styles.input,
-              errors.password && styles.inputError,
-            ]}
-            placeholder="Create password (min 6 characters)"
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              if (errors.password) setErrors({});
-            }}
-            secureTextEntry={true}
-            returnKeyType="next"
-            onSubmitEditing={() => checkNewPassword(password)}
-          />
-          
-          {errors.password && (
-            <Text style={styles.errorText}>{errors.password}</Text>
-          )}
-
-          <TouchableOpacity
-            style={[
-              styles.nextButton,
-              (!password || loading) && styles.nextButtonDisabled,
-            ]}
-            onPress={() => checkNewPassword(password)}
-            disabled={!password || loading}
+          <Animated.View
+              style={[
+                styles.stepContainer,
+                {
+                  opacity: fadeAnim,
+                  transform: [{ translateY: slideAnim }],
+                },
+              ]}
           >
-            <Text style={[
-              styles.nextButtonText,
-              (!password || loading) && styles.nextButtonTextDisabled,
-            ]}>
-              Continue →
-            </Text>
-          </TouchableOpacity>
+            <Text style={styles.stepTitle}>Create Account</Text>
+            <Text style={styles.stepSubtitle}>Setup your password for {username}</Text>
 
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => {
-              setStep(1);
-              setPassword('');
-              setErrors({});
-              setUserExists(null);
-              setMode('login');
-            }}
-            disabled={loading}
-          >
-            <Text style={styles.backButtonText}>← Change Username</Text>
-          </TouchableOpacity>
-        </Animated.View>
+            <TextInput
+                ref={passwordInputRef}
+                style={[
+                  styles.input,
+                  errors.password && styles.inputError,
+                ]}
+                placeholder="Create password (min 6 characters)"
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  if (errors.password) setErrors({});
+                }}
+                secureTextEntry={true}
+                returnKeyType="next"
+                onSubmitEditing={() => checkNewPassword(password)}
+            />
+
+            {errors.password && (
+                <Text style={styles.errorText}>{errors.password}</Text>
+            )}
+
+            <TouchableOpacity
+                style={[
+                  styles.nextButton,
+                  (!password || loading) && styles.nextButtonDisabled,
+                ]}
+                onPress={() => checkNewPassword(password)}
+                disabled={!password || loading}
+            >
+              <Text style={[
+                styles.nextButtonText,
+                (!password || loading) && styles.nextButtonTextDisabled,
+              ]}>
+                Continue →
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => {
+                  setStep(1);
+                  setPassword('');
+                  setErrors({});
+                  setUserExists(null);
+                  setMode('login');
+                }}
+                disabled={loading}
+            >
+              <Text style={styles.backButtonText}>← Change Username</Text>
+            </TouchableOpacity>
+          </Animated.View>
       );
     }
   };
 
   const renderStep3 = () => (
-    <Animated.View 
-      style={[
-        styles.stepContainer,
-        {
-          opacity: fadeAnim,
-          transform: [{ translateY: slideAnim }],
-        },
-      ]}
-    >
-      <Text style={styles.stepTitle}>Almost Done!</Text>
-      <Text style={styles.stepSubtitle}>Tell us a bit about yourself (optional)</Text>
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Full Name (optional)"
-        value={name}
-        onChangeText={setName}
-        returnKeyType="next"
-      />
-
-      <TextInput
-        style={[
-          styles.input,
-          errors.email && styles.inputError,
-        ]}
-        placeholder="Email (optional)"
-        value={email}
-        onChangeText={(text) => {
-          setEmail(text);
-          if (errors.email) setErrors({});
-        }}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        returnKeyType="next"
-      />
-
-      {errors.email && (
-        <Text style={styles.errorText}>{errors.email}</Text>
-      )}
-
-      <TextInput
-        style={styles.input}
-        placeholder="Phone (optional)"
-        value={phone}
-        onChangeText={setPhone}
-        keyboardType="phone-pad"
-        returnKeyType="done"
-        onSubmitEditing={handleRegister}
-      />
-
-      <TouchableOpacity
-        style={[
-          styles.loginButton,
-          loading && styles.loginButtonDisabled,
-        ]}
-        onPress={handleRegister}
-        disabled={loading}
+      <Animated.View
+          style={[
+            styles.stepContainer,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            },
+          ]}
       >
-        <Text style={styles.loginButtonText}>
-          {loading ? 'Creating Account...' : 'Create Account'}
-        </Text>
-      </TouchableOpacity>
+        <Text style={styles.stepTitle}>Almost Done!</Text>
+        <Text style={styles.stepSubtitle}>Tell us a bit about yourself (optional)</Text>
 
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => {
-          setStep(2);
-          setName('');
-          setEmail('');
-          setPhone('');
-          setErrors({});
-        }}
-        disabled={loading}
-      >
-        <Text style={styles.backButtonText}>← Back</Text>
-      </TouchableOpacity>
-    </Animated.View>
+        <TextInput
+            style={styles.input}
+            placeholder="Full Name (optional)"
+            value={name}
+            onChangeText={setName}
+            returnKeyType="next"
+        />
+
+        <TextInput
+            style={[
+              styles.input,
+              errors.email && styles.inputError,
+            ]}
+            placeholder="Email (optional)"
+            value={email}
+            onChangeText={(text) => {
+              setEmail(text);
+              if (errors.email) setErrors({});
+            }}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            returnKeyType="next"
+        />
+
+        {errors.email && (
+            <Text style={styles.errorText}>{errors.email}</Text>
+        )}
+
+        <TextInput
+            style={styles.input}
+            placeholder="Phone"
+            value={phone}
+            onChangeText={setPhone}
+            keyboardType="phone-pad"
+            returnKeyType="done"
+            onSubmitEditing={handleRegister}
+        />
+
+        <TouchableOpacity
+            style={[
+              styles.loginButton,
+              loading && styles.loginButtonDisabled,
+            ]}
+            onPress={handleRegister}
+            disabled={loading}
+        >
+          <Text style={styles.loginButtonText}>
+            {loading ? 'Creating Account...' : 'Create Account'}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => {
+              setStep(2);
+              setName('');
+              setEmail('');
+              setPhone('');
+              setErrors({});
+            }}
+            disabled={loading}
+        >
+          <Text style={styles.backButtonText}>← Back</Text>
+        </TouchableOpacity>
+      </Animated.View>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-          <Image 
-            source={require('../assets/logo-one-line.png')} 
-            style={styles.logo}
-            resizeMode="contain"
+          <Image
+              source={require('../assets/logo-one-line.png')}
+              style={styles.logo}
+              resizeMode="contain"
           />
           <Text style={styles.welcomeText}>Welcome to SaleSale!</Text>
         </View>
@@ -516,81 +532,81 @@ export default function LoginScreen() {
         </View>
 
         <View style={styles.footer}>
-          <TouchableOpacity 
-            style={styles.skipButton} 
-            onPress={handleSkipLogin}
-            disabled={loading}
+          <TouchableOpacity
+              style={styles.skipButton}
+              onPress={handleSkipLogin}
+              disabled={loading}
           >
             <Text style={styles.skipButtonText}>Skip for now</Text>
           </TouchableOpacity>
-          
+
           <Text style={styles.skipDescription}>
             Continue as guest - you can login anytime later
           </Text>
         </View>
 
-      {/* New User Confirmation Modal */}
-      <ConfirmationModal
-        visible={showNewUserModal}
-        message={`No user found! Would you like to create a new account?`}
-        buttons={[
-          {
-            text: 'Try Different Username',
-            style: 'cancel',
-            onPress: () => {
-              setUsername('');
-              setUserExists(null);
-              setShowNewUserModal(false);
-            },
-          },
-          {
-            text: 'Create Account',
-            onPress: () => {
-              setMode('register');
-              setStep(2);
-              setShowNewUserModal(false);
-              setTimeout(() => {
-                passwordInputRef.current?.focus();
-              }, 300);
-            },
-          },
-        ]}
-        onClose={() => setShowNewUserModal(false)}
-      />
+        {/* New User Confirmation Modal */}
+        <ConfirmationModal
+            visible={showNewUserModal}
+            message={`No user found! Would you like to create a new account?`}
+            buttons={[
+              {
+                text: 'Try Different Username',
+                style: 'cancel',
+                onPress: () => {
+                  setUsername('');
+                  setUserExists(null);
+                  setShowNewUserModal(false);
+                },
+              },
+              {
+                text: 'Create Account',
+                onPress: () => {
+                  setMode('register');
+                  setStep(2);
+                  setShowNewUserModal(false);
+                  setTimeout(() => {
+                    passwordInputRef.current?.focus();
+                  }, 300);
+                },
+              },
+            ]}
+            onClose={() => setShowNewUserModal(false)}
+        />
 
-      {/* Skip Login Confirmation Modal */}
-      <ConfirmationModal
-        visible={showSkipModal}
-        type="warning"
-        title="Skip Login"
-        message="You can browse as a guest, but some features may be limited. You can login later from the profile section."
-        buttons={[
-          {
-            text: 'Cancel',
-            style: 'cancel',
-            onPress: () => setShowSkipModal(false),
-          },
-          {
-            text: 'Continue as Guest',
-            onPress: async () => {
-              setShowSkipModal(false);
-              await skipLogin();
-            },
-          },
-        ]}
-        onClose={() => setShowSkipModal(false)}
-      />
+        {/* Skip Login Confirmation Modal */}
+        <ConfirmationModal
+            visible={showSkipModal}
+            type="warning"
+            title="Skip Login"
+            message="You can browse as a guest, but some features may be limited. You can login later from the profile section."
+            buttons={[
+              {
+                text: 'Cancel',
+                style: 'cancel',
+                onPress: () => setShowSkipModal(false),
+              },
+              {
+                text: 'Continue as Guest',
+                onPress: async () => {
+                  setShowSkipModal(false);
+                  await skipLogin();
+                },
+              },
+            ]}
+            onClose={() => setShowSkipModal(false)}
+        />
 
-      {/* Success Toast */}
-      <Toast
-        visible={showSuccessToast}
-        message={successMessage}
-        type="success"
-        position="top"
-        duration={2000}
-        onHide={() => setShowSuccessToast(false)}
-      />
-    </SafeAreaView>
+        {/* Success Toast */}
+        <Toast
+            visible={showSuccessToast}
+            message={successMessage}
+            type="success"
+            position="top"
+            duration={2000}
+            onHide={() => setShowSuccessToast(false)}
+        />
+      </SafeAreaView>
   );
 }
 

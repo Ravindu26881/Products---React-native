@@ -16,7 +16,7 @@ export default function LoadingState({
   return (
     <View style={[styles.loadingContainer, containerStyle]}>
       <ActivityIndicator size={size} color={color} />
-      <Text style={styles.loadingText}>{message}</Text>
+      {/*<Text style={styles.loadingText}>{message}</Text>*/}
     </View>
   );
 }
