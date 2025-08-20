@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     height: 200,
     filter: 'brightness(0.9)',
     // boxShadow: "0px 0px 17px 0px rgba(0, 0, 0, 0.3)",
-    borderRadius: 0
+    borderRadius: 5
   },
   productPriceWrapper: {
     flexDirection: 'row',
