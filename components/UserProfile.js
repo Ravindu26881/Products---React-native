@@ -4,7 +4,9 @@ import { useUser } from '../contexts/UserContext';
 import { COLORS } from '../utils/colors';
 import { useNotification } from '../components/NotificationSystem';
 
-export default function UserProfile() {
+export default function UserProfile({
+    mini = false,
+                                    }) {
   const { user, isLoggedIn, isGuest, logoutUser, showLoginScreen } = useUser();
   const { showModal, showSuccess } = useNotification();
 
@@ -47,32 +49,56 @@ export default function UserProfile() {
     });
   };
 
+  const navigateToUserProfile = () => {
+    //navigate profile page
+  }
+
   if (isLoggedIn && user) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.welcomeContainer}>
-          <Text style={styles.welcomeText}>Welcome back!</Text>
-          <Text style={styles.usernameText}>{user.username}</Text>
-        </View>
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
-      </View>
-    );
+    if (mini) {
+      return (
+          <TouchableOpacity onPress={navigateToUserProfile} style={styles.containerMini}>
+            <View>
+              <Text>{user.username.charAt(0).toUpperCase()}</Text>
+            </View>
+          </TouchableOpacity>
+      )
+    } else {
+      return (
+          <View style={styles.container}>
+            <View style={styles.welcomeContainer}>
+              <Text style={styles.welcomeText}>Welcome back!</Text>
+              <Text style={styles.usernameText}>{user.username}</Text>
+            </View>
+            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+              <Text style={styles.logoutText}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+      );
+    }
   }
 
   if (isGuest) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.welcomeContainer}>
-          <Text style={styles.guestText}>Guest User</Text>
-          <Text style={styles.guestSubtext}>Login to access all features</Text>
-        </View>
-        <TouchableOpacity style={styles.loginButton} onPress={handleLoginPrompt}>
-          <Text style={styles.loginText}>Login</Text>
-        </TouchableOpacity>
-      </View>
-    );
+    if (mini) {
+      return (
+          <TouchableOpacity onPress={handleLoginPrompt} style={styles.containerMini}>
+            <View>
+              <Text>👤</Text>
+            </View>
+          </TouchableOpacity>
+          )
+    } else {
+      return (
+          <View style={styles.container}>
+            <View style={styles.welcomeContainer}>
+              <Text style={styles.guestText}>Guest User</Text>
+              <Text style={styles.guestSubtext}>Login to access all features</Text>
+            </View>
+            <TouchableOpacity style={styles.loginButton} onPress={handleLoginPrompt}>
+              <Text style={styles.loginText}>Login</Text>
+            </TouchableOpacity>
+          </View>
+      );
+    }
   }
 
   return null;
@@ -92,6 +118,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
+  containerMini: {
+    width: 35,
+    height: 35,
+    backgroundColor: COLORS.blackWithOpacity5,
+    borderRadius: 50,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   welcomeContainer: {
     flex: 1,

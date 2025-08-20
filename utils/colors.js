@@ -42,6 +42,7 @@ appBackground: 'white',
   primaryWithOpacity: 'rgb(7 114 79)', // product card background
   whiteWithOpacity: 'rgba(255, 255, 255, 0.2)',
   accentWithOpacity: 'rgba(245, 158, 11, 0.2)',
+  blackWithOpacity5: 'rgba(0, 0, 0, 0.05)',
   white60: 'white',
   white70: 'white',
   white80: 'white',

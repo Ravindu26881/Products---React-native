@@ -5,7 +5,7 @@ import HomeScreen from './screens/HomeScreen';
 import StoresScreen from './screens/StoresScreen';
 import ProductsScreen from './screens/ProductsScreen';
 import ProductDetailScreen from './screens/ProductDetailScreen';
-import PaymentScreen from './screens/PaymentScreen';
+import OrderScreen from './screens/PaymentScreen';
 import ContactSellerScreen from './screens/ContactSellerScreen';
 import CartScreen from './screens/CartScreen';
 import LoginScreen from './screens/LoginScreen';
@@ -34,7 +34,7 @@ const linking = {
       Stores: 'stores',
       Products: 'products/:storeId/:storeName',
       ProductDetail: 'product/:storeId/:storeName/:productId',
-      Payment: 'payment',
+      Order: 'payment',
       ContactSeller: 'contact/:storeId/:storeName/:productId',
       Cart: 'cart',
     },
@@ -89,8 +89,8 @@ function AppNavigator() {
           }}
         />
         <Stack.Screen 
-          name="Payment" 
-          component={PaymentScreen}
+          name="Order"
+          component={OrderScreen}
           options={{
             headerShown: true,
           }}

@@ -16,7 +16,7 @@ export default function BuyNowModal({
   visible, 
   onClose, 
   onContactSeller, 
-  onPayNow, 
+  onOrderNow,
   product,
   storeName 
 }) {
@@ -74,17 +74,17 @@ export default function BuyNowModal({
               </View>
             </TouchableOpacity>
 
-            {/* Pay Now Option */}
+            {/* Order now Option */}
             <TouchableOpacity 
-              style={[styles.optionButton, styles.payButton]}
-              onPress={onPayNow}
+              style={[styles.optionButton, styles.orderButton]}
+              onPress={onOrderNow}
               activeOpacity={0.8}
             >
               <View style={styles.optionContent}>
                 <View style={styles.optionTextContainer}>
-                  <Text style={styles.optionTitle}>Pay Now</Text>
+                  <Text style={styles.optionTitle}>Order Now</Text>
                   <Text style={styles.optionDescription}>
-                    Secure payment with instant confirmation and fast delivery
+                    Order through bazario app
                   </Text>
                 </View>
                 <Text style={styles.optionArrow}>→</Text>
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.border,
   },
-  payButton: {
+  orderButton: {
     backgroundColor: COLORS.white80,
     borderColor: COLORS.primary,
     borderWidth: 1,

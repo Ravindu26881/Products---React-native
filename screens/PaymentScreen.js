@@ -15,11 +15,13 @@ import { useRoute } from '@react-navigation/native';
 import { getFontFamily } from '../utils/fontUtils';
 import { COLORS } from '../utils/colors';
 import { useNotification } from '../components/NotificationSystem';
+import { useUser } from '../contexts/UserContext';
 
 export default function PaymentScreen({ navigation }) {
   const route = useRoute();
   const { product, storeId, storeName } = route.params;
   const { showModal, showSuccess, showError } = useNotification();
+  const { user,isLoggedIn, isGuest, showLoginScreen } = useUser();
   
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -74,11 +76,30 @@ export default function PaymentScreen({ navigation }) {
   };
 
   const processOrder = async () => {
+    console.log(isGuest)
+    console.log(22,isLoggedIn)
+    if (!isLoggedIn) {
+        showModal({
+            title: 'Login Required',
+            message: 'You need to log in to place an order. Please log in or register to continue.',
+            buttons: [
+            {
+                text: 'Log In',
+                onPress: () => showLoginScreen(),
+            },
+            {
+                text: 'Cancel',
+                style: 'cancel',
+            },
+            ],
+        });
+        return;
+    }
     if (!validateForm()) return;
 
     setLoading(true);
     
-    // Simulate order processing
+
     setTimeout(() => {
       setLoading(false);
       Alert.alert(

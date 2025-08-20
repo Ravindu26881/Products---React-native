@@ -126,9 +126,9 @@ export default function ProductDetailScreen({ navigation }) {
     });
   };
 
-  const handlePayNow = () => {
+  const handleOrderNow = () => {
     setShowBuyNowModal(false);
-    navigation.navigate('Payment', {
+    navigation.navigate('Order', {
       product: product,
       storeId: storeId,
       storeName: storeName,
@@ -283,7 +283,7 @@ export default function ProductDetailScreen({ navigation }) {
         visible={showBuyNowModal}
         onClose={() => setShowBuyNowModal(false)}
         onContactSeller={handleContactSeller}
-        onPayNow={handlePayNow}
+        onOrderNow={handleOrderNow}
         product={product}
         storeName={storeName}
       />

@@ -209,6 +209,7 @@ export default function HomeScreen({ navigation }) {
               style={styles.logo}
             />
           </View>
+          <UserProfile mini={true} />
           <CartIcon 
             navigation={navigation} 
             iconColor={COLORS.textPrimary}
@@ -218,9 +219,6 @@ export default function HomeScreen({ navigation }) {
         <Text style={styles.subtitle}>Discover amazing products from local businesses</Text>
       </View>
 
-      <View style={styles.userProfileContainer}>
-        <UserProfile />
-      </View>
       
       <View style={styles.actionBar}>
         <TouchableOpacity 
