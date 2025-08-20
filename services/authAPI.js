@@ -100,6 +100,12 @@ class AuthAPI {
     });
   }
 
+  async getUserOrders(userId) {
+    return await this.makeRequest('/users/'+ userId +'/orders', {
+      method: 'GET'
+    });
+  }
+
   // Utility method to validate API connection
   async testConnection() {
     try {

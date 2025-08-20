@@ -104,12 +104,14 @@ export default function CartScreen({ navigation }) {
   };
 
   const handleCheckout = () => {
-    // For now, navigate to payment with cart items
-    navigation.navigate('Payment', {
-      cartItems: items,
-      totalPrice: totalPrice,
-      isCartCheckout: true,
-    });
+
+    const products = [
+        ...items.map(item => ({
+            productId: item.product._id,
+            quantity: item.quantity
+        }))
+    ]
+    console.log(111, products)
   };
 
   const formatPrice = (price) => {
@@ -277,7 +279,7 @@ export default function CartScreen({ navigation }) {
           onPress={handleCheckout}
         >
           <Text style={styles.checkoutButtonText}>
-            Proceed to Checkout
+            Place Order
           </Text>
         </TouchableOpacity>
       </View>

@@ -50,3 +50,30 @@ export const fetchProductById = async (storeId, productId) => {
     throw error;
   }
 };
+
+export const sendOrder = async (storeId, products, userId) => {
+  try {
+    console.log(3333, products);
+    const response = await fetch(API_URL + '/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        storeId: storeId,
+        userId: userId,
+        products: products,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to save order');
+    }
+
+    return await response.json(); // parse response as JSON
+  } catch (error) {
+    console.error('Error saving order:', error);
+    throw error;
+  }
+};
+

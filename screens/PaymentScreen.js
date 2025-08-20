@@ -16,25 +16,17 @@ import { getFontFamily } from '../utils/fontUtils';
 import { COLORS } from '../utils/colors';
 import { useNotification } from '../components/NotificationSystem';
 import { useUser } from '../contexts/UserContext';
+import { sendOrder } from '../data/products';
 
 export default function PaymentScreen({ navigation }) {
   const route = useRoute();
   const { product, storeId, storeName } = route.params;
+  const [ quantity, setQuantity]  = useState(1);
   const { showModal, showSuccess, showError } = useNotification();
   const { user,isLoggedIn, isGuest, showLoginScreen } = useUser();
+  const {errorValue, setErrorValue} = useState(null);
   
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    // Billing Address
-    address: '',
-    city: '',
-    zipCode: '',
-    country: 'Sri Lanka',
-    // Contact Info
-    customerName: '',
-    email: '',
-    phone: '',
-  });
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -50,34 +42,7 @@ export default function PaymentScreen({ navigation }) {
     });
   }, [navigation, storeId]);
 
-  const validateForm = () => {
-    if (!formData.customerName.trim()) {
-      showError('Please enter your full name');
-      return false;
-    }
-    if (!formData.email.trim() || !formData.email.includes('@')) {
-      showError('Please enter a valid email address');
-      return false;
-    }
-    if (!formData.phone.trim()) {
-      showError('Please enter your phone number');
-      return false;
-    }
-    if (!formData.address.trim()) {
-      showError('Please enter your address');
-      return false;
-    }
-    if (!formData.city.trim()) {
-      showError('Please enter your city');
-      return false;
-    }
-    
-    return true;
-  };
-
   const processOrder = async () => {
-    console.log(isGuest)
-    console.log(22,isLoggedIn)
     if (!isLoggedIn) {
         showModal({
             title: 'Login Required',
@@ -95,97 +60,36 @@ export default function PaymentScreen({ navigation }) {
         });
         return;
     }
-    if (!validateForm()) return;
 
     setLoading(true);
-    
-
-    setTimeout(() => {
+    const products = [
+      {
+        "productId": product._id,
+        "quantity": quantity
+      },
+    ]
+    try {
+      await sendOrder(storeId, products, user._id)
       setLoading(false);
-      Alert.alert(
-        'Order Placed! 🎉',
-        `Your order for "${product.name}" has been placed successfully.\n\nThe seller will contact you shortly to arrange payment and delivery.`,
-        [
+      showModal({
+        title: 'Order Placed!',
+        message: 'Your order for ' + product.name + ' has been placed successfully.\n\nThe seller will contact you shortly to arrange payment and delivery.',
+        buttons: [
           {
             text: 'Continue Shopping',
             onPress: () => navigation.navigate('Products', { storeId, storeName }),
           },
-          {
-            text: 'OK',
-            style: 'default',
-          },
-        ]
-      );
-    }, 2000);
+        ],
+      });
+    } catch (error) {
+        setLoading(false);
+        console.error('Error processing order:', error);
+        showError('Failed to place order. Please try again later.');
+        return;
+    }
   };
 
-  const renderContactForm = () => (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Contact Information</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Full Name"
-        value={formData.customerName}
-        onChangeText={(text) => 
-          setFormData(prev => ({ ...prev, customerName: text }))
-        }
-        autoCapitalize="words"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email Address"
-        value={formData.email}
-        onChangeText={(text) => 
-          setFormData(prev => ({ ...prev, email: text }))
-        }
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Phone Number"
-        value={formData.phone}
-        onChangeText={(text) => 
-          setFormData(prev => ({ ...prev, phone: text }))
-        }
-        keyboardType="phone-pad"
-      />
-    </View>
-  );
 
-  const renderBillingForm = () => (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Delivery Address</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Street Address"
-        value={formData.address}
-        onChangeText={(text) => 
-          setFormData(prev => ({ ...prev, address: text }))
-        }
-        multiline
-      />
-      <View style={styles.row}>
-        <TextInput
-          style={[styles.input, styles.halfInput]}
-          placeholder="City"
-          value={formData.city}
-          onChangeText={(text) => 
-            setFormData(prev => ({ ...prev, city: text }))
-          }
-        />
-        <TextInput
-          style={[styles.input, styles.halfInput]}
-          placeholder="ZIP Code"
-          value={formData.zipCode}
-          onChangeText={(text) => 
-            setFormData(prev => ({ ...prev, zipCode: text }))
-          }
-          keyboardType="numeric"
-        />
-      </View>
-    </View>
-  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -210,13 +114,9 @@ export default function PaymentScreen({ navigation }) {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Order Information</Text>
           <Text style={styles.infoText}>
-            Fill out the form below and the seller will contact you to arrange payment and delivery.
+            Confirm the order and the seller will contact you to arrange payment and delivery.
           </Text>
         </View>
-
-        {/* Order Form */}
-        {renderContactForm()}
-        {renderBillingForm()}
 
         {/* Order Summary */}
         <View style={styles.section}>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useUser } from '../contexts/UserContext';
 import { COLORS } from '../utils/colors';
 import { useNotification } from '../components/NotificationSystem';
@@ -7,6 +8,7 @@ import { useNotification } from '../components/NotificationSystem';
 export default function UserProfile({
     mini = false,
                                     }) {
+  const navigation = useNavigation();
   const { user, isLoggedIn, isGuest, logoutUser, showLoginScreen } = useUser();
   const { showModal, showSuccess } = useNotification();
 
@@ -50,7 +52,7 @@ export default function UserProfile({
   };
 
   const navigateToUserProfile = () => {
-    //navigate profile page
+    navigation.navigate('UserProfile');
   }
 
   if (isLoggedIn && user) {

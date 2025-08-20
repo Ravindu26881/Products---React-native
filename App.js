@@ -9,6 +9,7 @@ import OrderScreen from './screens/PaymentScreen';
 import ContactSellerScreen from './screens/ContactSellerScreen';
 import CartScreen from './screens/CartScreen';
 import LoginScreen from './screens/LoginScreen';
+import UserProfileScreen from './screens/UserProfileScreen';
 import {
     Image,
     View,
@@ -107,6 +108,14 @@ function AppNavigator() {
           component={CartScreen}
           options={{
             headerShown: true,
+          }}
+        />
+        <Stack.Screen 
+          name="UserProfile" 
+          component={UserProfileScreen}
+          options={{
+            headerShown: true,
+            title: 'My Profile',
           }}
         />
         </Stack.Navigator>
