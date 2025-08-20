@@ -18,6 +18,20 @@ export const fetchStores = async () => {
   }
 };
 
+export const fetchStoreById = async (storeId) => {
+  try {
+    const response = await fetch(API_URL + '/' + storeId);
+    if (!response.ok) {
+      throw new Error('Failed to fetch store');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching store:', error);
+    return error
+  }
+};
+
 import * as Location from 'expo-location';
 
 export async function getCurrentPosition() {

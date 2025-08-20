@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Alert,
-  RefreshControl, ActivityIndicator,
+  RefreshControl, ActivityIndicator, Linking,
 } from 'react-native';
 import { useUser } from '../contexts/UserContext';
 import AuthAPI from '../services/authAPI';
@@ -15,6 +15,7 @@ import { useNotification } from '../components/NotificationSystem';
 import { COLORS } from '../utils/colors';
 import StorageService from '../utils/storage';
 import {fetchProductById} from "../data/products";
+import {fetchStoreById} from "../data/stores";
 
 export default function UserProfileScreen({ navigation }) {
   const { user, logoutUser } = useUser();
@@ -60,8 +61,20 @@ export default function UserProfileScreen({ navigation }) {
           })
       );
 
-      setUserOrders(enriched);
-      console.log('User orders loaded:', enriched);
+      const enrichedOrders = enriched.map(order => {
+        const totalPrice = order.products.reduce((sum, product) => {
+          const price = Number(product.productDetails.price); // string → number
+          return sum + price * product.quantity;
+        }, 0);
+
+        return {
+          ...order,
+          totalPrice,
+        };
+      });
+
+      setUserOrders(enrichedOrders);
+      console.log('User orders loaded:', enrichedOrders);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -82,7 +95,7 @@ export default function UserProfileScreen({ navigation }) {
       type: 'warning',
       buttons: [
         { 
-          text: 'Cancel', 
+          text: 'Cancel',
           style: 'cancel'
         },
         { 
@@ -96,6 +109,56 @@ export default function UserProfileScreen({ navigation }) {
       ]
     });
   };
+
+  const handlePhoneCall = async (storeId) => {
+    // In a real app, you would get the seller's phone number from your backend
+    const phoneNumber = ''; // Example phone number
+    try {
+      const store = await fetchStoreById(storeId)
+      console.log('store', store);
+      if(store.phone) {
+        await Linking.openURL(`tel:${phoneNumber}`)
+      } else {
+        const storeName = store.name || 'Store';
+        showModal({
+          title: 'No Phone Number',
+          message: `The seller for ${storeName} does not have a phone number listed.`,
+          type: 'info',
+          buttons: [{text: 'OK', style: 'cancel'}],
+        });
+        return;
+      }
+    } catch (error) {
+      console.error('Error fetching store details:', error);
+      showModal({
+        title: 'Error',
+        message: 'Failed to fetch store details. Please try again later.',
+        type: 'error',
+        buttons: [{text: 'OK', style: 'cancel'}],
+      });
+      return;
+    }
+  };
+
+  const showOrderOptionsModal = (storeId, orderId) => {
+    showModal({
+      title: 'Order Options',
+      type: 'info',
+      buttons: [
+        {
+          text: 'Contact Store Owner',
+          onPress: () => {handlePhoneCall(storeId)},
+          style: 'cancel'
+        },
+        {
+          text: 'Delete Order',
+          onPress: () => {
+
+          },
+        },
+      ]
+    });
+  }
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -121,7 +184,10 @@ export default function UserProfileScreen({ navigation }) {
 
   const renderUserDetails = () => (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Account Details</Text>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Account Details</Text>
+      </View>
+
       <View style={styles.userCard}>
         <View style={styles.avatarContainer}>
           <Text style={styles.avatarText}>
@@ -142,10 +208,10 @@ export default function UserProfileScreen({ navigation }) {
   const renderOrdersSection = () => (
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Recent Orders</Text>
-        <TouchableOpacity onPress={() => {}}>
-          <Text style={styles.viewAllText}>View All</Text>
-        </TouchableOpacity>
+        <Text style={styles.sectionTitle}>Orders</Text>
+        {/*<TouchableOpacity onPress={}>*/}
+        {/*  <Text style={styles.viewAllText}>View All</Text>*/}
+        {/*</TouchableOpacity>*/}
       </View>
       
       {userOrders.length === 0 ? (
@@ -154,8 +220,11 @@ export default function UserProfileScreen({ navigation }) {
           <Text style={styles.emptyOrdersSubtext}>Start shopping to see your orders here</Text>
         </View>
       ) : (
-        userOrders.slice(0, 3).map((order) => (
-          <TouchableOpacity key={order.id} style={styles.orderCard}>
+        userOrders.map((order) => (
+          <TouchableOpacity
+              onPress={() => showOrderOptionsModal(order.store._id, order.orderId)}
+              key={order.id}
+              style={styles.orderCard}>
 
             <View style={styles.orderHeader}>
               <Text style={styles.orderId}>Order #{order.orderId}</Text>
@@ -167,17 +236,20 @@ export default function UserProfileScreen({ navigation }) {
             </View>
             <Text style={styles.orderDate}>{formatDate(order.createdAt)}</Text>
             <Text style={styles.orderStore}>{order.store.name}</Text>
-            <View style={styles.orderFooter}>
-              {order.products.map((p, index) => (
-                  <View key={index} style={styles.productRow}>
-                    <Text style={styles.orderItems}>
-                      {p.productDetails.name} × {p.quantity}
-                    </Text>
-                    <Text style={styles.orderTotal}>
-                      ${p.productDetails.price}
-                    </Text>
-                  </View>
-              ))}
+            <View style={styles.cardFooter}>
+              <View style={styles.productsList}>
+                {order.products.map((p, index) => (
+                    <View key={index} style={styles.productRow}>
+                      <Text style={styles.orderItems}>
+                        {p.productDetails.name} × {p.quantity}
+                      </Text>
+                    </View>
+                ))}
+              </View>
+
+              <Text style={styles.orderTotal}>
+                ${order.totalPrice}
+              </Text>
             </View>
           </TouchableOpacity>
         ))
@@ -185,27 +257,27 @@ export default function UserProfileScreen({ navigation }) {
     </View>
   );
 
-  const renderActions = () => (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Account Actions</Text>
-      
-      <TouchableOpacity style={styles.actionButton} onPress={() => {}}>
-        <Text style={styles.actionButtonText}>Edit Profile</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity style={styles.actionButton} onPress={() => {}}>
-        <Text style={styles.actionButtonText}>Order History</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity style={styles.actionButton} onPress={() => {}}>
-        <Text style={styles.actionButtonText}>Settings</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity style={[styles.actionButton, styles.logoutButton]} onPress={handleLogout}>
-        <Text style={[styles.actionButtonText, styles.logoutButtonText]}>Logout</Text>
-      </TouchableOpacity>
-    </View>
-  );
+  // const renderActions = () => (
+  //   <View style={styles.section}>
+  //     <Text style={styles.sectionTitle}>Account Actions</Text>
+  //
+  //     <TouchableOpacity style={styles.actionButton} onPress={() => {}}>
+  //       <Text style={styles.actionButtonText}>Edit Profile</Text>
+  //     </TouchableOpacity>
+  //
+  //     <TouchableOpacity style={styles.actionButton} onPress={() => {}}>
+  //       <Text style={styles.actionButtonText}>Order History</Text>
+  //     </TouchableOpacity>
+  //
+  //     <TouchableOpacity style={styles.actionButton} onPress={() => {}}>
+  //       <Text style={styles.actionButtonText}>Settings</Text>
+  //     </TouchableOpacity>
+  //
+  //     <TouchableOpacity style={[styles.actionButton, styles.logoutButton]} onPress={handleLogout}>
+  //       <Text style={[styles.actionButtonText, styles.logoutButtonText]}>Logout</Text>
+  //     </TouchableOpacity>
+  //   </View>
+  // );
 
   if (loading) {
     return (
@@ -230,7 +302,6 @@ export default function UserProfileScreen({ navigation }) {
           >
             {renderUserDetails()}
             {renderOrdersSection()}
-            {renderActions()}
           </ScrollView>
         </SafeAreaView>
     );
@@ -266,7 +337,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
     color: COLORS.textPrimary,
-    marginBottom: 16,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -279,6 +349,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
   },
+  productsList: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
   userCard: {
     backgroundColor: COLORS.surface,
     borderRadius: 12,
@@ -290,6 +364,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
+  cardFooter: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end'
   },
   avatarContainer: {
     width: 60,
@@ -359,13 +439,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   orderId: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: '600',
     color: COLORS.textPrimary,
   },
   statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
     borderRadius: 12,
   },
   statusText: {

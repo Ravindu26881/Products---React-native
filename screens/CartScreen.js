@@ -104,14 +104,12 @@ export default function CartScreen({ navigation }) {
   };
 
   const handleCheckout = () => {
-
-    const products = [
-        ...items.map(item => ({
-            productId: item.product._id,
-            quantity: item.quantity
-        }))
-    ]
-    console.log(111, products)
+    // Navigate to payment screen with all cart items
+    navigation.navigate('Order', {
+      products: items,
+      storeId: items[0]?.storeId || null,
+      storeName: items[0]?.storeName || 'Multiple Stores'
+    });
   };
 
   const formatPrice = (price) => {

@@ -129,7 +129,7 @@ export default function ProductDetailScreen({ navigation }) {
   const handleOrderNow = () => {
     setShowBuyNowModal(false);
     navigation.navigate('Order', {
-      product: product,
+      products: [{ product: product, quantity: 1, storeId: storeId, storeName: storeName }],
       storeId: storeId,
       storeName: storeName,
     });
