@@ -119,7 +119,7 @@ export default function UserProfileScreen({ navigation }) {
       console.log('store', store);
       setLoading(false)
       if(store.phone) {
-        await Linking.openURL(`tel:${phoneNumber}`)
+        await Linking.openURL(`tel:${store.phone}`)
       } else {
         const storeName = store.name || 'Store';
         showModal({
