@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useUser } from '../contexts/UserContext';
 import { COLORS } from '../utils/colors';
@@ -84,7 +84,10 @@ export default function UserProfile({
       return (
           <TouchableOpacity onPress={handleLoginPrompt} style={styles.containerMini}>
             <View>
-              <Text>👤</Text>
+              <Image
+                  source={require('../assets/icons/User.png')}
+                    style={{ width: 25, height: 25 }}
+              />
             </View>
           </TouchableOpacity>
           )
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
   containerMini: {
     width: 35,
     height: 35,
-    backgroundColor: COLORS.blackWithOpacity5,
+    // backgroundColor: COLORS.blackWithOpacity5,
     borderRadius: 50,
     display: 'flex',
     justifyContent: 'center',

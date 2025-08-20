@@ -26,16 +26,16 @@ const DEFAULT_FONTS = {
  * @returns {string} - The font family name
  */
 export const getFontFamily = (storeId) => {
-  const customFont = FONT_MAP[storeId];
-  if (customFont) {
-    // For web, include fallback fonts in the same string
-    if (Platform.OS === 'web') {
-      return `${customFont}, ${DEFAULT_FONTS.web}`;
-    }
-    return customFont;
-  }
-  
-  // Return platform-specific fallback
+  // const customFont = FONT_MAP[storeId];
+  // if (customFont) {
+  //   // For web, include fallback fonts in the same string
+  //   if (Platform.OS === 'web') {
+  //     return `${customFont}, ${DEFAULT_FONTS.web}`;
+  //   }
+  //   return customFont;
+  // }
+  //
+  // // Return platform-specific fallback
   return DEFAULT_FONTS[Platform.OS] || DEFAULT_FONTS.default;
 };
 

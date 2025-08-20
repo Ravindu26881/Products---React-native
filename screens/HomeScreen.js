@@ -189,7 +189,7 @@ export default function HomeScreen({ navigation }) {
         product={product}
         onPress={handleProductPress}
         width={getItemWidth()}
-        showStoreName={true}
+        // showStoreName={true}
         storeId={product.storeId}
         storeName={product.storeName}
         containerStyle={{
@@ -306,6 +306,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.appBackground,
     marginHorizontal: -20,
     paddingHorizontal: 20,
+    marginTop: 10
   },
   headerTop: {
     flexDirection: 'row',

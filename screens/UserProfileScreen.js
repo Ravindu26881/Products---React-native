@@ -265,7 +265,7 @@ export default function UserProfileScreen({ navigation }) {
               </View>
 
               <Text style={styles.orderTotal}>
-                ${order.totalPrice}
+                Rs.{order.totalPrice}
               </Text>
             </View>
           </TouchableOpacity>

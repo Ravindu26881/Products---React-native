@@ -300,6 +300,19 @@ export default function LoginScreen() {
             {loading ? 'Checking...' : 'Next →'}
           </Text>
         </TouchableOpacity>
+          <View >
+              <TouchableOpacity
+                  style={styles.skipButton}
+                  onPress={handleSkipLogin}
+                  disabled={loading}
+              >
+                  <Text style={styles.skipButtonText}>Skip for now</Text>
+              </TouchableOpacity>
+
+              <Text style={styles.skipDescription}>
+                  Continue as guest - you can login anytime later
+              </Text>
+          </View>
       </Animated.View>
   );
 
@@ -531,19 +544,25 @@ export default function LoginScreen() {
           {step === 1 ? renderStep1() : step === 2 ? renderStep2() : renderStep3()}
         </View>
 
-        <View style={styles.footer}>
-          <TouchableOpacity
-              style={styles.skipButton}
-              onPress={handleSkipLogin}
-              disabled={loading}
-          >
-            <Text style={styles.skipButtonText}>Skip for now</Text>
-          </TouchableOpacity>
+        {/*<View style={styles.footer}>*/}
+        {/*  <TouchableOpacity*/}
+        {/*      style={styles.skipButton}*/}
+        {/*      onPress={handleSkipLogin}*/}
+        {/*      disabled={loading}*/}
+        {/*  >*/}
+        {/*    <Text style={styles.skipButtonText}>Skip for now</Text>*/}
+        {/*  </TouchableOpacity>*/}
 
-          <Text style={styles.skipDescription}>
-            Continue as guest - you can login anytime later
-          </Text>
-        </View>
+        {/*  <Text style={styles.skipDescription}>*/}
+        {/*    Continue as guest - you can login anytime later*/}
+        {/*  </Text>*/}
+        {/*</View>*/}
+
+          <View style={styles.demoInfo}>
+              <Text style={styles.demoTitle}>Demo Credentials:</Text>
+              <Text style={styles.demoText}>username: Ravindu</Text>
+              <Text style={styles.demoText}>Password: ravindu</Text>
+          </View>
 
         {/* New User Confirmation Modal */}
         <ConfirmationModal
@@ -706,6 +725,25 @@ const styles = StyleSheet.create({
   nextButtonTextDisabled: {
     color: 'rgba(255, 255, 255, 0.3)',
   },
+    demoInfo: {
+        backgroundColor: 'rgb(0 0 0 / 9%)',
+        padding: 16,
+        borderRadius: 12,
+        alignItems: 'center',
+        marginTop: 12,
+        marginBottom: 20
+    },
+    demoTitle: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: COLORS.primary,
+        marginBottom: 8,
+    },
+    demoText: {
+        fontSize: 14,
+        color: COLORS.textSecondary,
+        marginBottom: 4,
+    },
   loginButton: {
     backgroundColor: COLORS.success,
     borderRadius: 12,
@@ -743,7 +781,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   skipButton: {
-    backgroundColor: 'transparent',
+      marginTop: 10,
+    backgroundColor: COLORS.background,
     borderWidth: 1,
     borderColor: COLORS.border,
     borderRadius: 12,
