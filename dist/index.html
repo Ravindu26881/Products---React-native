@@ -25,7 +25,12 @@
     </style>
   <meta name="theme-color" content="#000000">
 <meta name="description" content="Discover amazing products from local businesses">
-<link rel="icon" href="/favicon.ico" /></head>
+<link rel="icon" href="/favicon.ico" />
+<link rel="manifest" href="/manifest.json" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Bazario">
+<link rel="apple-touch-icon" href="/assets/icon.png"></head>
 
   <body>
     <!-- Use static rendering with Expo Router to support running without JavaScript. -->
@@ -34,6 +39,20 @@
     </noscript>
     <!-- The root element for your Expo app. -->
     <div id="root"></div>
-  <script src="/_expo/static/js/web/index-83648da64b55e8668fea5f2e8b8401ff.js" defer></script>
+  <script>
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((registration) => {
+            console.log('SW registered: ', registration);
+          })
+          .catch((registrationError) => {
+            console.log('SW registration failed: ', registrationError);
+          });
+      });
+    }
+  </script>
+  <script src="/_expo/static/js/web/index-5fb5f543307391c451dbaafe83dd3add.js" defer></script>
 </body>
 </html>

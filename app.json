@@ -75,7 +75,8 @@
       ]
     },
     "assetBundlePatterns": [
-      "assets/fonts/*"
+      "assets/fonts/*",
+      "public/**"
     ],
     "plugins": [
       "expo-font"
