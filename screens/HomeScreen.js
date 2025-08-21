@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 15,
   },
   logoContainer: {
     flex: 1,
@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center', // 👈 centers the grid when it reaches maxWidth
     width: '100%',       // 👈 let it shrink/grow until 790
   },
-  Item: {
-    marginBottom: 20,             // vertical spacing between rows
-  },
+  // Item: {
+  //   marginBottom: 220,             // vertical spacing between rows
+  // },
 });
