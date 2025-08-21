@@ -260,7 +260,7 @@ export default function LoginScreen() {
             },
           ]}
       >
-        <Text style={styles.stepTitle}>What's your username?</Text>
+        {/*<Text style={styles.stepTitle}>What's your username?</Text>*/}
         <Text style={styles.stepSubtitle}>Enter your username to get started</Text>
 
         <TextInput
@@ -537,7 +537,7 @@ export default function LoginScreen() {
               style={styles.logo}
               resizeMode="cover"
           />
-          <Text style={styles.welcomeText}>Welcome to Bazario!</Text>
+          {/*<Text style={styles.welcomeText}>Welcome to Bazario!</Text>*/}
         </View>
 
         <View style={styles.content}>
@@ -633,6 +633,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+    alignItems: 'center'
   },
   keyboardView: {
     flex: 1,
@@ -659,6 +660,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 30,
+    maxWidth: 500,
+    minWidth: 400
   },
   stepContainer: {
     width: '100%',

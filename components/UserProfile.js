@@ -58,7 +58,7 @@ export default function UserProfile({
   if (isLoggedIn && user) {
     if (mini) {
       return (
-          <TouchableOpacity onPress={navigateToUserProfile} style={styles.containerMini}>
+          <TouchableOpacity onPress={navigateToUserProfile} style={styles.containerMiniLogged}>
             <View>
               <Text>{user.username.charAt(0).toUpperCase()}</Text>
             </View>
@@ -128,6 +128,15 @@ const styles = StyleSheet.create({
     width: 35,
     height: 35,
     // backgroundColor: COLORS.blackWithOpacity5,
+    borderRadius: 50,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  containerMiniLogged: {
+    width: 35,
+    height: 35,
+    backgroundColor: COLORS.blackWithOpacity5,
     borderRadius: 50,
     display: 'flex',
     justifyContent: 'center',
