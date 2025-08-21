@@ -99,7 +99,6 @@ function getDistanceMeters(lat1, lon1, lat2, lon2) {
 }
 
 export function sortStoresByDistance(stores, userLat, userLng) {
-  console.log(555, stores, userLat, userLng);
   const withCoords = [];
   const withoutCoords = [];
 

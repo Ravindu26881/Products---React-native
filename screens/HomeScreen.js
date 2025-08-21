@@ -28,6 +28,7 @@ import ProductItem from '../components/ProductItem';
 import CartIcon from '../components/CartIcon';
 import UserProfile from '../components/UserProfile';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useGeolocated } from 'react-geolocated';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -42,9 +43,38 @@ export default function HomeScreen({ navigation }) {
   const [screenData, setScreenData] = useState(Dimensions.get('window'));
   const [showFilter, setShowFilter] = useState(false);
   const filterAnimation = useRef(new Animated.Value(0)).current;
+  
+  // Web geolocation setup
+  const geoData = Platform.OS === 'web' ? useGeolocated({
+    positionOptions: {
+      enableHighAccuracy: true,
+      maximumAge: 60000,
+      timeout: 30000,
+    },
+    watchPosition: false,
+    userDecisionTimeout: 10000,
+  }) : null;
 
-
-
+  // Function to handle navigation to Stores with coordinates
+  const handleBrowseStores = async () => {
+    if (Platform.OS === 'web' && geoData) {
+      const { coords, positionError, isGeolocationAvailable, isGeolocationEnabled } = geoData;
+      
+      // If coordinates are available, pass them to StoresScreen
+      if (coords && !positionError) {
+        navigation.navigate('Stores', { 
+          userCoords: {
+            latitude: coords.latitude,
+            longitude: coords.longitude
+          }
+        });
+        return;
+      }
+    }
+    
+    // For mobile or if web coords not available, navigate without coordinates
+    navigation.navigate('Stores');
+  };
 
   const getNumColumns = (width) => {
     if (width > 768) return 3;
@@ -223,7 +253,7 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.actionBar}>
         <TouchableOpacity 
           style={styles.browseStoresButton}
-          onPress={() => navigation.navigate('Stores')}
+          onPress={handleBrowseStores}
         >
           <Text style={styles.browseStoresText}>Browse by Stores</Text>
         </TouchableOpacity>

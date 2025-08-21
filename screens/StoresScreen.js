@@ -23,7 +23,7 @@ import StoreItem from '../components/StoreItem';
 import { useGeolocated } from 'react-geolocated';
 import {useNotification} from "../components/NotificationSystem";
 
-export default function StoresScreen({ navigation }) {
+export default function StoresScreen({ navigation, route }) {
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,6 +34,10 @@ export default function StoresScreen({ navigation }) {
   const filterAnimation = useRef(new Animated.Value(0)).current;
   const appState = useRef(AppState.currentState);
   const { showModal, showSuccess, showError } = useNotification();
+  
+  // Get coordinates from navigation params
+  const userCoords = route?.params?.userCoords;
+  
   const geoData = Platform.OS === 'web' ? useGeolocated({
     positionOptions: {
       enableHighAccuracy: true,
@@ -83,12 +87,15 @@ export default function StoresScreen({ navigation }) {
     console.log(result);
   };
   useEffect(() => {
-    sortOrderWithGeoCoords(coords)
-  }, [coords]);
+    // Use coordinates from navigation params first, then fallback to geolocation hook
+    const coordsToUse = userCoords || coords;
+    if (coordsToUse) {
+      sortOrderWithGeoCoords(coordsToUse);
+    }
+  }, [coords, userCoords]);
 
 
   const sortOrderWithGeoCoords = async (coords) => {
-    console.log(99999, coords)
     const data = await fetchStores();
     const sortedStores = sortStoresByDistance(
         data,
@@ -190,14 +197,26 @@ export default function StoresScreen({ navigation }) {
       setLoading(true);
       setError(null);
       const data = await fetchStores();
-      await sortOrder('nearest', data); // pass fresh store data to sort
-
+      
+      // If we have coordinates from navigation params, use them directly
+      if (userCoords) {
+        const sortedStores = sortStoresByDistance(
+          data,
+          userCoords.latitude,
+          userCoords.longitude
+        );
+        setLocationError('');
+        setStores(sortedStores);
+      } else {
+        // Fallback to original behavior
+        await sortOrder('nearest', data);
+      }
 
     } catch (err) {
       setError('Failed to load stores');
       console.error('Error loading stores:', err);
     } finally {
-      setLoading(false); // no second sort here
+      setLoading(false);
     }
   };
 
@@ -275,12 +294,12 @@ export default function StoresScreen({ navigation }) {
         showFilter={showFilter}
         onFilterToggle={() => setShowFilter(!showFilter)}
       />
-      { !(locationError) ?
+      { (userCoords || (coords && !locationError)) ?
           <Text style={styles.Header}>
-            Showing nearest stores to you current location
+            Showing nearest stores to your current location
           </Text> : ''
       }
-      { locationError ?
+      { (!userCoords && !coords && locationError) ?
           <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
             <Text style={styles.Header}>
             Allow location access to find nearest stores
