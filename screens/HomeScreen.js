@@ -29,6 +29,7 @@ import CartIcon from '../components/CartIcon';
 import UserProfile from '../components/UserProfile';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useGeolocated } from 'react-geolocated';
+import { setGlobalCoords } from '../utils/globalCoords';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -55,24 +56,23 @@ export default function HomeScreen({ navigation }) {
     userDecisionTimeout: 10000,
   }) : null;
 
-  // Function to handle navigation to Stores with coordinates
-  const handleBrowseStores = async () => {
+  // Save coordinates globally when they become available
+  useEffect(() => {
     if (Platform.OS === 'web' && geoData) {
-      const { coords, positionError, isGeolocationAvailable, isGeolocationEnabled } = geoData;
+      const { coords, positionError } = geoData;
       
-      // If coordinates are available, pass them to StoresScreen
+      // If coordinates are available and no error, save them globally
       if (coords && !positionError) {
-        navigation.navigate('Stores', { 
-          userCoords: {
-            latitude: coords.latitude,
-            longitude: coords.longitude
-          }
+        setGlobalCoords({
+          latitude: coords.latitude,
+          longitude: coords.longitude
         });
-        return;
       }
     }
-    
-    // For mobile or if web coords not available, navigate without coordinates
+  }, [geoData?.coords, geoData?.positionError]);
+
+  // Simplified function to navigate to Stores
+  const handleBrowseStores = () => {
     navigation.navigate('Stores');
   };
 

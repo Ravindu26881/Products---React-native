@@ -22,8 +22,9 @@ import EmptyState from '../components/EmptyState';
 import StoreItem from '../components/StoreItem';
 import { useGeolocated } from 'react-geolocated';
 import {useNotification} from "../components/NotificationSystem";
+import { getGlobalCoords } from '../utils/globalCoords';
 
-export default function StoresScreen({ navigation, route }) {
+export default function StoresScreen({ navigation }) {
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,9 +35,6 @@ export default function StoresScreen({ navigation, route }) {
   const filterAnimation = useRef(new Animated.Value(0)).current;
   const appState = useRef(AppState.currentState);
   const { showModal, showSuccess, showError } = useNotification();
-  
-  // Get coordinates from navigation params
-  const userCoords = route?.params?.userCoords;
   
   const geoData = Platform.OS === 'web' ? useGeolocated({
     positionOptions: {
@@ -87,12 +85,20 @@ export default function StoresScreen({ navigation, route }) {
     console.log(result);
   };
   useEffect(() => {
-    // Use coordinates from navigation params first, then fallback to geolocation hook
-    const coordsToUse = userCoords || coords;
-    if (coordsToUse) {
-      sortOrderWithGeoCoords(coordsToUse);
+    // For web, try global coordinates first, then fallback to geolocation hook
+    if (Platform.OS === 'web') {
+      const globalCoords = getGlobalCoords();
+      const coordsToUse = globalCoords || coords;
+      if (coordsToUse) {
+        sortOrderWithGeoCoords(coordsToUse);
+      }
+    } else {
+      // For mobile, use geolocation hook
+      if (coords) {
+        sortOrderWithGeoCoords(coords);
+      }
     }
-  }, [coords, userCoords]);
+  }, [coords]);
 
 
   const sortOrderWithGeoCoords = async (coords) => {
@@ -198,17 +204,23 @@ export default function StoresScreen({ navigation, route }) {
       setError(null);
       const data = await fetchStores();
       
-      // If we have coordinates from navigation params, use them directly
-      if (userCoords) {
-        const sortedStores = sortStoresByDistance(
-          data,
-          userCoords.latitude,
-          userCoords.longitude
-        );
-        setLocationError('');
-        setStores(sortedStores);
+      // For web, try global coordinates first
+      if (Platform.OS === 'web') {
+        const globalCoords = getGlobalCoords();
+        if (globalCoords) {
+          const sortedStores = sortStoresByDistance(
+            data,
+            globalCoords.latitude,
+            globalCoords.longitude
+          );
+          setLocationError('');
+          setStores(sortedStores);
+        } else {
+          // No global coords yet, fallback to original behavior
+          await sortOrder('nearest', data);
+        }
       } else {
-        // Fallback to original behavior
+        // For mobile, use original behavior
         await sortOrder('nearest', data);
       }
 
@@ -294,21 +306,30 @@ export default function StoresScreen({ navigation, route }) {
         showFilter={showFilter}
         onFilterToggle={() => setShowFilter(!showFilter)}
       />
-      { (userCoords || (coords && !locationError)) ?
-          <Text style={styles.Header}>
-            Showing nearest stores to your current location
-          </Text> : ''
-      }
-      { (!userCoords && !coords && locationError) ?
-          <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+      { (() => {
+          const globalCoords = Platform.OS === 'web' ? getGlobalCoords() : null;
+          const hasCoords = Platform.OS === 'web' ? globalCoords : (coords && !locationError);
+          return hasCoords ? (
             <Text style={styles.Header}>
-            Allow location access to find nearest stores
+              Showing nearest stores to your current location
             </Text>
-            <TouchableOpacity onPress={requestLocationPermission}>
-              <Text style={{ fontSize: 20 }}>↺</Text>
-            </TouchableOpacity>
-          </View>
-          : ''
+          ) : null;
+        })()
+      }
+      { (() => {
+          const globalCoords = Platform.OS === 'web' ? getGlobalCoords() : null;
+          const hasCoords = Platform.OS === 'web' ? globalCoords : coords;
+          return (!hasCoords && locationError) ? (
+            <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+              <Text style={styles.Header}>
+                Allow location access to find nearest stores
+              </Text>
+              <TouchableOpacity onPress={requestLocationPermission}>
+                <Text style={{ fontSize: 20 }}>↺</Text>
+              </TouchableOpacity>
+            </View>
+          ) : null;
+        })()
       }
       <Animated.View
         style={[
