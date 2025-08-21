@@ -23,6 +23,7 @@ import { OrderProvider } from './contexts/OrderContext';
 import { UserProvider, useUser } from './contexts/UserContext';
 import LoadingState from './components/LoadingState';
 import GlobalUserControl from './components/GlobalUserControl';
+import PWAInstallModal from './components/PWAInstallModal';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NotificationProvider } from './components/NotificationSystem';
 
@@ -168,6 +169,7 @@ export default function App() {
         <UserProvider>
           <GlobalUserControl />
           <AppContent />
+          <PWAInstallModal />
         </UserProvider>
       </NotificationProvider>
     </SafeAreaProvider>

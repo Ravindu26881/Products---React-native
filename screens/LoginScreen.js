@@ -223,7 +223,7 @@ export default function LoginScreen() {
         };
 
         // Show success toast and auto login
-        setSuccessMessage(`Welcome to SaleSale, ${username}! Account created successfully.`);
+        setSuccessMessage(`Welcome to Bazario, ${username}! Account created successfully.`);
         setShowSuccessToast(true);
 
         // Auto login after a short delay to let user see the success message
@@ -535,9 +535,9 @@ export default function LoginScreen() {
           <Image
               source={require('../assets/logo-one-line.png')}
               style={styles.logo}
-              resizeMode="contain"
+              resizeMode="cover"
           />
-          <Text style={styles.welcomeText}>Welcome to SaleSale!</Text>
+          <Text style={styles.welcomeText}>Welcome to Bazario!</Text>
         </View>
 
         <View style={styles.content}>
