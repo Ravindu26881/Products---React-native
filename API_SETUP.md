@@ -1,6 +1,6 @@
 # Backend API Integration Setup
 
-Your SaleSale app is now configured to work with your backend API! Here's how to set it up:
+Your Bazario app is now configured to work with your backend API! Here's how to set it up:
 
 ## 📡 API Configuration
 

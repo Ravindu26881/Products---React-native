@@ -9,7 +9,7 @@ export const GlobalUserControl = () => {
   // Expose user functions globally
   if (typeof window !== 'undefined') {
     // For web
-    window.SaleSaleUser = {
+    window.BazarioUser = {
       showLoginScreen: userContext.showLoginScreen,
       logout: userContext.logoutUser,
       getUser: () => userContext.user,
@@ -19,7 +19,7 @@ export const GlobalUserControl = () => {
   }
   
   // For React Native - expose through global object
-  global.SaleSaleUser = {
+  global.BazarioUser = {
     showLoginScreen: userContext.showLoginScreen,
     logout: userContext.logoutUser,
     getUser: () => userContext.user,
@@ -36,10 +36,10 @@ export const GlobalUserControl = () => {
 export const showLoginScreen = () => {
   if (globalUserControl) {
     globalUserControl.showLoginScreen();
-  } else if (typeof window !== 'undefined' && window.SaleSaleUser) {
-    window.SaleSaleUser.showLoginScreen();
-  } else if (global.SaleSaleUser) {
-    global.SaleSaleUser.showLoginScreen();
+  } else if (typeof window !== 'undefined' && window.BazarioUser) {
+    window.BazarioUser.showLoginScreen();
+  } else if (global.BazarioUser) {
+    global.BazarioUser.showLoginScreen();
   } else {
     console.warn('GlobalUserControl not initialized yet');
   }
@@ -48,10 +48,10 @@ export const showLoginScreen = () => {
 export const logoutUser = () => {
   if (globalUserControl) {
     globalUserControl.logoutUser();
-  } else if (typeof window !== 'undefined' && window.SaleSaleUser) {
-    window.SaleSaleUser.logout();
-  } else if (global.SaleSaleUser) {
-    global.SaleSaleUser.logout();
+  } else if (typeof window !== 'undefined' && window.BazarioUser) {
+    window.BazarioUser.logout();
+  } else if (global.BazarioUser) {
+    global.BazarioUser.logout();
   } else {
     console.warn('GlobalUserControl not initialized yet');
   }
@@ -60,10 +60,10 @@ export const logoutUser = () => {
 export const getCurrentUser = () => {
   if (globalUserControl) {
     return globalUserControl.user;
-  } else if (typeof window !== 'undefined' && window.SaleSaleUser) {
-    return window.SaleSaleUser.getUser();
-  } else if (global.SaleSaleUser) {
-    return global.SaleSaleUser.getUser();
+  } else if (typeof window !== 'undefined' && window.BazarioUser) {
+    return window.BazarioUser.getUser();
+  } else if (global.BazarioUser) {
+    return global.BazarioUser.getUser();
   }
   return null;
 };

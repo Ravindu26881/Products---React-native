@@ -1,6 +1,6 @@
 # 🎉 App-Wide Custom Notification System Implemented!
 
-Your SaleSale app now uses beautiful, consistent custom UI components instead of system alerts across **all platforms** (Web, iOS, Android).
+Your Bazario app now uses beautiful, consistent custom UI components instead of system alerts across **all platforms** (Web, iOS, Android).
 
 ## ✅ **What's Been Updated:**
 

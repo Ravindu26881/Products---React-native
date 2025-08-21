@@ -126,7 +126,7 @@ export default function PWAInstallModal() {
         <View style={styles.modalContainer}>
           <View style={styles.iconContainer}>
             <Image
-              source={require('../assets/icon.png')}
+              source={require('../assets/icon-bw.png')}
               style={styles.appIcon}
               resizeMode="contain"
             />

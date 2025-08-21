@@ -1,4 +1,4 @@
-# SaleSale - Basic React Native Navigation
+# Bazario - Local Marketplace App
 
 A simple React Native app with basic navigation using React Navigation.
 
@@ -47,7 +47,7 @@ npm start
 ## 🏗️ Project Structure
 
 ```
-SaleSale/
+Bazario/
 ├── App.js                 # Main app with navigation and screens
 ├── package.json          # Dependencies
 └── README.md            # This file
