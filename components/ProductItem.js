@@ -154,6 +154,7 @@ export default function ProductItem({
 
 const styles = StyleSheet.create({
   productItem: {
+    maxWidth: 240,
     overflow: 'hidden',
     marginBottom: 0,
     // borderRadius: 10,

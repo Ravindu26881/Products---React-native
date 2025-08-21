@@ -77,6 +77,9 @@ export default function HomeScreen({ navigation }) {
   };
 
   const getNumColumns = (width) => {
+    if (width > 1400) return 6;
+    if (width > 1200) return 5;
+    if (width > 1000) return 4;
     if (width > 768) return 3;
     if (width > 600) return 3;
     if (width > 480) return 2;
@@ -201,8 +204,10 @@ export default function HomeScreen({ navigation }) {
   const getItemWidth = () => {
     const padding = 20;
     const spacing = 15;
+    const maxGridWidth = 790; // 👈 your cap
+    const availableWidth = Math.min(screenData.width, maxGridWidth); // 👈 cap at 790
     const totalSpacing = spacing * (numColumns - 1);
-    return (screenData.width - (padding * 2) - totalSpacing) / numColumns;
+    return (availableWidth - (padding * 2) - totalSpacing) / numColumns;
   };
 
   const handleProductPress = (product) => {
@@ -213,18 +218,17 @@ export default function HomeScreen({ navigation }) {
     });
   };
 
-  const renderProductItem = ({ item: product, index }) => (
-    <View style={styles.Item}>
+  const renderProductItem = (product, index) => (
+    <View
+      key={`${product.storeId}-${product._id || product.id}-${index}`}
+      style={[styles.Item, { width: getItemWidth() }]}
+    >
       <ProductItem
         product={product}
         onPress={handleProductPress}
         width={getItemWidth()}
-        // showStoreName={true}
         storeId={product.storeId}
         storeName={product.storeName}
-        containerStyle={{
-          marginRight: (index + 1) % numColumns === 0 ? 0 : 15,
-        }}
       />
     </View>
   );
@@ -302,6 +306,8 @@ export default function HomeScreen({ navigation }) {
     </View>
   );
 
+  const activeProducts = filteredProducts.filter(item => item.store?.isActive);
+
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <StatusBar 
@@ -309,24 +315,26 @@ export default function HomeScreen({ navigation }) {
         backgroundColor={COLORS.appBackground}
         translucent={false}
       />
-      <FlatList
-          data={filteredProducts.filter(item => item.store.isActive)}
-        renderItem={renderProductItem}
-        keyExtractor={(item, index) => `${item.storeId}-${item._id || item.id}-${index}`}
-        numColumns={numColumns}
-        key={numColumns}
-        ListHeaderComponent={ListHeaderComponent}
-        contentContainerStyle={[styles.flatListContainer, { paddingBottom: insets.bottom }]}
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={[styles.scrollViewContent, { paddingBottom: insets.bottom }]}
         showsVerticalScrollIndicator={false}
-        ListEmptyComponent={() => (
+      >
+        <ListHeaderComponent />
+        
+        {activeProducts.length === 0 ? (
           <EmptyState 
             icon="📦"
             title="No products found"
             message="Try adjusting your search or category filter"
             fullScreen={false}
           />
+        ) : (
+          <View style={styles.productsGrid}>
+            {activeProducts.map((product, index) => renderProductItem(product, index))}
+          </View>
         )}
-      />
+      </ScrollView>
     </View>
   );
 }
@@ -417,11 +425,24 @@ const styles = StyleSheet.create({
     marginLeft: -20,
     marginRight: -20,
   },
-  flatListContainer: {
+  scrollView: {
+    flex: 1,
+  },
+  scrollViewContent: {
     paddingHorizontal: 20,
     paddingBottom: 20,
   },
-  Item: {
+  productsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+    gap: 15,
+    maxWidth: 790,
     marginTop: 20,
+    alignSelf: 'center', // 👈 centers the grid when it reaches maxWidth
+    width: '100%',       // 👈 let it shrink/grow until 790
+  },
+  Item: {
+    marginBottom: 20,             // vertical spacing between rows
   },
 });
