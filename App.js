@@ -162,11 +162,47 @@ export default function App() {
                 navigator.serviceWorker.register('/sw.js')
                     .then((registration) => {
                         console.log('✅ Service Worker registered successfully:', registration);
+                        
+                        // Debug PWA installation criteria
+                        setTimeout(() => {
+                            console.log('🔍 PWA Debug Info:');
+                            console.log('- Service Worker:', !!navigator.serviceWorker.controller);
+                            console.log('- HTTPS:', location.protocol === 'https:' || location.hostname === 'localhost');
+                            console.log('- Standalone mode:', window.matchMedia('(display-mode: standalone)').matches);
+                            console.log('- User agent:', navigator.userAgent);
+                            
+                            // Check manifest
+                            fetch('/manifest.json')
+                                .then(res => res.json())
+                                .then(manifest => {
+                                    console.log('✅ Manifest loaded:', manifest.name);
+                                })
+                                .catch(err => {
+                                    console.error('❌ Manifest failed to load:', err);
+                                });
+                        }, 2000);
                     })
                     .catch((error) => {
                         console.error('❌ Service Worker registration failed:', error);
                     });
             }
+
+            // Add global debug function
+            window.debugPWA = () => {
+                console.log('🔧 Manual PWA Debug:');
+                console.log('- beforeinstallprompt supported:', 'onbeforeinstallprompt' in window);
+                console.log('- Service Worker supported:', 'serviceWorker' in navigator);
+                console.log('- Service Worker active:', !!navigator.serviceWorker.controller);
+                console.log('- HTTPS/localhost:', location.protocol === 'https:' || location.hostname === 'localhost');
+                console.log('- Display mode:', window.matchMedia('(display-mode: standalone)').matches ? 'standalone' : 'browser');
+                console.log('- Location:', location.href);
+                
+                // Test manifest
+                fetch('/manifest.json')
+                    .then(res => res.ok ? res.json() : Promise.reject('Not found'))
+                    .then(manifest => console.log('✅ Manifest:', manifest))
+                    .catch(err => console.error('❌ Manifest error:', err));
+            };
 
             return () => {
                 window.removeEventListener('beforeunload', handleBeforeUnload);

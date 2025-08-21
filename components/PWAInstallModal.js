@@ -18,17 +18,20 @@ export default function PWAInstallModal() {
     // Only run on web platform
     if (Platform.OS !== 'web') return;
 
+    console.log('🔍 PWA Modal: Setting up install prompt detection...');
+
     const handleBeforeInstallPrompt = (e) => {
+      console.log('✅ PWA Modal: beforeinstallprompt event fired!', e);
       // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
       // Store the event for later use
       setDeferredPrompt(e);
-      // Show our custom modal
+      // Show our custom modal immediately when event fires
       setShowModal(true);
     };
 
     const handleAppInstalled = () => {
-      console.log('PWA was installed');
+      console.log('✅ PWA was installed successfully');
       setShowModal(false);
       setDeferredPrompt(null);
     };
@@ -39,26 +42,30 @@ export default function PWAInstallModal() {
 
     // Check if app is already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
-      // App is already installed, don't show modal
+      console.log('ℹ️ PWA Modal: App already installed, skipping modal');
       return;
     }
 
-    // Show modal after a short delay if PWA is installable
+    // Check if user already dismissed
+    if (localStorage.getItem('pwa-install-dismissed')) {
+      console.log('ℹ️ PWA Modal: User previously dismissed, skipping modal');
+      return;
+    }
+
+    // Wait longer for beforeinstallprompt, then show fallback
     const timer = setTimeout(() => {
-      // Check if we haven't shown the modal yet and the app seems installable
-      if (!localStorage.getItem('pwa-install-dismissed') && 
-          !window.matchMedia('(display-mode: standalone)').matches) {
-        // If we don't have the deferred prompt yet, show a general install message
+      if (!deferredPrompt && !showModal) {
+        console.log('⚠️ PWA Modal: beforeinstallprompt not fired, showing fallback modal');
         setShowModal(true);
       }
-    }, 3000); // Show after 3 seconds
+    }, 5000); // Wait 5 seconds for the native event
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
       clearTimeout(timer);
     };
-  }, []);
+  }, [showModal]);
 
   const handleInstallClick = async () => {
     if (deferredPrompt) {
