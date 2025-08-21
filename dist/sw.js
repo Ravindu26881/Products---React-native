@@ -1,19 +1,22 @@
-// Simple service worker for PWA
+// Bazario PWA Service Worker
 const CACHE_NAME = 'bazario-v1';
 const urlsToCache = [
   '/',
   '/index.html',
   '/manifest.json',
   '/assets/icon.png',
-  '/assets/adaptive-icon.png',
-  '/_expo/static/js/web/index-5fb5f543307391c451dbaafe83dd3add.js'
+  '/assets/adaptive-icon.png'
 ];
 
 // Install event
 self.addEventListener('install', (event) => {
+  console.log('Service Worker installing...');
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(urlsToCache))
+      .then((cache) => {
+        console.log('Caching app shell');
+        return cache.addAll(urlsToCache);
+      })
   );
 });
 
@@ -31,11 +34,13 @@ self.addEventListener('fetch', (event) => {
 
 // Activate event
 self.addEventListener('activate', (event) => {
+  console.log('Service Worker activating...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
+            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
