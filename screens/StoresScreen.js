@@ -20,6 +20,8 @@ import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
 import EmptyState from '../components/EmptyState';
 import StoreItem from '../components/StoreItem';
+import { useGeolocated } from 'react-geolocated';
+import {useNotification} from "../components/NotificationSystem";
 
 export default function StoresScreen({ navigation }) {
   const [stores, setStores] = useState([]);
@@ -31,6 +33,23 @@ export default function StoresScreen({ navigation }) {
   const [showFilter, setShowFilter] = useState(false);
   const filterAnimation = useRef(new Animated.Value(0)).current;
   const appState = useRef(AppState.currentState);
+  const { showModal, showSuccess, showError } = useNotification();
+  const geoData = Platform.OS === 'web' ? useGeolocated({
+    positionOptions: {
+      enableHighAccuracy: true,
+      maximumAge: 60000,
+      timeout: 30000,
+    },
+    watchPosition: false,
+    userDecisionTimeout: null,
+  }) : {
+    coords: null,
+    isGeolocationAvailable: false,
+    isGeolocationEnabled: false,
+    positionError: null
+  };
+  const { coords, isGeolocationAvailable, isGeolocationEnabled, positionError } = geoData;
+
 
   // Animate filter panel with smooth timing
   useEffect(() => {
@@ -63,25 +82,97 @@ export default function StoresScreen({ navigation }) {
     const result = await locationPermissionRetry();
     console.log(result);
   };
+  useEffect(() => {
+    sortOrderWithGeoCoords(coords)
+  }, [coords]);
+
+
+  const sortOrderWithGeoCoords = async (coords) => {
+    console.log(99999, coords)
+    const data = await fetchStores();
+    const sortedStores = sortStoresByDistance(
+        data,
+        coords.latitude,
+        coords.longitude
+    );
+    setLocationError('');
+    setStores(sortedStores);
+  }
 
 
   const sortOrder = async (order, storeList = stores, retry) => {
     if (order === 'nearest') {
-      try {
-        const userLocation = await getCurrentPosition(retry);
-        if (userLocation.error === 'Location permission not granted' || userLocation.error === 'Failed to get location') {
-          setLocationError(userLocation.error)
-        } else {
-          setLocationError('');
+      if (Platform.OS !== 'web') {
+        try {
+          const userLocation = await getCurrentPosition(retry);
+          console.log(userLocation);
+          if (userLocation.error === 'Location permission not granted' || userLocation.error === 'Failed to get location') {
+            setLocationError(userLocation.error)
+          } else {
+            setLocationError('');
+          }
+          const sortedStores = sortStoresByDistance(
+              storeList,
+              userLocation.lat,
+              userLocation.lng
+          );
+          setStores(sortedStores);
+        } catch (err) {
+          console.error(err);
         }
+      } else {
+        if (!isGeolocationAvailable) {
+          showError('Geolocation is not supported by this browser.');
+          setStores(storeList);
+          setLocationError('Geolocation is not supported by this browser.')
+          return;
+        }
+        if (!isGeolocationEnabled) {
+          showError('Geolocation is not enabled. Please enable location services.');
+          setStores(storeList);
+          setLocationError('Geolocation is not enabled. Please enable location services.')
+          return;
+        }
+        if (positionError) {
+          let errorMessage = 'Failed to get location. ';
+          if (positionError.code === 1) {
+            errorMessage += 'Location access was denied. Please enable location permissions and try again.';
+          } else if (positionError.code === 2) {
+            errorMessage += 'Location information is unavailable.';
+          } else if (positionError.code === 3) {
+            errorMessage += 'Location request timed out.';
+          } else {
+            errorMessage += 'Please try again.';
+          }
+          showError(errorMessage);
+          setStores(storeList);
+          setLocationError(errorMessage)
+          return;
+        }
+        console.log("coords:", coords, "error:", positionError, "enabled:", isGeolocationEnabled);
+          if (!coords) {
+            showError('Location data is not available yet. Please try again in a moment.');
+            setStores(storeList);
+            setLocationError('Location data is not available yet. Please try again in a moment.')
+            return;
+          }
+
+        const loc = {
+          lat: coords.latitude,
+          lng: coords.longitude
+        };
+        console.log("Lat:", loc.lat, "Lng:", loc.lng);
+        const data = await fetchStores();
         const sortedStores = sortStoresByDistance(
-            storeList,
-            userLocation.lat,
-            userLocation.lng
+            data,
+            coords.latitude,
+            coords.longitude
         );
+        setLocationError('');
         setStores(sortedStores);
-      } catch (err) {
-        console.error(err);
+
+
+
       }
     }
   };
@@ -99,11 +190,8 @@ export default function StoresScreen({ navigation }) {
       setLoading(true);
       setError(null);
       const data = await fetchStores();
-      if (Platform.OS !== 'web') {
-        await sortOrder('nearest', data); // pass fresh store data to sort
-      } else {
-        setStores(data);
-      }
+      await sortOrder('nearest', data); // pass fresh store data to sort
+
 
     } catch (err) {
       setError('Failed to load stores');
@@ -187,12 +275,12 @@ export default function StoresScreen({ navigation }) {
         showFilter={showFilter}
         onFilterToggle={() => setShowFilter(!showFilter)}
       />
-      {Platform.OS !== 'web' && !(locationError) ?
+      { !(locationError) ?
           <Text style={styles.Header}>
             Showing nearest stores to you current location
           </Text> : ''
       }
-      {Platform.OS !== 'web' && locationError ?
+      { locationError ?
           <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
             <Text style={styles.Header}>
             Allow location access to find nearest stores

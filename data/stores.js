@@ -99,6 +99,7 @@ function getDistanceMeters(lat1, lon1, lat2, lon2) {
 }
 
 export function sortStoresByDistance(stores, userLat, userLng) {
+  console.log(555, stores, userLat, userLng);
   const withCoords = [];
   const withoutCoords = [];
 
@@ -109,7 +110,8 @@ export function sortStoresByDistance(stores, userLat, userLng) {
     if (Number.isFinite(lat) && Number.isFinite(lng)) {
       const distanceMeters = getDistanceMeters(userLat, userLng, lat, lng);
       const distanceKm = distanceMeters / 1000; // convert to km
-      withCoords.push({ ...s, distance: distanceKm });
+      const finalDistance = distanceKm === 0 ? 0.01 : distanceKm;
+      withCoords.push({ ...s, distance: finalDistance });
     } else {
       withoutCoords.push({ ...s, distance: null });
     }
