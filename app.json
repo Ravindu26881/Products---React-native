@@ -27,7 +27,7 @@
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro",
-      "name": "Bazario - Local Marketplace",
+      "name": "Bazario",
       "shortName": "Bazario",
       "description": "Discover amazing products from local businesses",
       "startUrl": "/",
