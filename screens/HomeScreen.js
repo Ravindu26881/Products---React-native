@@ -246,7 +246,7 @@ export default function HomeScreen({ navigation }) {
             style={styles.cartIcon}
           />
         </View>
-        <Text style={styles.subtitle}>Discover amazing products from local businesses</Text>
+        {/*<Text style={styles.subtitle}>Discover amazing products from local businesses</Text>*/}
       </View>
 
       
@@ -262,7 +262,11 @@ export default function HomeScreen({ navigation }) {
           style={styles.filterButton}
           onPress={() => setShowFilter(!showFilter)}
         >
-          <Text style={styles.filterButtonText}>Filter</Text>
+          {/*<Text style={styles.filterButtonText}>Filter</Text>*/}
+          <Image
+            source={require('../assets/icons/Filter.png')}
+            style={{ width: 20, height: 20 }}
+          />
         </TouchableOpacity>
       </View>
 
@@ -376,31 +380,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     marginHorizontal: -20,
-    paddingBottom: 15,
+    // paddingBottom: 15,
     backgroundColor: COLORS.appBackground,
   },
   browseStoresButton: {
-    // backgroundColor: COLORS.appBackground,
     borderColor: COLORS.bordersLight,
     borderWidth:1,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
     borderRadius: 25,
     flex: 1,
     marginRight: 10,
+    maxWidth: 170,
   },
   browseStoresText: {
     color: COLORS.textPrimary,
     fontSize: 16,
-    fontWeight: '600',
     textAlign: 'center',
   },
   filterButton: {
     backgroundColor: COLORS.appBackground,
     borderWidth: 1,
     borderColor: COLORS.bordersLight,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    padding: 9,
+    // paddingHorizontal: 20,
+    // paddingVertical: 12,
     borderRadius: 25,
   },
   filterButtonText: {
