@@ -213,15 +213,39 @@ export default function HomeScreen({ navigation }) {
   const getItemWidth = () => {
     const padding = 20;
     const spacing = 15;
-    const maxGridWidth = 790;
+    
+    // Adjust max grid width based on number of columns for better responsiveness
+    let maxGridWidth;
+    if (numColumns >= 5) {
+      maxGridWidth = 1200; // Wider container for 5 columns
+    } else if (numColumns >= 4) {
+      maxGridWidth = 1000; // Medium container for 4 columns
+    } else {
+      maxGridWidth = 790; // Standard container for 2-3 columns
+    }
+    
     const availableWidth = Math.min(screenData.width, maxGridWidth);
     
     // Calculate exact width for perfect alignment
     const totalSpacing = spacing * (numColumns - 1);
     const calculatedWidth = (availableWidth - (padding * 2) - totalSpacing) / numColumns;
     
-    // Ensure minimum width for very small screens
-    return Math.max(calculatedWidth, 150);
+    // Ensure minimum width for very small screens and maximum width for large screens
+    const minWidth = 150;
+    const maxWidth = numColumns >= 5 ? 220 : 200; // Limit item width on large screens
+    
+    return Math.max(Math.min(calculatedWidth, maxWidth), minWidth);
+  };
+
+  const getGridContainerWidth = () => {
+    // Adjust container width based on number of columns
+    if (numColumns >= 5) {
+      return Math.min(screenData.width, 1200);
+    } else if (numColumns >= 4) {
+      return Math.min(screenData.width, 1000);
+    } else {
+      return Math.min(screenData.width, 790);
+    }
   };
 
 
@@ -355,7 +379,7 @@ export default function HomeScreen({ navigation }) {
             fullScreen={false}
           />
         ) : (
-          <View style={styles.productsGrid}>
+          <View style={[styles.productsGrid, { width: getGridContainerWidth() }]}>
             {activeProducts.map((product, index) => renderProductItem(product, index))}
           </View>
         )}
@@ -477,7 +501,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     gap: 15,
-    maxWidth: 790,
+    maxWidth: 760,
     marginTop: 20,
     alignSelf: 'center',
     width: '100%',
