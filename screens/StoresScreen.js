@@ -325,7 +325,11 @@ export default function StoresScreen({ navigation }) {
   const renderStoreItem = (store, index) => (
     <View
       key={`${store._id || store.id}-${index}`}
-      style={[styles.Item, { width: getItemWidth() }]}
+      style={
+        screenData.width > 800
+          ? styles.itemDesktop
+          : styles.item
+      }
     >
       <StoreItem 
         store={store}
@@ -335,7 +339,11 @@ export default function StoresScreen({ navigation }) {
   );
 
   const ListHeaderComponent = () => (
-    <View>
+    <View style={
+      screenData.width > 800
+        ? styles.headerItemsWrapperDesktop
+        : styles.headerItemsWrapper
+    }>
       <View style={styles.header}>
         <View style={styles.headerTop}>
           <View style={styles.logoContainer}>
@@ -419,8 +427,10 @@ export default function StoresScreen({ navigation }) {
         contentContainerStyle={[styles.scrollViewContent, { paddingBottom: insets.bottom }]}
         showsVerticalScrollIndicator={false}
       >
-        <ListHeaderComponent />
-        
+        <View style={styles.storesGrid}>
+          <ListHeaderComponent />
+        </View>
+
         {activeStores.length === 0 ? (
           <EmptyState 
             icon="🏪"
@@ -429,8 +439,10 @@ export default function StoresScreen({ navigation }) {
             fullScreen={false}
           />
         ) : (
-          <View style={styles.storesGrid}>
-            {activeStores.map((store, index) => renderStoreItem(store, index))}
+          <View >
+            <View style={styles.storesGrid}>
+              {activeStores.map((store, index) => renderStoreItem(store, index))}
+            </View>
           </View>
         )}
       </ScrollView>
@@ -448,6 +460,12 @@ const styles = StyleSheet.create({
     marginHorizontal: -20,
     paddingHorizontal: 20,
     marginTop: 10
+  },
+  headerItemsWrapper : {
+    width: '-webkit-fill-available',
+  },
+  headerItemsWrapperDesktop : {
+    width: 760
   },
   headerTop: {
     flexDirection: 'row',
@@ -517,16 +535,26 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   storesGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-    gap: 15,
-    maxWidth: 790,
-    marginTop: 20,
-    alignSelf: 'center',
-    width: '100%',
+    // flexDirection: 'row',
+    // flexWrap: 'wrap',
+    // justifyContent: 'flex-start',
+    // gap: 15,
+    // maxWidth: 790,
+    // marginTop: 20,
+    // alignSelf: 'center',
+    // width: '100%',
+    display: 'grid',
+    placeItems: 'center',  /* shorthand for align + justify */
+// height: 100vh;
+// margin: 0;
   },
-  Item: {
+  item: {
+    width: '-webkit-fill-available',
+    paddingVertical: 20
     // marginBottom: 220,
+  },
+  itemDesktop: {
+    width: 760,
+    paddingVertical: 20
   },
 });

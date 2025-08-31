@@ -77,7 +77,6 @@ export default function HomeScreen({ navigation }) {
   };
 
   const getNumColumns = (width) => {
-    if (width > 1400) return 6;
     if (width > 1200) return 5;
     if (width > 1000) return 4;
     if (width > 768) return 3;
@@ -221,7 +220,7 @@ export default function HomeScreen({ navigation }) {
   const renderProductItem = (product, index) => (
     <View
       key={`${product.storeId}-${product._id || product.id}-${index}`}
-      style={[styles.Item, { width: getItemWidth() }]}
+      style={styles.Item}
     >
       <ProductItem
         product={product}
