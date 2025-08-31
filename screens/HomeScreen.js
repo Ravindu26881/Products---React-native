@@ -244,11 +244,6 @@ export default function HomeScreen({ navigation }) {
             />
           </View>
           <UserProfile mini={true} />
-          <CartIcon 
-            navigation={navigation} 
-            iconColor={COLORS.textPrimary}
-            style={styles.cartIcon}
-          />
         </View>
         {/*<Text style={styles.subtitle}>Discover amazing products from local businesses</Text>*/}
       </View>
@@ -261,17 +256,24 @@ export default function HomeScreen({ navigation }) {
         >
           <Text style={styles.browseStoresText}>Browse by Stores</Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.filterButton}
-          onPress={() => setShowFilter(!showFilter)}
-        >
-          {/*<Text style={styles.filterButtonText}>Filter</Text>*/}
-          <Image
-            source={require('../assets/icons/Filter.png')}
-            style={{ width: 20, height: 20 }}
+
+        <View style={styles.filterButtonContainer}>
+          <CartIcon
+            navigation={navigation}
+            iconColor={COLORS.textPrimary}
+            style={styles.cartIcon}
           />
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.filterButton}
+            onPress={() => setShowFilter(!showFilter)}
+          >
+            {/*<Text style={styles.filterButtonText}>Filter</Text>*/}
+            <Image
+              source={require('../assets/icons/Filter.png')}
+              style={{ width: 20, height: 20 }}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <Animated.View
@@ -368,7 +370,7 @@ const styles = StyleSheet.create({
     tintColor: COLORS.textPrimary,
   },
   cartIcon: {
-    marginLeft: 10,
+    // marginLeft: 10,
   },
   subtitle: {
     fontSize: 14,
@@ -390,6 +392,11 @@ const styles = StyleSheet.create({
     marginHorizontal: -20,
     // paddingBottom: 15,
     backgroundColor: COLORS.appBackground,
+  },
+  filterButtonContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10,
   },
   browseStoresButton: {
     borderColor: COLORS.bordersLight,
