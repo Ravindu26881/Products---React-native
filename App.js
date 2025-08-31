@@ -80,6 +80,7 @@ function AppNavigator() {
         <Stack.Screen 
           name="Stores" 
           component={StoresScreen}
+          options={{ headerShown: false }}
         />
         <Stack.Screen 
           name="Products" 

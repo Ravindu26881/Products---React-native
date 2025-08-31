@@ -161,6 +161,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingLeft: 40,
     paddingRight: 40,
+    paddingTop: 25
   },
   searchContainer: {
     marginBottom: 15,

@@ -9,7 +9,13 @@ import {
   ActivityIndicator,
   ImageBackground,
   Platform,
-  Animated, AppState
+  Animated, 
+  AppState,
+  Dimensions,
+  Easing,
+  SafeAreaView,
+  StatusBar,
+  ScrollView
 } from 'react-native';
 import {fetchStores, getCurrentPosition, locationPermissionRetry, sortStoresByDistance} from '../data/stores';
 import { getFontFamily } from '../utils/fontUtils';
@@ -20,11 +26,17 @@ import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
 import EmptyState from '../components/EmptyState';
 import StoreItem from '../components/StoreItem';
+import CartIcon from '../components/CartIcon';
+import UserProfile from '../components/UserProfile';
 import { useGeolocated } from 'react-geolocated';
 import {useNotification} from "../components/NotificationSystem";
 import { getGlobalCoords } from '../utils/globalCoords';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 export default function StoresScreen({ navigation }) {
+  const insets = useSafeAreaInsets();
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,6 +44,7 @@ export default function StoresScreen({ navigation }) {
   const [locationError, setLocationError] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showFilter, setShowFilter] = useState(false);
+  const [screenData, setScreenData] = useState(Dimensions.get('window'));
   const filterAnimation = useRef(new Animated.Value(0)).current;
   const appState = useRef(AppState.currentState);
   const { showModal, showSuccess, showError } = useNotification();
@@ -52,18 +65,41 @@ export default function StoresScreen({ navigation }) {
   };
   const { coords, isGeolocationAvailable, isGeolocationEnabled, positionError } = geoData;
 
+  // Simplified function to navigate back to Home
+  const handleBackToHome = () => {
+    navigation.navigate('Home');
+  };
 
-  // Animate filter panel with smooth timing
+  const getNumColumns = (width) => {
+    if (width > 1400) return 6;
+    if (width > 1200) return 5;
+    if (width > 1000) return 4;
+    if (width > 768) return 3;
+    if (width > 600) return 3;
+    if (width > 480) return 2;
+    return 2;
+  };
+  
+  const numColumns = getNumColumns(screenData.width);
+
+  // Animate filter panel
   useEffect(() => {
     Animated.timing(filterAnimation, {
       toValue: showFilter ? 1 : 0,
       duration: 300,
+      easing: Easing.out(Easing.cubic),
       useNativeDriver: false,
     }).start();
   }, [showFilter, filterAnimation]);
 
   useEffect(() => {
     loadStores();
+    
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenData(window);
+    });
+    
+    return () => subscription?.remove();
   }, []);
 
   useEffect(() => {
@@ -84,6 +120,7 @@ export default function StoresScreen({ navigation }) {
     const result = await locationPermissionRetry();
     console.log(result);
   };
+  
   useEffect(() => {
     // For web, try global coordinates first, then fallback to geolocation hook
     if (Platform.OS === 'web') {
@@ -100,7 +137,6 @@ export default function StoresScreen({ navigation }) {
     }
   }, [coords]);
 
-
   const sortOrderWithGeoCoords = async (coords) => {
     const data = await fetchStores();
     const sortedStores = sortStoresByDistance(
@@ -111,7 +147,6 @@ export default function StoresScreen({ navigation }) {
     setLocationError('');
     setStores(sortedStores);
   }
-
 
   const sortOrder = async (order, storeList = stores, retry) => {
     if (order === 'nearest') {
@@ -183,9 +218,6 @@ export default function StoresScreen({ navigation }) {
         );
         setLocationError('');
         setStores(sortedStores);
-
-
-
       }
     }
   };
@@ -232,12 +264,10 @@ export default function StoresScreen({ navigation }) {
     }
   };
 
-
   const getStoreCategory = (store) => {
     const storeName = store.name.toLowerCase();
     const storeOwner = store.owner.toLowerCase();
     const searchText = `${storeName} ${storeOwner}`;
-
 
     if (searchText.includes('cake') || searchText.includes('bakery') || searchText.includes('pastry') || 
         searchText.includes('dessert') || searchText.includes('sweet') || searchText.includes('cupcake') ||
@@ -245,7 +275,6 @@ export default function StoresScreen({ navigation }) {
       return 'cakes';
     }
     
-
     if (searchText.includes('cloth') || searchText.includes('fashion') || searchText.includes('dress') || 
         searchText.includes('shirt') || searchText.includes('pant') || searchText.includes('jean') ||
         searchText.includes('wear') || searchText.includes('apparel') || searchText.includes('garment') ||
@@ -256,14 +285,11 @@ export default function StoresScreen({ navigation }) {
     return 'all';
   };
 
-
   const filteredStores = useMemo(() => {
     return stores.filter(store => {
-
       const matchesSearch = searchQuery === '' || 
         store.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         store.owner.toLowerCase().includes(searchQuery.toLowerCase());
-
 
       const storeCategory = getStoreCategory(store);
       const matchesCategory = selectedCategory === 'all' || storeCategory === selectedCategory;
@@ -280,6 +306,14 @@ export default function StoresScreen({ navigation }) {
     return <ErrorState message={error} onRetry={loadStores} />;
   }
 
+  const getItemWidth = () => {
+    const padding = 20;
+    const spacing = 15;
+    const maxGridWidth = 790; // 👈 your cap
+    const availableWidth = Math.min(screenData.width, maxGridWidth); // 👈 cap at 790
+    const totalSpacing = spacing * (numColumns - 1);
+    return (availableWidth - (padding * 2) - totalSpacing) / numColumns;
+  };
 
   const handleStorePress = (store) => {
     navigation.navigate('Products', { 
@@ -288,9 +322,11 @@ export default function StoresScreen({ navigation }) {
     });
   };
 
-
-  const renderStoreItem = ({ item: store }) => (
-    <View style={styles.Item}>
+  const renderStoreItem = (store, index) => (
+    <View
+      key={`${store._id || store.id}-${index}`}
+      style={[styles.Item, { width: getItemWidth() }]}
+    >
       <StoreItem 
         store={store}
         onPress={handleStorePress}
@@ -298,39 +334,46 @@ export default function StoresScreen({ navigation }) {
     </View>
   );
 
-
   const ListHeaderComponent = () => (
     <View>
-      <HeaderWithFilter
-        title="Browse our partners"
-        showFilter={showFilter}
-        onFilterToggle={() => setShowFilter(!showFilter)}
-      />
-      { (() => {
-          const globalCoords = Platform.OS === 'web' ? getGlobalCoords() : null;
-          const hasCoords = Platform.OS === 'web' ? globalCoords : (coords && !locationError);
-          return hasCoords ? (
-            <Text style={styles.Header}>
-              Showing nearest stores to your current location
-            </Text>
-          ) : null;
-        })()
-      }
-      { (() => {
-          const globalCoords = Platform.OS === 'web' ? getGlobalCoords() : null;
-          const hasCoords = Platform.OS === 'web' ? globalCoords : coords;
-          return (!hasCoords && locationError) ? (
-            <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-              <Text style={styles.Header}>
-                Allow location access to find nearest stores
-              </Text>
-              <TouchableOpacity onPress={requestLocationPermission}>
-                <Text style={{ fontSize: 20 }}>↺</Text>
-              </TouchableOpacity>
-            </View>
-          ) : null;
-        })()
-      }
+      <View style={styles.header}>
+        <View style={styles.headerTop}>
+          <View style={styles.logoContainer}>
+            <Image
+              source={require('../assets/logo-one-line.png')}
+              style={styles.logo}
+            />
+          </View>
+          <UserProfile mini={true} />
+        </View>
+      </View>
+
+      <View style={styles.actionBar}>
+        <TouchableOpacity 
+          style={styles.browseStoresButton}
+          onPress={handleBackToHome}
+        >
+          <Text style={styles.browseStoresText}>Browse by Products</Text>
+        </TouchableOpacity>
+
+        <View style={styles.filterButtonContainer}>
+          <CartIcon
+            navigation={navigation}
+            iconColor={COLORS.textPrimary}
+            style={styles.cartIcon}
+          />
+          <TouchableOpacity
+            style={styles.filterButton}
+            onPress={() => setShowFilter(!showFilter)}
+          >
+            <Image
+              source={require('../assets/icons/Filter.png')}
+              style={{ width: 20, height: 20 }}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <Animated.View
         style={[
           styles.filterContainer,
@@ -351,101 +394,139 @@ export default function StoresScreen({ navigation }) {
           },
         ]}
       >
-        <View>
-          <StoreFilter
-            onSearchChange={setSearchQuery}
-            onCategoryChange={setSelectedCategory}
-            searchQuery={searchQuery}
-            selectedCategory={selectedCategory}
-            storeCount={filteredStores.length}
-          />
-        </View>
+        <StoreFilter
+          onSearchChange={setSearchQuery}
+          onCategoryChange={setSelectedCategory}
+          searchQuery={searchQuery}
+          selectedCategory={selectedCategory}
+          storeCount={filteredStores.length}
+        />
       </Animated.View>
     </View>
   );
 
+  const activeStores = filteredStores.filter(item => item.isActive);
+
   return (
-    <View style={styles.container}>
-      <FlatList
-          data={filteredStores.filter(item => item.isActive)}
-        renderItem={renderStoreItem}
-        keyExtractor={(item) => item._id || item.id}
-        ListHeaderComponent={ListHeaderComponent}
-        contentContainerStyle={styles.flatListContainer}
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <StatusBar 
+        barStyle="dark-content" 
+        backgroundColor={COLORS.appBackground}
+        translucent={false}
+      />
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={[styles.scrollViewContent, { paddingBottom: insets.bottom }]}
         showsVerticalScrollIndicator={false}
-        ListEmptyComponent={() => (
+      >
+        <ListHeaderComponent />
+        
+        {activeStores.length === 0 ? (
           <EmptyState 
-            icon="🔍"
+            icon="🏪"
             title="No stores found"
             message="Try adjusting your search or category filter"
             fullScreen={false}
           />
+        ) : (
+          <View style={styles.storesGrid}>
+            {activeStores.map((store, index) => renderStoreItem(store, index))}
+          </View>
         )}
-      />
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
   },
+  header: {
+    backgroundColor: COLORS.appBackground,
+    marginHorizontal: -20,
+    paddingHorizontal: 20,
+    marginTop: 10
+  },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  logoContainer: {
+    flex: 1,
+    alignItems: 'left',
+  },
+  logo: {
+    width: 116,
+    height: 60,
+    marginLeft: -14,
+    resizeMode: 'cover',
+    tintColor: COLORS.textPrimary,
+  },
+  cartIcon: {
+    // marginLeft: 10,
+  },
+  actionBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginHorizontal: -20,
+    backgroundColor: COLORS.appBackground,
+  },
+  filterButtonContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10,
+  },
+  browseStoresButton: {
+    borderColor: COLORS.bordersLight,
+    borderWidth:1,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 25,
+    flex: 1,
+    marginRight: 10,
+    maxWidth: 170,
+  },
+  browseStoresText: {
+    color: COLORS.textPrimary,
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  filterButton: {
+    backgroundColor: COLORS.appBackground,
+    borderWidth: 1,
+    borderColor: COLORS.bordersLight,
+    padding: 9,
+    borderRadius: 25,
+  },
   filterContainer: {
     overflow: 'hidden',
     marginLeft: -20,
-    marginRight: -20
+    marginRight: -20,
   },
-
-
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: COLORS.textInverse,
+  scrollView: {
+    flex: 1,
   },
-  subtitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: COLORS.white70,
-    marginTop: 5,
-  },
-  storeCount: {
-    fontSize: 14,
-    color: COLORS.white70,
-    marginTop: 5,
-    fontWeight: '600',
-  },
-  flatListContainer: {
+  scrollViewContent: {
     paddingHorizontal: 20,
     paddingBottom: 20,
   },
-  itemSeparator: {
-    height: 15,
+  storesGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+    gap: 15,
+    maxWidth: 790,
+    marginTop: 20,
+    alignSelf: 'center',
+    width: '100%',
   },
   Item: {
-    marginTop: 20,
+    // marginBottom: 220,
   },
-
-  footer: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  button: {
-    backgroundColor: '#2563eb',
-    padding: 15,
-    borderRadius: 10,
-    width: 200,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: COLORS.textInverse,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-
 });
