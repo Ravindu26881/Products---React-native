@@ -76,16 +76,7 @@ export default function HomeScreen({ navigation }) {
     navigation.navigate('Stores');
   };
 
-  const getNumColumns = (width) => {
-    if (width > 1200) return 5;
-    if (width > 1000) return 4;
-    if (width > 768) return 3;
-    if (width > 600) return 3;
-    if (width > 480) return 2;
-    return 2;
-  };
-  
-  const numColumns = getNumColumns(screenData.width);
+
 
   // Animate filter panel
   useEffect(() => {
@@ -200,14 +191,7 @@ export default function HomeScreen({ navigation }) {
     return <ErrorState message={error} onRetry={loadAllProducts} />;
   }
 
-  const getItemWidth = () => {
-    const padding = 20;
-    const spacing = 15;
-    const maxGridWidth = 790; // 👈 your cap
-    const availableWidth = Math.min(screenData.width, maxGridWidth); // 👈 cap at 790
-    const totalSpacing = spacing * (numColumns - 1);
-    return (availableWidth - (padding * 2) - totalSpacing) / numColumns;
-  };
+
 
   const handleProductPress = (product) => {
     navigation.navigate('ProductDetail', {
@@ -217,10 +201,42 @@ export default function HomeScreen({ navigation }) {
     });
   };
 
+  const getNumColumns = (width) => {
+    if (width > 1200) return 5;
+    if (width > 1000) return 4;
+    if (width > 768) return 3;
+    return 2; // Mobile and small screens show 2 columns
+  };
+  
+  const numColumns = getNumColumns(screenData.width);
+
+  const getItemWidth = () => {
+    const padding = 20;
+    const spacing = 15;
+    const maxGridWidth = 790;
+    const availableWidth = Math.min(screenData.width, maxGridWidth);
+    
+    // Calculate exact width for perfect alignment
+    const totalSpacing = spacing * (numColumns - 1);
+    const calculatedWidth = (availableWidth - (padding * 2) - totalSpacing) / numColumns;
+    
+    // Ensure minimum width for very small screens
+    return Math.max(calculatedWidth, 150);
+  };
+
+
+
   const renderProductItem = (product, index) => (
     <View
       key={`${product.storeId}-${product._id || product.id}-${index}`}
-      style={styles.Item}
+      style={[
+        styles.Item,
+        { 
+          width: getItemWidth(),
+          marginBottom: 20,
+          alignItems: 'center'
+        }
+      ]}
     >
       <ProductItem
         product={product}
@@ -459,14 +475,17 @@ const styles = StyleSheet.create({
   productsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     gap: 15,
-    maxWidth: 760,
+    maxWidth: 790,
     marginTop: 20,
-    alignSelf: 'center', // 👈 centers the grid when it reaches maxWidth
-    width: '100%',       // 👈 let it shrink/grow until 790
+    alignSelf: 'center',
+    width: '100%',
+    paddingHorizontal: 0,
+    minHeight: 200,
+    alignItems: 'flex-start',
   },
-  // Item: {
-  //   marginBottom: 220,             // vertical spacing between rows
-  // },
+  Item: {
+    // Dynamic marginBottom is set in renderProductItem
+  },
 });
