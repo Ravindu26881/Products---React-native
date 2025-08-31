@@ -339,22 +339,26 @@ export default function StoresScreen({ navigation }) {
   );
 
   const ListHeaderComponent = () => (
+
+    <View style={styles.header}>
+      <View style={styles.headerTop}>
+        <View style={styles.logoContainer}>
+          <Image
+            source={require('../assets/logo-one-line.png')}
+            style={styles.logo}
+          />
+        </View>
+        <UserProfile mini={true} />
+      </View>
+    </View>
+  )
+
+  const ListActionsComponent = () => (
     <View style={
       screenData.width > 800
         ? styles.headerItemsWrapperDesktop
         : styles.headerItemsWrapper
     }>
-      <View style={styles.header}>
-        <View style={styles.headerTop}>
-          <View style={styles.logoContainer}>
-            <Image
-              source={require('../assets/logo-one-line.png')}
-              style={styles.logo}
-            />
-          </View>
-          <UserProfile mini={true} />
-        </View>
-      </View>
 
       <View style={styles.actionBar}>
         <TouchableOpacity 
@@ -427,8 +431,10 @@ export default function StoresScreen({ navigation }) {
         contentContainerStyle={[styles.scrollViewContent, { paddingBottom: insets.bottom }]}
         showsVerticalScrollIndicator={false}
       >
+
+        <ListHeaderComponent/>
         <View style={styles.storesGrid}>
-          <ListHeaderComponent />
+          <ListActionsComponent />
         </View>
 
         {activeStores.length === 0 ? (

@@ -233,21 +233,26 @@ export default function HomeScreen({ navigation }) {
   );
 
   const ListHeaderComponent = () => (
-    <View>
-      <View style={styles.header}>
-        <View style={styles.headerTop}>
-          <View style={styles.logoContainer}>
-            <Image
-              source={require('../assets/logo-one-line.png')}
-              style={styles.logo}
-            />
-          </View>
-          <UserProfile mini={true} />
-        </View>
-        {/*<Text style={styles.subtitle}>Discover amazing products from local businesses</Text>*/}
-      </View>
 
-      
+    <View style={styles.header}>
+      <View style={styles.headerTop}>
+        <View style={styles.logoContainer}>
+          <Image
+            source={require('../assets/logo-one-line.png')}
+            style={styles.logo}
+          />
+        </View>
+        <UserProfile mini={true} />
+      </View>
+    </View>
+  )
+
+  const ListActionsComponent = () => (
+    <View style={
+      screenData.width > 800
+        ? styles.headerItemsWrapperDesktop
+        : styles.headerItemsWrapper
+    }>
       <View style={styles.actionBar}>
         <TouchableOpacity 
           style={styles.browseStoresButton}
@@ -321,8 +326,11 @@ export default function HomeScreen({ navigation }) {
         contentContainerStyle={[styles.scrollViewContent, { paddingBottom: insets.bottom }]}
         showsVerticalScrollIndicator={false}
       >
-        <ListHeaderComponent />
-        
+        <ListHeaderComponent/>
+        <View style={styles.storesGrid}>
+          <ListActionsComponent />
+        </View>
+
         {activeProducts.length === 0 ? (
           <EmptyState 
             icon="📦"
@@ -344,6 +352,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+  },
+  headerItemsWrapper : {
+    width: '-webkit-fill-available',
+  },
+  headerItemsWrapperDesktop : {
+    width: 760
+  },
+  storesGrid: {
+    display: 'grid',
+    placeItems: 'center',
   },
   header: {
     backgroundColor: COLORS.appBackground,
@@ -443,7 +461,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
     gap: 15,
-    maxWidth: 790,
+    maxWidth: 760,
     marginTop: 20,
     alignSelf: 'center', // 👈 centers the grid when it reaches maxWidth
     width: '100%',       // 👈 let it shrink/grow until 790
