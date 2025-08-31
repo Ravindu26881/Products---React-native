@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Alert,
-  RefreshControl, ActivityIndicator, Linking,
+  RefreshControl, ActivityIndicator, Linking, Dimensions,
 } from 'react-native';
 import { useUser } from '../contexts/UserContext';
 import AuthAPI from '../services/authAPI';
@@ -17,6 +17,9 @@ import StorageService from '../utils/storage';
 import {deleteOrder, fetchProductById} from "../data/products";
 import {fetchStoreById} from "../data/stores";
 
+
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+
 export default function UserProfileScreen({ navigation }) {
   const { user, logoutUser } = useUser();
   const { showModal, showSuccess, showError } = useNotification();
@@ -24,9 +27,15 @@ export default function UserProfileScreen({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const [screenData, setScreenData] = useState(Dimensions.get('window'));
+
+
 
 
   useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window }) => {
+      setScreenData(window);
+    });
     loadUserOrders();
   }, []);
 
@@ -195,7 +204,12 @@ export default function UserProfileScreen({ navigation }) {
   };
 
   const renderUserDetails = () => (
-    <View style={styles.section}>
+    <View
+          style={
+            screenData.width > 800
+              ? styles.sectionDesktop
+              : styles.section
+          }>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Account Details</Text>
         <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
@@ -223,7 +237,11 @@ export default function UserProfileScreen({ navigation }) {
   );
 
   const renderOrdersSection = () => (
-    <View style={styles.section}>
+    <View style={
+      screenData.width > 800
+        ? styles.sectionDesktop
+        : styles.section
+    }>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Orders</Text>
         <TouchableOpacity onPress={onRefresh}>
@@ -348,6 +366,12 @@ const styles = StyleSheet.create({
   section: {
     margin: 25,
     marginBottom: 24,
+  },
+  sectionDesktop: {
+    margin: 25,
+    marginBottom: 24,
+    paddingLeft:150,
+    paddingRight:150,
   },
   sectionTitle: {
     fontSize: 20,
